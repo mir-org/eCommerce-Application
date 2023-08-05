@@ -106,3 +106,9 @@ dist
 # OS Thumbnails
 .DS_Store
 Thumbs.db
+
+# Folder for temporary files
+TEMP
+
+# Garbage folder that vscode generates
+.vscode
