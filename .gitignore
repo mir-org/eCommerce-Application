@@ -107,6 +107,9 @@ dist
 .DS_Store
 Thumbs.db
 
+# Dependencies versions
+package-lock.json
+
 # Folder for temporary files
 TEMP
 
