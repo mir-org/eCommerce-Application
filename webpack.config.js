@@ -1,30 +1,27 @@
-const path = require('path')
-const HTMLWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CssMinimizerWebpackPlugin = require("css-minimizer-webpack-plugin");
-const TerserWebpackPlugin = require('terser-webpack-plugin')
+const path = require('path');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 const EslintPlugin = require('eslint-webpack-plugin');
 
-const isDev = process.env.NODE_ENV === 'development'
-const isProd = !isDev
+const isDev = process.env.NODE_ENV === 'development';
+const isProd = !isDev;
 
 const optimization = () => {
   const config = {
     splitChunks: {
-      chunks: 'all'
-    }
-  }
+      chunks: 'all',
+    },
+  };
   if (isProd) {
-    config.minimizer = [
-      new CssMinimizerWebpackPlugin(),
-      new TerserWebpackPlugin()
-    ]
+    config.minimizer = [new CssMinimizerWebpackPlugin(), new TerserWebpackPlugin()];
   }
-  return config
-}
+  return config;
+};
 
-const filename = (ext) => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
+const filename = (ext) => (isDev ? `[name].${ext}` : `[name].[hash].${ext}`);
 
 const WebpackConfig = {
   context: path.resolve(__dirname, 'src'),
@@ -35,13 +32,14 @@ const WebpackConfig = {
   output: {
     filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
-    clean: true
+    clean: true,
   },
   resolve: {
     extensions: ['.js', '.ts', '.json'],
-    alias: { // элиасы для путей, чтобы указывать не относительный путь, а абсолютный
-      '@': path.resolve(__dirname, 'src')
-    }
+    alias: {
+      // элиасы для путей, чтобы указывать не относительный путь, а абсолютный
+      '@': path.resolve(__dirname, 'src'),
+    },
   },
   optimization: optimization(),
   devServer: {
@@ -60,12 +58,12 @@ const WebpackConfig = {
       patterns: [
         {
           from: path.resolve(__dirname, 'src/assets/favicon/favicon.ico'),
-          to: path.resolve(__dirname, 'dist/')
-        }
-      ]
+          to: path.resolve(__dirname, 'dist/'),
+        },
+      ],
     }),
     new MiniCssExtractPlugin({
-      filename: filename('css')
+      filename: filename('css'),
     }),
     new EslintPlugin({
       extensions: 'ts',
@@ -87,18 +85,18 @@ const WebpackConfig = {
       },
       {
         test: /\.(png|jpg|svg|gif)$/,
-        type: "asset/resource"
+        type: 'asset/resource',
       },
       {
         test: /\.(ttf|woff|woff2|eot)/,
-        type: "asset/resource"
-      }
-    ]
-  }
-}
+        type: 'asset/resource',
+      },
+    ],
+  },
+};
 
 if (isDev) {
-  WebpackConfig.devtool = 'source-map'
+  WebpackConfig.devtool = 'source-map';
 }
 
-module.exports = WebpackConfig
+module.exports = WebpackConfig;

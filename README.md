@@ -64,4 +64,9 @@ npm run test
 
 ### ESLint
 
+npm run lint
+npm run lint:fix
+
 ### Prettier
+
+npm run pretty
