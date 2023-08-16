@@ -2,53 +2,60 @@ import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { View } from '../../view';
-
-const CssClasses = {
-  REGISTRATION: 'registration',
-  TITLE: 'registration__title',
-  EMAIL: 'email',
-  PASSWORD: 'password',
-};
-
-const TEXT = {
-  FIELD_TEXT_ONE: 'Ваш мейл',
-  FIELD_TEXT_TWO: 'Ваш пароль',
-  TITLE: 'ЭТО СТРАНИЦА РЕГИСТРАЦИИ',
-};
-
-const KEY_FOR_SAVE = {
-  email: 'registration__email-input',
-  password: 'registration__password-input',
-};
+import { SIGN_UP_CLASSES, SIGN_UP_TEXT, SIGN_UP_KEY } from '../../../enums/enums';
 
 class RegistrationView extends View {
   state: State;
 
   constructor(state: State) {
-    super('section', CssClasses.REGISTRATION);
+    super('section', SIGN_UP_CLASSES.REGISTRATION);
     this.state = state;
     this.configView();
   }
 
-  configView() {
-    const title = new ElementCreator('h1', CssClasses.TITLE, TEXT.TITLE);
+  configView(): void {
+    const title = new ElementCreator('h1', SIGN_UP_CLASSES.TITLE, SIGN_UP_TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
-    const emailInput = new InputFieldsCreator(
-      CssClasses.REGISTRATION,
-      CssClasses.EMAIL,
-      TEXT.FIELD_TEXT_ONE,
-      this.state.getValue(KEY_FOR_SAVE.email),
-      (event) => this.keyupHandler(event, KEY_FOR_SAVE.email)
+    this.configInputFields(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.FIRST_NAME,
+      SIGN_UP_TEXT.FIRST_NAME,
+      SIGN_UP_KEY.FIRST_NAME
     );
-    this.viewElementCreator.addInnerElement(emailInput.getElement());
-    const passwordInput = new InputFieldsCreator(
-      CssClasses.REGISTRATION,
-      CssClasses.PASSWORD,
-      TEXT.FIELD_TEXT_TWO,
-      this.state.getValue(KEY_FOR_SAVE.password),
-      (event) => this.keyupHandler(event, KEY_FOR_SAVE.password)
+    this.configInputFields(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.LAST_NAME,
+      SIGN_UP_TEXT.LAST_NAME,
+      SIGN_UP_KEY.LAST_NAME
     );
-    this.viewElementCreator.addInnerElement(passwordInput.getElement());
+    this.configInputFields(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.ADDRESS,
+      SIGN_UP_TEXT.ADDRESS,
+      SIGN_UP_KEY.ADDRESS
+    );
+    this.configInputFields(SIGN_UP_CLASSES.REGISTRATION, SIGN_UP_CLASSES.EMAIL, SIGN_UP_TEXT.EMAIL, SIGN_UP_KEY.EMAIL);
+    this.configInputFields(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.PASSWORD,
+      SIGN_UP_TEXT.PASSWORD,
+      SIGN_UP_KEY.PASSWORD
+    );
+    this.configInputFields(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.CONFIRM_PASSWORD,
+      SIGN_UP_TEXT.CONFIRM_PASSWORD,
+      SIGN_UP_KEY.CONFIRM_PASSWORD
+    );
+    const submitBtn = new ElementCreator('button', SIGN_UP_CLASSES.BUTTON, SIGN_UP_TEXT.BUTTON);
+    this.viewElementCreator.addInnerElement(submitBtn);
+  }
+
+  configInputFields(firstClass: string, secondClass: string, text: string, key: string) {
+    const inputField = new InputFieldsCreator(firstClass, secondClass, text, this.state.getValue(key), (event) =>
+      this.keyupHandler(event, key)
+    );
+    this.viewElementCreator.addInnerElement(inputField.getElement());
   }
 
   keyupHandler(event: KeyboardEvent, fieldName: string) {
