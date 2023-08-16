@@ -43,12 +43,14 @@ const WebpackConfig = {
   },
   optimization: optimization(),
   devServer: {
+    open: true,
+    host: 'localhost',
+    port: 9000,
     static: {
       directory: path.join(__dirname, 'src'),
     },
     compress: true,
-    port: 9000,
-    open: true,
+    historyApiFallback: true,
   },
   plugins: [
     new HTMLWebpackPlugin({
