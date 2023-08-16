@@ -6,9 +6,9 @@ const CssClasses = {
 };
 
 class LinkView extends View {
-  linkElements: Map<string, LinkView>;
+  private linkElements: Map<string, LinkView>;
 
-  pageCallback: () => void;
+  private pageCallback: () => void;
 
   constructor(text: string, pageCallback: () => void, linkElements: Map<string, LinkView>) {
     super('a', CssClasses.ITEM, text);
@@ -18,7 +18,7 @@ class LinkView extends View {
   }
 
   // дробануть
-  setSelectedStatus() {
+  public setSelectedStatus(): void {
     this.linkElements.forEach((link) => link.setNotSelectedStatus());
 
     const element = this.viewElementCreator.getElement();
@@ -26,12 +26,12 @@ class LinkView extends View {
     this.pageCallback();
   }
 
-  setNotSelectedStatus() {
+  private setNotSelectedStatus(): void {
     const element = this.viewElementCreator.getElement();
     element.classList.remove(CssClasses.ITEM_SELECTED);
   }
 
-  configView() {
+  private configView(): void {
     const element = this.viewElementCreator.getElement();
     element.addEventListener('click', this.setSelectedStatus.bind(this));
   }

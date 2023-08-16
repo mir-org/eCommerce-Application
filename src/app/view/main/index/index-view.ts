@@ -15,7 +15,7 @@ class IndexView extends View {
     this.configView();
   }
 
-  configView() {
+  private configView(): void {
     const title = new ElementCreator('h1', CssClasses.TITLE, TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
   }

@@ -7,7 +7,7 @@ class NotFoundView extends View {
     this.configView();
   }
 
-  configView() {
+  private configView(): void {
     const title = new ElementCreator('h1', 'title', 'НЕ НАЙДЕНА');
     this.viewElementCreator.addInnerElement(title);
   }
