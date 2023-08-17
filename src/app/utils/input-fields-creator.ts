@@ -23,7 +23,7 @@ class InputFieldsCreator {
     this.setValue(inputValue);
   }
 
-  private setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string): void {
+  public setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string): void {
     this.setLabelTextContent(labelTextContent);
     this.setCssClasses(classNames, subClassNames);
     this.labelElement.prepend(this.inputElement);
@@ -35,25 +35,25 @@ class InputFieldsCreator {
     return this.element;
   }
 
-  private setValue(inputValue: string): void {
+  public setValue(inputValue: string): void {
     this.inputElement.value = inputValue;
   }
 
-  private setCssClasses(classNames: string, subClassNames: string): void {
+  public setCssClasses(classNames: string, subClassNames: string): void {
     this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`);
     this.inputElement.classList.add(`${classNames}__${subClassNames}-input`);
     this.labelElement.classList.add(`${classNames}__${subClassNames}-label`);
   }
 
-  private setLabelTextContent(text: string): void {
+  public setLabelTextContent(text: string): void {
     if (this.labelElement) this.labelElement.textContent = text;
   }
 
-  private setCallback(callback: (event: KeyboardEvent) => void): void {
+  public setCallback(callback: (event: KeyboardEvent) => void): void {
     this.inputElement.addEventListener('keyup', (event) => callback(event));
   }
 
-  private setType(type: string): void {
+  public setType(type: string): void {
     this.inputElement.setAttribute('type', type);
   }
 
