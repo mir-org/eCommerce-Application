@@ -1,8 +1,9 @@
 import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
+import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
-import { SIGN_UP_CLASSES, SIGN_UP_TEXT, SIGN_UP_KEY } from '../../../enums/enums';
+import { SIGN_UP_CLASSES, SIGN_UP_TEXT, SIGN_UP_KEY } from './enums';
 
 class RegistrationView extends View {
   private state: State;
@@ -67,6 +68,7 @@ class RegistrationView extends View {
     const submitBtn = new ElementCreator('button', SIGN_UP_CLASSES.BUTTON, SIGN_UP_TEXT.BUTTON);
     submitBtn.getElement().setAttribute('type', 'submit');
     this.form.addInnerElement(submitBtn);
+    this.form.getElement().addEventListener('submit', (event: Event) => this.handleSubmit(event));
   }
 
   private configInputFields(firstClass: string, secondClass: string, text: string, key: string, type: string): void {
@@ -75,6 +77,13 @@ class RegistrationView extends View {
     );
     inputField.setType(type);
     this.form.addInnerElement(inputField.getElement());
+  }
+
+  private handleSubmit(event: Event): void {
+    console.log('handeld');
+    event.preventDefault();
+    const formPasswordInput = this.form.getElement().querySelector('.registration__password-input');
+    Validator.passwordField(formPasswordInput.value);
   }
 
   private keyupHandler(event: KeyboardEvent, fieldName: string): void {

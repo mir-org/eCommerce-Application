@@ -1,19 +1,23 @@
 class Validator {
-  static emailField(email: string): string | boolean {
+  public static emailField(email: string): string | boolean {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     if (!email) {
-      return 'Email не может быть пустым.';
+      console.log('Email не может быть пустым.');
+      return false;
     }
     if (!emailRegex.test(email)) {
-      return 'Введите корректный email.';
+      console.log('Введите корректный email.');
+      return false;
     }
     return true;
   }
 
-  static passwordField(password: string): string | boolean {
+  public static passwordField(password: string): string | boolean {
     if (password.length < 8) {
-      return 'Пароль должен содержать как минимум 8 символов.';
+      console.log('Пароль должен содержать как минимум 8 символов.');
+      return false;
     }
+    console.log('Четкий пароль');
     return true;
   }
 }
