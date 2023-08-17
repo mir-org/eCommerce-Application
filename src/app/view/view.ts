@@ -1,22 +1,22 @@
 import { ElementCreator } from '../utils/element-creator';
 
 class View {
-  viewElementCreator: ElementCreator;
+  public viewElementCreator: ElementCreator;
 
   constructor(tag: string, classNames: string | string[], textContent?: string) {
-    this.viewElementCreator = this.createWiew(tag, classNames, textContent);
+    this.viewElementCreator = this.createView(tag, classNames, textContent);
   }
 
-  createWiew(tag: string, classNames: string | string[], textContent?: string) {
+  private createView(tag: string, classNames: string | string[], textContent?: string): ElementCreator {
     const elementCreator = new ElementCreator(tag, classNames, textContent);
     return elementCreator;
   }
 
-  getHTMLElement(): HTMLElement {
+  public getHTMLElement(): HTMLElement {
     return this.viewElementCreator.getElement();
   }
 
-  setContent(view: View) {
+  public setContent(view: View): void {
     const currentElement = this.viewElementCreator.getElement();
     const element = view.getHTMLElement();
     this.removeContent(currentElement);
@@ -24,9 +24,9 @@ class View {
     this.viewElementCreator.addInnerElement(element);
   }
 
-  // добавить addContent
+  // TODO добавить addContent
 
-  removeContent(element: HTMLElement) {
+  private removeContent(element: HTMLElement): void {
     while (element.firstChild) {
       element.firstChild.remove();
     }

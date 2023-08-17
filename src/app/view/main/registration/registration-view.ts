@@ -5,9 +5,9 @@ import { View } from '../../view';
 import { SIGN_UP_CLASSES, SIGN_UP_TEXT, SIGN_UP_KEY } from '../../../enums/enums';
 
 class RegistrationView extends View {
-  state: State;
+  private state: State;
 
-  form: HTMLFormElement | ElementCreator;
+  private form: HTMLFormElement | ElementCreator;
 
   constructor(state: State) {
     super('section', SIGN_UP_CLASSES.REGISTRATION);
@@ -18,7 +18,7 @@ class RegistrationView extends View {
 
   // пофиксить длину функции, вынести типы в енум
   // eslint-disable-next-line max-lines-per-function
-  configView(): void {
+  private configView(): void {
     const title = new ElementCreator('h1', SIGN_UP_CLASSES.TITLE, SIGN_UP_TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
     this.viewElementCreator.addInnerElement(this.form);
@@ -69,7 +69,7 @@ class RegistrationView extends View {
     this.form.addInnerElement(submitBtn);
   }
 
-  configInputFields(firstClass: string, secondClass: string, text: string, key: string, type: string) {
+  private configInputFields(firstClass: string, secondClass: string, text: string, key: string, type: string): void {
     const inputField = new InputFieldsCreator(firstClass, secondClass, text, this.state.getValue(key), (event) =>
       this.keyupHandler(event, key)
     );
@@ -77,7 +77,7 @@ class RegistrationView extends View {
     this.form.addInnerElement(inputField.getElement());
   }
 
-  keyupHandler(event: KeyboardEvent, fieldName: string) {
+  private keyupHandler(event: KeyboardEvent, fieldName: string): void {
     if (event.target instanceof HTMLInputElement) {
       this.state.setValue(fieldName, event.target.value);
     }

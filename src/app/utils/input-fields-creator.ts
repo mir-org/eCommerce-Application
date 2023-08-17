@@ -1,11 +1,11 @@
 import { ElementCreator } from './element-creator';
 
 class InputFieldsCreator {
-  element: HTMLElement;
+  private element: HTMLElement;
 
-  inputElement: HTMLInputElement;
+  private inputElement: HTMLInputElement;
 
-  labelElement: HTMLLabelElement;
+  private labelElement: HTMLLabelElement;
 
   constructor(
     classNames: string,
@@ -23,7 +23,7 @@ class InputFieldsCreator {
     this.setValue(inputValue);
   }
 
-  setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string) {
+  private setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string): void {
     this.setLabelTextContent(labelTextContent);
     this.setCssClasses(classNames, subClassNames);
     this.labelElement.prepend(this.inputElement);
@@ -31,33 +31,33 @@ class InputFieldsCreator {
     this.setType(type);
   }
 
-  getElement(): HTMLElement {
+  public getElement(): HTMLElement {
     return this.element;
   }
 
-  setValue(inputValue: string) {
+  private setValue(inputValue: string): void {
     this.inputElement.value = inputValue;
   }
 
-  setCssClasses(classNames: string, subClassNames: string) {
+  private setCssClasses(classNames: string, subClassNames: string): void {
     this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`);
     this.inputElement.classList.add(`${classNames}__${subClassNames}-input`);
     this.labelElement.classList.add(`${classNames}__${subClassNames}-label`);
   }
 
-  setLabelTextContent(text: string) {
+  private setLabelTextContent(text: string): void {
     if (this.labelElement) this.labelElement.textContent = text;
   }
 
-  setCallback(callback: (event: KeyboardEvent) => void) {
+  private setCallback(callback: (event: KeyboardEvent) => void): void {
     this.inputElement.addEventListener('keyup', (event) => callback(event));
   }
 
-  setType(type: string) {
+  private setType(type: string): void {
     this.inputElement.setAttribute('type', type);
   }
 
-  addInnerElement(element: HTMLElement | ElementCreator) {
+  public addInnerElement(element: HTMLElement | ElementCreator): void {
     if (element instanceof ElementCreator) {
       this.element.append(element.getElement());
     } else {
