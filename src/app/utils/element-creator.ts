@@ -1,21 +1,21 @@
 class ElementCreator {
-  element: HTMLElement;
+  private element: HTMLElement;
 
   constructor(tag: string, classNames: string | string[], textContent?: string) {
     this.element = document.createElement(tag);
     this.setElement(classNames, textContent);
   }
 
-  setElement(classNames: string | string[], textContent?: string) {
+  private setElement(classNames: string | string[], textContent?: string): void {
     this.setCssClasses(classNames);
     if (textContent) this.setTextContent(textContent);
   }
 
-  getElement(): HTMLElement {
+  public getElement(): HTMLElement {
     return this.element;
   }
 
-  setCssClasses(cssClasses: string | string[]) {
+  private setCssClasses(cssClasses: string | string[]): void {
     // не нравится, можно переделать?
     if (Array.isArray(cssClasses)) {
       this.element.classList.add(...cssClasses);
@@ -24,11 +24,11 @@ class ElementCreator {
     }
   }
 
-  setTextContent(text: string) {
+  private setTextContent(text: string): void {
     this.element.textContent = text;
   }
 
-  addInnerElement(element: HTMLElement | ElementCreator) {
+  public addInnerElement(element: HTMLElement | ElementCreator): void {
     if (element instanceof ElementCreator) {
       this.element.append(element.getElement());
     } else {

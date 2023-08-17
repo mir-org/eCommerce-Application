@@ -27,5 +27,20 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 2,
     'max-lines-per-function': ['error', 40],
     'import/prefer-default-export': 'off',
+    '@typescript-eslint/explicit-member-accessibility': [
+      'error',
+      {
+        accessibility: 'explicit',
+        overrides: {
+          constructors: 'no-public',
+        },
+      },
+    ],
+    '@typescript-eslint/explicit-function-return-type': [
+      'error',
+      {
+        allowExpressions: true,
+      },
+    ],
   },
 };

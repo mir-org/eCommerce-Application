@@ -16,7 +16,7 @@ const NamePages: IPages = {
 };
 
 class HeaderView extends View {
-  headerLinkElements: Map<string, LinkView>;
+  private headerLinkElements: Map<string, LinkView>;
 
   constructor(router: Router) {
     super('header', CssClasses.HEADER);
@@ -24,7 +24,7 @@ class HeaderView extends View {
     this.configView(router);
   }
 
-  configView(router: Router) {
+  private configView(router: Router): void {
     const creatorNav = new ElementCreator('nav', CssClasses.NAV);
     Object.keys(NamePages).forEach((key) => {
       const linkParams = {
@@ -38,8 +38,8 @@ class HeaderView extends View {
     this.viewElementCreator.addInnerElement(creatorNav);
   }
 
-  // удалить?
-  setSelectedItem(namePage: string) {
+  // TODO удалить?
+  public setSelectedItem(namePage: string): void {
     const linkComponent = this.headerLinkElements.get(namePage);
     linkComponent?.setSelectedStatus();
   }

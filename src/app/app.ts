@@ -12,11 +12,11 @@ import RegistrationView from './view/main/registration/registration-view';
 import State from './state/state';
 
 class App {
-  router: Router;
+  private router: Router;
 
-  header: HeaderView | null;
+  private header: HeaderView | null;
 
-  main: MainView | null;
+  private main: MainView | null;
 
   constructor() {
     this.header = null;
@@ -27,7 +27,7 @@ class App {
     this.createView();
   }
 
-  createView() {
+  private createView(): void {
     const wrapperView = new WrapperView();
     this.header = new HeaderView(this.router);
     this.main = new MainView();
@@ -40,7 +40,7 @@ class App {
     document.body.append(wrapperView.getHTMLElement());
   }
 
-  createRoutes(state: State): Route[] {
+  private createRoutes(state: State): Route[] {
     const result: Route[] = [
       {
         path: ``,
@@ -76,9 +76,9 @@ class App {
     return result;
   }
 
-  // из-за этого багался колл-стек, разобрать.
-  setContent(pageName: string, view: View) {
-    // или из-за этого.
+  // TODO из-за этого багался колл-стек, разобрать.
+  public setContent(pageName: string, view: View): void {
+    // TODO или из-за этого.
     this.header?.setSelectedItem(pageName);
     this.main?.setContent(view);
   }

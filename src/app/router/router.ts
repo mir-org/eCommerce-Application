@@ -11,7 +11,7 @@ interface UserRequest {
 }
 
 class Router {
-  routes: Route[];
+  private routes: Route[];
 
   constructor(routes: Route[]) {
     this.routes = routes;
@@ -24,7 +24,7 @@ class Router {
     window.addEventListener('hashchange', this.browserChangeHandler.bind(this));
   }
 
-  navigate(url: string) {
+  public navigate(url: string): void {
     const request = this.parseUrl(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
     const route = this.routes.find((item) => item.path === pathForFind);
@@ -37,7 +37,7 @@ class Router {
     }
   }
 
-  parseUrl(url: string): UserRequest {
+  private parseUrl(url: string): UserRequest {
     const path = url.split('/');
     const result: UserRequest = {
       path: '',
@@ -47,19 +47,19 @@ class Router {
     return result;
   }
 
-  redirectToNotFound() {
+  private redirectToNotFound(): void {
     const routeNotFound = this.routes.find((item) => item.path === Pages.NOT_FOUND);
     if (routeNotFound) {
       this.navigate(routeNotFound.path);
     }
   }
 
-  browserChangeHandler() {
+  private browserChangeHandler(): void {
     const path = this.getCurrentPath();
     this.navigate(path);
   }
 
-  getCurrentPath(): string {
+  private getCurrentPath(): string {
     if (window.location.hash) {
       return window.location.hash.slice(1);
     }

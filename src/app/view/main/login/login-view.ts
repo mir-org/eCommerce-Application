@@ -22,7 +22,7 @@ const KEY_FOR_SAVE = {
 };
 
 class LoginView extends View {
-  state: State;
+  private state: State;
 
   constructor(state: State) {
     super('section', CssClasses.LOGIN);
@@ -30,7 +30,7 @@ class LoginView extends View {
     this.configView();
   }
 
-  configView() {
+  private configView(): void {
     const title = new ElementCreator('h1', CssClasses.TITLE, TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
     const emailInput = new InputFieldsCreator(
@@ -51,7 +51,7 @@ class LoginView extends View {
     this.viewElementCreator.addInnerElement(passwordInput.getElement());
   }
 
-  keyupHandler(event: KeyboardEvent, fieldName: string) {
+  private keyupHandler(event: KeyboardEvent, fieldName: string): void {
     if (event.target instanceof HTMLInputElement) {
       this.state.setValue(fieldName, event.target.value);
     }
