@@ -17,7 +17,7 @@ class LinkView extends View {
     this.configView();
   }
 
-  // дробануть
+  // TODO дробануть
   public setSelectedStatus(): void {
     this.linkElements.forEach((link) => link.setNotSelectedStatus());
 

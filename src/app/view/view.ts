@@ -24,7 +24,7 @@ class View {
     this.viewElementCreator.addInnerElement(element);
   }
 
-  // добавить addContent
+  // TODO добавить addContent
 
   private removeContent(element: HTMLElement): void {
     while (element.firstChild) {

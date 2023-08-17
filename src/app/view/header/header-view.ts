@@ -38,7 +38,7 @@ class HeaderView extends View {
     this.viewElementCreator.addInnerElement(creatorNav);
   }
 
-  // удалить?
+  // TODO удалить?
   public setSelectedItem(namePage: string): void {
     const linkComponent = this.headerLinkElements.get(namePage);
     linkComponent?.setSelectedStatus();

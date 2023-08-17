@@ -76,9 +76,9 @@ class App {
     return result;
   }
 
-  // из-за этого багался колл-стек, разобрать.
+  // TODO из-за этого багался колл-стек, разобрать.
   public setContent(pageName: string, view: View): void {
-    // или из-за этого.
+    // TODO или из-за этого.
     this.header?.setSelectedItem(pageName);
     this.main?.setContent(view);
   }
