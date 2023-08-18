@@ -35,6 +35,10 @@ class InputFieldsCreator {
     return this.element;
   }
 
+  public getInputElement(): HTMLInputElement {
+    return this.inputElement;
+  }
+
   private setValue(inputValue: string): void {
     this.inputElement.value = inputValue;
   }
