@@ -29,8 +29,8 @@ export class AuthAPI {
       },
     });
     const data = await response.json();
-    const refreshToken = data.refresh_token;
-    await this.fetchRefreshToken(refreshToken);
+    const accessToken = data.access_token;
+    localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
   }
 
   private static async fetchRefreshToken(token: string): Promise<void> {
