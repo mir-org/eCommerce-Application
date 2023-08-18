@@ -33,7 +33,7 @@ const wrapper_1 = __importDefault(__webpack_require__(/*! ./view/wrapper */ "./a
 const pages_1 = __webpack_require__(/*! ./router/pages */ "./app/router/pages.ts");
 const index_view_1 = __importDefault(__webpack_require__(/*! ./view/main/index/index-view */ "./app/view/main/index/index-view.ts"));
 const login_view_1 = __importDefault(__webpack_require__(/*! ./view/main/login/login-view */ "./app/view/main/login/login-view.ts"));
-const not_found_view_1 = __importDefault(__webpack_require__(/*! ./view/main/not-found/not-found-view */ "./app/view/main/not-found/not-found-view.ts"));
+// import NotFoundView from './view/main/not-found/not-found-view';
 const registration_view_1 = __importDefault(__webpack_require__(/*! ./view/main/registration/registration-view */ "./app/view/main/registration/registration-view.ts"));
 const state_1 = __importDefault(__webpack_require__(/*! ./state/state */ "./app/state/state.ts"));
 class App {
@@ -65,6 +65,13 @@ class App {
                 },
             },
             {
+                path: `undefined`,
+                callback: () => {
+                    var _a;
+                    (_a = this.main) === null || _a === void 0 ? void 0 : _a.setContent(new index_view_1.default());
+                },
+            },
+            {
                 path: `${pages_1.Pages.INDEX}`,
                 callback: () => {
                     var _a;
@@ -85,16 +92,15 @@ class App {
                     (_a = this.main) === null || _a === void 0 ? void 0 : _a.setContent(new registration_view_1.default(state));
                 },
             },
-            {
-                path: `${pages_1.Pages.NOT_FOUND}`,
-                callback: () => {
-                    var _a;
-                    (_a = this.main) === null || _a === void 0 ? void 0 : _a.setContent(new not_found_view_1.default());
-                },
-            },
         ];
         return result;
     }
+    // {
+    //   path: `${Pages.NOT_FOUND}`,
+    //   callback: () => {
+    //     this.main?.setContent(new NotFoundView());
+    //   },
+    // },
     // TODO из-за этого багался колл-стек, разобрать.
     setContent(pageName, view) {
         var _a, _b;
@@ -560,31 +566,6 @@ class MainView extends view_1.View {
     }
 }
 exports["default"] = MainView;
-
-
-/***/ }),
-
-/***/ "./app/view/main/not-found/not-found-view.ts":
-/*!***************************************************!*\
-  !*** ./app/view/main/not-found/not-found-view.ts ***!
-  \***************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const view_1 = __webpack_require__(/*! ../../view */ "./app/view/view.ts");
-const element_creator_1 = __webpack_require__(/*! ../../../utils/element-creator */ "./app/utils/element-creator.ts");
-class NotFoundView extends view_1.View {
-    constructor() {
-        super('section', 'not-found');
-        this.configView();
-    }
-    configView() {
-        const title = new element_creator_1.ElementCreator('h1', 'title', 'НЕ НАЙДЕНА');
-        this.viewElementCreator.addInnerElement(title);
-    }
-}
-exports["default"] = NotFoundView;
 
 
 /***/ }),
