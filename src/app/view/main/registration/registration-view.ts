@@ -1,3 +1,5 @@
+import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
+import { AuthAPI } from '../../../../api/authAPI/authAPI';
 import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
@@ -79,11 +81,27 @@ class RegistrationView extends View {
     this.form.addInnerElement(inputField.getElement());
   }
 
-  private handleSubmit(event: Event): void {
-    console.log('handeld');
+  private async handleSubmit(event: Event): Promise<void> {
+    console.log('handled');
     event.preventDefault();
     const formPasswordInput = this.form.getElement().querySelector('.registration__password-input');
     Validator.passwordField(formPasswordInput.value);
+    await CustomerAPI.registerCustomer({
+      email: formPasswordInput.value,
+      password: formPasswordInput.value,
+      firstName: formPasswordInput.value,
+      lastName: formPasswordInput.value,
+      addresses: [
+        {
+          country: 'RU',
+          streetName: formPasswordInput.value,
+          postalCode: formPasswordInput.value,
+          city: formPasswordInput.value,
+        },
+      ],
+    });
+    await AuthAPI.fetchPasswordToken(formPasswordInput.value, formPasswordInput.value);
+    await CustomerAPI.getCustomerInfo();
   }
 
   private keyupHandler(event: KeyboardEvent, fieldName: string): void {

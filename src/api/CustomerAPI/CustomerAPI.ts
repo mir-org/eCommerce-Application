@@ -2,7 +2,7 @@ import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
 import { MyCustomerDraft } from './customer-api-type';
 
 export class CustomerAPI {
-  public async loginCustomer(email: string, password: string): Promise<number> {
+  public static async loginCustomer(email: string, password: string): Promise<number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/login`;
     const response = await fetch(url, {
       method: 'POST',
@@ -18,9 +18,9 @@ export class CustomerAPI {
     return data.statusCode;
   }
 
-  public async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
+  public static async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -33,9 +33,15 @@ export class CustomerAPI {
         addresses: customerData.addresses,
       }),
     });
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log(responseData);
+    } else {
+      console.log('Error:', response.status, response.statusText);
+    }
   }
 
-  public async getCustomerInfo(): Promise<void> {
+  public static async getCustomerInfo(): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me`;
     const response = await fetch(url, {
       method: 'GET',

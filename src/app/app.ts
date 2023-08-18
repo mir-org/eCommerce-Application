@@ -10,6 +10,7 @@ import LoginView from './view/main/login/login-view';
 import NotFoundView from './view/main/not-found/not-found-view';
 import RegistrationView from './view/main/registration/registration-view';
 import State from './state/state';
+import { AuthAPI } from '../api/authAPI/authAPI';
 
 class App {
   private router: Router;
@@ -24,6 +25,7 @@ class App {
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes);
+    AuthAPI.setAccessToken();
     this.createView();
   }
 
