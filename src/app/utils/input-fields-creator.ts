@@ -1,5 +1,11 @@
 import { ElementCreator } from './element-creator';
 
+const CssClasses = {
+  wrapper: 'primary-wrapper',
+  input: 'primary-input',
+  label: 'primary-label',
+};
+
 class InputFieldsCreator {
   private element: HTMLElement;
 
@@ -44,9 +50,9 @@ class InputFieldsCreator {
   }
 
   private setCssClasses(classNames: string, subClassNames: string): void {
-    this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`);
-    this.inputElement.classList.add(`${classNames}__${subClassNames}-input`);
-    this.labelElement.classList.add(`${classNames}__${subClassNames}-label`);
+    this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`, CssClasses.wrapper);
+    this.inputElement.classList.add(`${classNames}__${subClassNames}-input`, CssClasses.input);
+    this.labelElement.classList.add(`${classNames}__${subClassNames}-label`, CssClasses.label);
   }
 
   private setLabelTextContent(text: string): void {
