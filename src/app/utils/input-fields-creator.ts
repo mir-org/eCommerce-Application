@@ -12,14 +12,12 @@ class InputFieldsCreator {
     subClassNames: string,
     labelTextContent: string,
     inputValue: string,
-    callback: (event: KeyboardEvent) => void,
     type: string = 'text'
   ) {
     this.element = document.createElement('div');
     this.inputElement = document.createElement('input');
     this.labelElement = document.createElement('label');
     this.setElement(classNames, subClassNames, labelTextContent, type);
-    this.setCallback(callback);
     this.setValue(inputValue);
   }
 
@@ -47,10 +45,6 @@ class InputFieldsCreator {
 
   private setLabelTextContent(text: string): void {
     if (this.labelElement) this.labelElement.textContent = text;
-  }
-
-  private setCallback(callback: (event: KeyboardEvent) => void): void {
-    this.inputElement.addEventListener('keyup', (event) => callback(event));
   }
 
   private setType(type: string): void {
