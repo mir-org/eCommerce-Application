@@ -12,13 +12,15 @@ class InputFieldsCreator {
     subClassNames: string,
     labelTextContent: string,
     inputValue: string,
-    type: string = 'text'
+    type: string = 'text',
+    placeholder: string = ''
   ) {
     this.element = document.createElement('div');
     this.inputElement = document.createElement('input');
     this.labelElement = document.createElement('label');
     this.setElement(classNames, subClassNames, labelTextContent, type);
     this.setValue(inputValue);
+    this.setPlaceholder(placeholder);
   }
 
   private setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string): void {
@@ -49,6 +51,10 @@ class InputFieldsCreator {
 
   private setType(type: string): void {
     this.inputElement.setAttribute('type', type);
+  }
+
+  private setPlaceholder(placeholder: string): void {
+    this.inputElement.setAttribute('placeholder', placeholder);
   }
 
   public addInnerElement(element: HTMLElement | ElementCreator): void {
