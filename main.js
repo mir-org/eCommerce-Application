@@ -152,7 +152,8 @@ class Router {
         const request = this.parseUrl(url);
         const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
         const route = this.routes.find((item) => item.path === pathForFind);
-        console.log('путь', typeof (route === null || route === void 0 ? void 0 : route.path), route === null || route === void 0 ? void 0 : route.path);
+        const test = `путь, ${typeof (route === null || route === void 0 ? void 0 : route.path)}, ${route === null || route === void 0 ? void 0 : route.path}`;
+        alert(test);
         if (!route) {
             this.redirectToNotFound();
         }
