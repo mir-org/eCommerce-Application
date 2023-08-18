@@ -2,7 +2,7 @@ import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
 import { MyCustomerDraft } from './customer-api-type';
 
 export class CustomerAPI {
-  public async loginCustomer(email: string, password: string): Promise<number> {
+  public static async loginCustomer(email: string, password: string): Promise<number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/login`;
     const response = await fetch(url, {
       method: 'POST',
@@ -18,7 +18,7 @@ export class CustomerAPI {
     return data.statusCode;
   }
 
-  public async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
+  public static async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
     await fetch(url, {
       method: 'POST',
@@ -35,7 +35,7 @@ export class CustomerAPI {
     });
   }
 
-  public async getCustomerInfo(): Promise<void> {
+  public static async getCustomerInfo(): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me`;
     const response = await fetch(url, {
       method: 'GET',
