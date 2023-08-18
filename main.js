@@ -183,9 +183,9 @@ class Router {
     }
     getCurrentPath() {
         if (window.location.hash) {
-            return window.location.hash.slice(1);
+            return String(window.location.hash.slice(1));
         }
-        return window.location.pathname.slice(1);
+        return String(window.location.pathname.slice(1));
     }
 }
 exports.Router = Router;
