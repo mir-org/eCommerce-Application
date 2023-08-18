@@ -20,7 +20,7 @@ export class CustomerAPI {
 
   public static async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
-    const response = await fetch(url, {
+    await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -33,12 +33,6 @@ export class CustomerAPI {
         addresses: customerData.addresses,
       }),
     });
-    if (response.ok) {
-      const responseData = await response.json();
-      console.log(responseData);
-    } else {
-      console.log('Error:', response.status, response.statusText);
-    }
   }
 
   public static async getCustomerInfo(): Promise<void> {

@@ -19,7 +19,7 @@ class RegistrationView extends View {
     this.configView();
   }
 
-  // пофиксить длину функции, вынести типы в енум
+  // TODO пофиксить длину функции, вынести типы в енум
   // eslint-disable-next-line max-lines-per-function
   private configView(): void {
     const title = new ElementCreator('h1', SIGN_UP_CLASSES.TITLE, SIGN_UP_TEXT.TITLE);
@@ -84,24 +84,32 @@ class RegistrationView extends View {
   private async handleSubmit(event: Event): Promise<void> {
     console.log('handled');
     event.preventDefault();
-    const formPasswordInput = this.form.getElement().querySelector('.registration__password-input');
-    Validator.passwordField(formPasswordInput.value);
-    await CustomerAPI.registerCustomer({
-      email: formPasswordInput.value,
-      password: formPasswordInput.value,
-      firstName: formPasswordInput.value,
-      lastName: formPasswordInput.value,
-      addresses: [
-        {
-          country: 'RU',
-          streetName: formPasswordInput.value,
-          postalCode: formPasswordInput.value,
-          city: formPasswordInput.value,
-        },
-      ],
-    });
-    await AuthAPI.fetchPasswordToken(formPasswordInput.value, formPasswordInput.value);
-    await CustomerAPI.getCustomerInfo();
+    const formEmail = this.form.getElement().querySelector('.registration__email-input').value;
+    const formPassword = this.form.getElement().querySelector('.registration__password-input').value;
+    const formFirstName = this.form.getElement().querySelector('.registration__first-name-input').value;
+    const formLastName = this.form.getElement().querySelector('.registration__last-name-input').value;
+    const formAddress = this.form.getElement().querySelector('.registration__address-input').value;
+    if (Validator.passwordField(formPassword)) {
+      await CustomerAPI.registerCustomer({
+        email: formEmail,
+        password: formPassword,
+        firstName: formFirstName,
+        lastName: formLastName,
+        // TODO remake address inputs
+        addresses: [
+          {
+            country: 'RU',
+            streetName: formAddress,
+            postalCode: formAddress,
+            city: formAddress,
+          },
+        ],
+      });
+      await AuthAPI.fetchPasswordToken(formEmail, formPassword);
+      await CustomerAPI.getCustomerInfo();
+    } else {
+      console.log('братан, твой пароль не очень');
+    }
   }
 
   private keyupHandler(event: KeyboardEvent, fieldName: string): void {
