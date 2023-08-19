@@ -81,10 +81,17 @@ class LoginView extends View {
       TYPE.INPUT_TYPE.PASSWORD,
       INITIAL_VALUE.PLACEHOLDER.PASSWORD
     );
+    this.addShowHidePasswordIcon(passwordInputCreator);
     const passwordInputElement = passwordInputCreator.getInputElement();
     this.passwordInput = passwordInputElement;
     passwordInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     this.form?.addInnerElement(passwordInputCreator.getElement());
+  }
+
+  private addShowHidePasswordIcon(passwordInputCreator: InputFieldsCreator): void {
+    const showHideIconCreator = new ElementCreator('span', CssClasses.SHOW_HIDE_ICON, TEXT.SHOW_HIDE_ICON.VISIBLE);
+    showHideIconCreator.getElement().addEventListener('click', this.showHidePasswordFn.bind(this, showHideIconCreator));
+    passwordInputCreator.addInnerElement(showHideIconCreator);
   }
 
   private addLoginButton(): void {
@@ -113,6 +120,17 @@ class LoginView extends View {
       await CustomerAPI.getCustomerInfo();
     } else {
       this.errorLine?.classList.add('show');
+    }
+  }
+
+  private showHidePasswordFn(showHideIconCreator: ElementCreator): void {
+    const showHideIconElement = showHideIconCreator.getElement();
+    if (this.passwordInput?.getAttribute('type') === TYPE.INPUT_TYPE.PASSWORD) {
+      this.passwordInput.setAttribute('type', TYPE.INPUT_TYPE.TEXT);
+      showHideIconElement.textContent = TEXT.SHOW_HIDE_ICON.VISIBLE_OFF;
+    } else {
+      this.passwordInput?.setAttribute('type', TYPE.INPUT_TYPE.PASSWORD);
+      showHideIconElement.textContent = TEXT.SHOW_HIDE_ICON.VISIBLE;
     }
   }
 }
