@@ -4,14 +4,34 @@
   justify-content: center;
   align-content: center;
   padding: 20px;
-  gap: 20px;
+  gap: 5px;
+  width: 20%;
+  margin: 20px auto 0;
+  border: 1px solid $login-registration-section-border-color;
+  border-radius: 2px;
 
   &__title {
     text-align: center;
     font-size: 24px;
+    margin: 15px 0 5px;
   }
 
-  input {
-    margin: 0 15px 0 0;
+  .login_error-line {
+    height: 30px;
+    line-height: 28px;
+    text-align: center;
+    border: 1px solid $login-registration-section-border-color;
+    border-radius: 5px;
+    color: $login-registration-error-line-text-color;
+    background-color: $login-registration-error-line-background-color;
+    opacity: 0;
+    visibility: hidden;
+    margin-bottom: 5px;
+    transition: 0.1s;
+  }
+
+  .login_error-line.show {
+    opacity: 1;
+    visibility: visible;
   }
 }
