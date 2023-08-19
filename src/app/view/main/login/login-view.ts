@@ -37,16 +37,14 @@ class LoginView extends View {
       CssClasses.LOGIN,
       CssClasses.EMAIL,
       TEXT.FIELD_TEXT_ONE,
-      this.state.getValue(KEY_FOR_SAVE.email),
-      (event) => this.keyupHandler(event, KEY_FOR_SAVE.email)
+      this.state.getValue(KEY_FOR_SAVE.email)
     );
     this.viewElementCreator.addInnerElement(emailInput.getElement());
     const passwordInput = new InputFieldsCreator(
       CssClasses.LOGIN,
       CssClasses.PASSWORD,
       TEXT.FIELD_TEXT_TWO,
-      this.state.getValue(KEY_FOR_SAVE.password),
-      (event) => this.keyupHandler(event, KEY_FOR_SAVE.password)
+      this.state.getValue(KEY_FOR_SAVE.password)
     );
     this.viewElementCreator.addInnerElement(passwordInput.getElement());
   }

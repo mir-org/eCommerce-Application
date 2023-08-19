@@ -1,5 +1,11 @@
 import { ElementCreator } from './element-creator';
 
+const CssClasses = {
+  wrapper: 'primary-wrapper',
+  input: 'primary-input',
+  label: 'primary-label',
+};
+
 class InputFieldsCreator {
   private element: HTMLElement;
 
@@ -12,15 +18,15 @@ class InputFieldsCreator {
     subClassNames: string,
     labelTextContent: string,
     inputValue: string,
-    callback: (event: KeyboardEvent) => void,
-    type: string = 'text'
+    type: string = 'text',
+    placeholder: string = ''
   ) {
     this.element = document.createElement('div');
     this.inputElement = document.createElement('input');
     this.labelElement = document.createElement('label');
     this.setElement(classNames, subClassNames, labelTextContent, type);
-    this.setCallback(callback);
     this.setValue(inputValue);
+    this.setPlaceholder(placeholder);
   }
 
   public setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string): void {
@@ -39,18 +45,22 @@ class InputFieldsCreator {
     this.inputElement.value = inputValue;
   }
 
+  public getInputElement(): HTMLInputElement {
+    return this.inputElement;
+  }
+
   public setCssClasses(classNames: string, subClassNames: string): void {
-    this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`);
-    this.inputElement.classList.add(`${classNames}__${subClassNames}-input`);
-    this.labelElement.classList.add(`${classNames}__${subClassNames}-label`);
+    this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`, CssClasses.wrapper);
+    this.inputElement.classList.add(`${classNames}__${subClassNames}-input`, CssClasses.input);
+    this.labelElement.classList.add(`${classNames}__${subClassNames}-label`, CssClasses.label);
   }
 
   public setLabelTextContent(text: string): void {
     if (this.labelElement) this.labelElement.textContent = text;
   }
 
-  public setCallback(callback: (event: KeyboardEvent) => void): void {
-    this.inputElement.addEventListener('keyup', (event) => callback(event));
+  private setPlaceholder(placeholder: string): void {
+    this.inputElement.setAttribute('placeholder', placeholder);
   }
 
   public setType(type: string): void {

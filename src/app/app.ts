@@ -65,7 +65,7 @@ class App {
       {
         path: `${Pages.REGISTRATION}`,
         callback: () => {
-          this.main?.setContent(new RegistrationView(state));
+          this.main?.setContent(new RegistrationView(this.router));
         },
       },
       {

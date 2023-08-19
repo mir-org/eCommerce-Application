@@ -12,3 +12,8 @@ export type Address = {
   postalCode: string;
   city: string;
 };
+
+export enum StatusCodes {
+  successfulLogin = 200,
+  successfulRegistration = 201,
+}

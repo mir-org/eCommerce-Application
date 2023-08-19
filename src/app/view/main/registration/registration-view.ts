@@ -1,122 +1,207 @@
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
+import { MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
 import { AuthAPI } from '../../../../api/authAPI/authAPI';
-import State from '../../../state/state';
+import { Pages } from '../../../router/pages';
+import { Router } from '../../../router/router';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
-import { SIGN_UP_CLASSES, SIGN_UP_TEXT, SIGN_UP_KEY } from './enums';
+import { SIGN_UP_CLASSES, SIGN_UP_TEXT } from './registration-view-types';
 
 class RegistrationView extends View {
-  private state: State;
+  private form: ElementCreator | null;
 
-  private form: HTMLFormElement | ElementCreator;
+  private firstNameInput: HTMLInputElement | null;
 
-  constructor(state: State) {
+  private lastNameInput: HTMLInputElement | null;
+
+  private emailInput: HTMLInputElement | null;
+
+  private passwordInput: HTMLInputElement | null;
+
+  private confirmPasswordInput: HTMLInputElement | null;
+
+  private addressInput: HTMLInputElement | null;
+
+  // private errorLine: HTMLElement | null;
+
+  constructor(private router: Router) {
     super('section', SIGN_UP_CLASSES.REGISTRATION);
-    this.state = state;
-    this.form = new ElementCreator('form', 'registration-form');
+    this.form = null;
+    this.firstNameInput = null;
+    this.lastNameInput = null;
+    this.emailInput = null;
+    this.passwordInput = null;
+    this.confirmPasswordInput = null;
+    this.addressInput = null;
+    // this.errorLine = null;
     this.configView();
   }
 
-  // TODO пофиксить длину функции, вынести типы в енум
-  // eslint-disable-next-line max-lines-per-function
   private configView(): void {
+    this.addTitle();
+    this.addForm();
+    this.configForm();
+  }
+
+  private addTitle(): void {
     const title = new ElementCreator('h1', SIGN_UP_CLASSES.TITLE, SIGN_UP_TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
-    this.viewElementCreator.addInnerElement(this.form);
-    this.configInputFields(
+  }
+
+  private addForm(): void {
+    this.form = new ElementCreator('form', 'registration-form');
+    this.viewElementCreator.addInnerElement(this.form.getElement());
+  }
+
+  private configForm(): void {
+    this.addFirstNameInput();
+    this.addLastNameInput();
+    this.addEmailInput();
+    this.addPasswordInput();
+    this.addConfirmPasswordInput();
+    this.addAddressInput();
+    this.addControlButtons();
+  }
+
+  private addFirstNameInput(): void {
+    const firstNameInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.FIRST_NAME,
       SIGN_UP_TEXT.FIRST_NAME,
-      SIGN_UP_KEY.FIRST_NAME,
-      'text'
+      '',
+      'text',
+      SIGN_UP_TEXT.FIRST_NAME
     );
-    this.configInputFields(
+    const firstNameInputElement = firstNameInputCreator.getInputElement();
+    this.firstNameInput = firstNameInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.form?.addInnerElement(firstNameInputCreator.getElement());
+  }
+
+  private addLastNameInput(): void {
+    const lastNameInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.LAST_NAME,
       SIGN_UP_TEXT.LAST_NAME,
-      SIGN_UP_KEY.LAST_NAME,
-      'text'
+      '',
+      'text',
+      SIGN_UP_TEXT.LAST_NAME
     );
-    this.configInputFields(
-      SIGN_UP_CLASSES.REGISTRATION,
-      SIGN_UP_CLASSES.ADDRESS,
-      SIGN_UP_TEXT.ADDRESS,
-      SIGN_UP_KEY.ADDRESS,
-      'text'
-    );
-    this.configInputFields(
+    const lastNameInputElement = lastNameInputCreator.getInputElement();
+    this.lastNameInput = lastNameInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.form?.addInnerElement(lastNameInputCreator.getElement());
+  }
+
+  private addEmailInput(): void {
+    const emailInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.EMAIL,
       SIGN_UP_TEXT.EMAIL,
-      SIGN_UP_KEY.EMAIL,
-      'email'
+      '',
+      'email',
+      SIGN_UP_TEXT.EMAIL
     );
-    this.configInputFields(
+    const emailInputElement = emailInputCreator.getInputElement();
+    this.emailInput = emailInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.form?.addInnerElement(emailInputCreator.getElement());
+  }
+
+  private addPasswordInput(): void {
+    const passwordInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.PASSWORD,
       SIGN_UP_TEXT.PASSWORD,
-      SIGN_UP_KEY.PASSWORD,
-      'password'
+      '',
+      'password',
+      SIGN_UP_TEXT.PASSWORD
     );
-    this.configInputFields(
-      SIGN_UP_CLASSES.REGISTRATION,
-      SIGN_UP_CLASSES.CONFIRM_PASSWORD,
-      SIGN_UP_TEXT.CONFIRM_PASSWORD,
-      SIGN_UP_KEY.CONFIRM_PASSWORD,
-      'password'
-    );
-    const submitBtn = new ElementCreator('button', SIGN_UP_CLASSES.BUTTON, SIGN_UP_TEXT.BUTTON);
-    submitBtn.getElement().setAttribute('type', 'submit');
-    this.form.addInnerElement(submitBtn);
-    this.form.getElement().addEventListener('submit', (event: Event) => this.handleSubmit(event));
+    const passwordInputElement = passwordInputCreator.getInputElement();
+    this.passwordInput = passwordInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.form?.addInnerElement(passwordInputCreator.getElement());
   }
 
-  private configInputFields(firstClass: string, secondClass: string, text: string, key: string, type: string): void {
-    const inputField = new InputFieldsCreator(firstClass, secondClass, text, this.state.getValue(key), (event) =>
-      this.keyupHandler(event, key)
+  private addConfirmPasswordInput(): void {
+    const confirmPasswordInputCreator = new InputFieldsCreator(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.PASSWORD,
+      SIGN_UP_TEXT.PASSWORD,
+      '',
+      'password',
+      SIGN_UP_TEXT.PASSWORD
     );
-    inputField.setType(type);
-    this.form.addInnerElement(inputField.getElement());
+    const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
+    this.confirmPasswordInput = confirmPasswordInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.form?.addInnerElement(confirmPasswordInputCreator.getElement());
+  }
+
+  private addAddressInput(): void {
+    const addressInputCreator = new InputFieldsCreator(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.ADDRESS,
+      SIGN_UP_TEXT.ADDRESS,
+      '',
+      'text',
+      SIGN_UP_TEXT.ADDRESS
+    );
+    const addressInputElement = addressInputCreator.getInputElement();
+    this.addressInput = addressInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.form?.addInnerElement(addressInputCreator.getElement());
+  }
+
+  private addControlButtons(): void {
+    const submitBtn = new ElementCreator('button', SIGN_UP_CLASSES.BUTTON, SIGN_UP_TEXT.BUTTON);
+    submitBtn.getElement().setAttribute('type', 'submit');
+    this.form?.addInnerElement(submitBtn);
+    this.form?.getElement().addEventListener('submit', (event: Event) => this.handleSubmit(event));
   }
 
   private async handleSubmit(event: Event): Promise<void> {
-    console.log('handled');
     event.preventDefault();
-    const formEmail = this.form.getElement().querySelector('.registration__email-input').value;
-    const formPassword = this.form.getElement().querySelector('.registration__password-input').value;
-    const formFirstName = this.form.getElement().querySelector('.registration__first-name-input').value;
-    const formLastName = this.form.getElement().querySelector('.registration__last-name-input').value;
-    const formAddress = this.form.getElement().querySelector('.registration__address-input').value;
-    if (Validator.passwordField(formPassword)) {
-      await CustomerAPI.registerCustomer({
-        email: formEmail,
-        password: formPassword,
-        firstName: formFirstName,
-        lastName: formLastName,
-        // TODO remake address inputs
-        addresses: [
-          {
-            country: 'RU',
-            streetName: formAddress,
-            postalCode: formAddress,
-            city: formAddress,
-          },
-        ],
-      });
-      await AuthAPI.fetchPasswordToken(formEmail, formPassword);
+    const formData = this.getFormData();
+    if (Validator.passwordField(formData.password)) {
+      await CustomerAPI.registerCustomer(formData);
+      await AuthAPI.fetchPasswordToken(formData.email, formData.password);
       await CustomerAPI.getCustomerInfo();
+      await CustomerAPI.loginCustomer(formData.email, formData.password);
+      this.router.navigate(Pages.INDEX);
     } else {
       console.log('братан, твой пароль не очень');
     }
   }
 
-  private keyupHandler(event: KeyboardEvent, fieldName: string): void {
-    if (event.target instanceof HTMLInputElement) {
-      this.state.setValue(fieldName, event.target.value);
-    }
+  private getFormData(): MyCustomerDraft {
+    const formEmail = this.emailInput?.value ?? '';
+    const formPassword = this.passwordInput?.value ?? '';
+    const formFirstName = this.firstNameInput?.value ?? '';
+    const formLastName = this.lastNameInput?.value ?? '';
+    const formAddress = this.addressInput?.value ?? '';
+    const formData: MyCustomerDraft = {
+      email: formEmail,
+      password: formPassword,
+      firstName: formFirstName,
+      lastName: formLastName,
+      addresses: [
+        {
+          country: 'RU',
+          streetName: formAddress,
+          postalCode: formAddress,
+          city: formAddress,
+        },
+      ],
+    };
+    return formData;
   }
+
+  // private inputKeydownFn(): void {
+  //   this.errorLine?.classList.remove('show');
+  // }
 }
 
 export default RegistrationView;
