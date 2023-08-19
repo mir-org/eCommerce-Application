@@ -35,6 +35,14 @@
     visibility: visible;
   }
 
+  &__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    gap: 5px;
+  }
+
   .login__show-hide-icon {
     width: 10px;
     height: 10px;
