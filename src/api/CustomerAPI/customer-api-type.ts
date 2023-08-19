@@ -12,3 +12,12 @@ export type Address = {
   postalCode: string;
   city: string;
 };
+
+export type RegisterCustomerAnswer = {
+  statusCode: number;
+  message: string;
+};
+
+export enum StatusCodes {
+  successfulRegistration = 201,
+}

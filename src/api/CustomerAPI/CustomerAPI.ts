@@ -1,5 +1,5 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
-import { MyCustomerDraft } from './customer-api-type';
+import { MyCustomerDraft, RegisterCustomerAnswer, StatusCodes } from './customer-api-type';
 
 export class CustomerAPI {
   public static async loginCustomer(email: string, password: string): Promise<number> {
@@ -14,13 +14,12 @@ export class CustomerAPI {
         password,
       }),
     });
-    const data = await response.json();
-    return data.statusCode;
+    return response.status;
   }
 
-  public static async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
+  public static async registerCustomer(customerData: MyCustomerDraft): Promise<RegisterCustomerAnswer | number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -33,6 +32,14 @@ export class CustomerAPI {
         addresses: customerData.addresses,
       }),
     });
+    if (response.status !== StatusCodes.successfulRegistration) {
+      const data = await response.json();
+      return {
+        message: data.message,
+        statusCode: data.statusCode,
+      };
+    }
+    return response.status;
   }
 
   public static async getCustomerInfo(): Promise<void> {
