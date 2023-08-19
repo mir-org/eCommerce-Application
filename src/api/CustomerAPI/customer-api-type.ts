@@ -19,5 +19,6 @@ export type RegisterCustomerAnswer = {
 };
 
 export enum StatusCodes {
+  successfulLogin = 200,
   successfulRegistration = 201,
 }
