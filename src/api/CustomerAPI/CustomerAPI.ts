@@ -14,8 +14,7 @@ export class CustomerAPI {
         password,
       }),
     });
-    const data = await response.json();
-    return data.statusCode;
+    return response.status;
   }
 
   public static async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
