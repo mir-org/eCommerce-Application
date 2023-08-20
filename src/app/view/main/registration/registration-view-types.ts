@@ -6,8 +6,13 @@ export const SIGN_UP_CLASSES = {
   CONFIRM_PASSWORD: 'confirm-password',
   FIRST_NAME: 'first-name',
   LAST_NAME: 'last-name',
-  ADDRESS: 'address',
-  BUTTON: 'create-account',
+  DATE_OF_BIRTH: 'date-of-birth',
+  CITY: 'city',
+  STREET: 'street',
+  POSTAL_CODE: 'postal-code',
+  COUNTRY: 'country',
+  REGISTER_BTN: 'create-account',
+  LOGIN_BTN: 'login',
 };
 
 export const SIGN_UP_TEXT = {
@@ -16,16 +21,12 @@ export const SIGN_UP_TEXT = {
   CONFIRM_PASSWORD: 'Confirm Password',
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
-  ADDRESS: 'Address',
+  DATE_OF_BIRTH: 'Date of Birth',
+  CITY: 'City',
+  STREET: 'Street',
+  POSTAL_CODE: 'Postal Code',
+  COUNTRY: 'Country',
   TITLE: 'Sign Up',
-  BUTTON: 'Create Account',
-};
-
-export const SIGN_UP_KEY = {
-  EMAIL: 'registration__email-input',
-  PASSWORD: 'registration__password-input',
-  CONFIRM_PASSWORD: 'registration__confirm-password-input',
-  FIRST_NAME: 'registration__first-name-input',
-  LAST_NAME: 'registration__last-name-input',
-  ADDRESS: 'registration__address-input',
+  REGISTER_BTN: 'Create Account',
+  LOGIN_BTN: 'Login',
 };
