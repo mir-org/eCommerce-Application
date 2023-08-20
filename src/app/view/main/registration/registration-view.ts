@@ -1,5 +1,5 @@
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
+import { Address, MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
 import { AuthAPI } from '../../../../api/authAPI/authAPI';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
@@ -30,13 +30,25 @@ class RegistrationView extends View {
 
   private billingAddressFieldSet: ElementCreator | null;
 
-  private cityAddressInput: HTMLInputElement | null;
+  private cityShippingAddressInput: HTMLInputElement | null;
 
-  private streetAddressInput: HTMLInputElement | null;
+  private streetShippingAddressInput: HTMLInputElement | null;
 
-  private postalCodeAddressInput: HTMLInputElement | null;
+  private postalCodeShippingAddressInput: HTMLInputElement | null;
 
-  private countryAddressInput: HTMLSelectElement | null;
+  private countryShippingAddressInput: HTMLSelectElement | null;
+
+  private defaultShippingAddressInput: HTMLInputElement | null;
+
+  private cityBillingAddressInput: HTMLInputElement | null;
+
+  private streetBillingAddressInput: HTMLInputElement | null;
+
+  private postalCodeBillingAddressInput: HTMLInputElement | null;
+
+  private countryBillingAddressInput: HTMLSelectElement | null;
+
+  private defaultBillingAddressInput: HTMLInputElement | null;
 
   private errorLine: HTMLElement | null;
 
@@ -52,10 +64,16 @@ class RegistrationView extends View {
     this.confirmPasswordInput = null;
     this.shippingAddressFieldSet = null;
     this.billingAddressFieldSet = null;
-    this.cityAddressInput = null;
-    this.streetAddressInput = null;
-    this.postalCodeAddressInput = null;
-    this.countryAddressInput = null;
+    this.cityShippingAddressInput = null;
+    this.streetShippingAddressInput = null;
+    this.postalCodeShippingAddressInput = null;
+    this.countryShippingAddressInput = null;
+    this.defaultShippingAddressInput = null;
+    this.cityBillingAddressInput = null;
+    this.streetBillingAddressInput = null;
+    this.postalCodeBillingAddressInput = null;
+    this.countryBillingAddressInput = null;
+    this.defaultBillingAddressInput = null;
     this.errorLine = null;
     this.configView();
   }
@@ -85,9 +103,9 @@ class RegistrationView extends View {
     this.addPasswordInput();
     this.addConfirmPasswordInput();
     this.addShippingFieldSet();
-    this.addAddressInput(this.shippingAddressFieldSet);
+    this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
     this.addBillingFieldSet();
-    this.addAddressInput(this.billingAddressFieldSet);
+    this.addAddressInput(this.billingAddressFieldSet, 'billing');
     this.addErrorLine();
     this.addControlButtons();
   }
@@ -196,13 +214,13 @@ class RegistrationView extends View {
     passwordInputCreator.addInnerElement(showHideIconCreator);
   }
 
-  private addAddressInput(wrapper: ElementCreator | null): void {
+  private addAddressInput(wrapper: ElementCreator | null, type: string): void {
     if (wrapper) {
-      this.addCityAddressInput(wrapper);
-      this.addStreetAddressInput(wrapper);
-      this.addPostalCodeAddressInput(wrapper);
-      this.addCountryAddressInput(wrapper);
-      this.addDefaultCheckbox(wrapper);
+      this.addCityAddressInput(wrapper, type);
+      this.addStreetAddressInput(wrapper, type);
+      this.addPostalCodeAddressInput(wrapper, type);
+      this.addCountryAddressInput(wrapper, type);
+      this.addDefaultCheckbox(wrapper, type);
     }
   }
 
@@ -224,7 +242,7 @@ class RegistrationView extends View {
     this.form?.addInnerElement(fieldSet);
   }
 
-  private addCityAddressInput(wrapper: ElementCreator): void {
+  private addCityAddressInput(wrapper: ElementCreator, type: string): void {
     const cityAddressInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.CITY,
@@ -234,12 +252,16 @@ class RegistrationView extends View {
       ''
     );
     const cityAddressInputElement = cityAddressInputCreator.getInputElement();
-    this.cityAddressInput = cityAddressInputElement;
+    if (type === 'shipping') {
+      this.cityShippingAddressInput = cityAddressInputElement;
+    } else if (type === 'billing') {
+      this.cityBillingAddressInput = cityAddressInputElement;
+    }
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     wrapper?.addInnerElement(cityAddressInputCreator.getElement());
   }
 
-  private addStreetAddressInput(wrapper: ElementCreator | null): void {
+  private addStreetAddressInput(wrapper: ElementCreator, type: string): void {
     const streetAddressInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.STREET,
@@ -249,12 +271,16 @@ class RegistrationView extends View {
       ''
     );
     const streetAddressInputElement = streetAddressInputCreator.getInputElement();
-    this.streetAddressInput = streetAddressInputElement;
+    if (type === 'shipping') {
+      this.streetShippingAddressInput = streetAddressInputElement;
+    } else if (type === 'billing') {
+      this.streetBillingAddressInput = streetAddressInputElement;
+    }
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     wrapper?.addInnerElement(streetAddressInputCreator.getElement());
   }
 
-  private addPostalCodeAddressInput(wrapper: ElementCreator | null): void {
+  private addPostalCodeAddressInput(wrapper: ElementCreator, type: string): void {
     const postalCodeAddressInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.POSTAL_CODE,
@@ -264,15 +290,19 @@ class RegistrationView extends View {
       ''
     );
     const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
-    this.postalCodeAddressInput = postalCodeAddressInputElement;
+    if (type === 'shipping') {
+      this.postalCodeShippingAddressInput = postalCodeAddressInputElement;
+    } else if (type === 'billing') {
+      this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
+    }
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
   }
 
-  private addCountryAddressInput(wrapper: ElementCreator | null): void {
+  private addCountryAddressInput(wrapper: ElementCreator, type: string): void {
     // TODO refactor to separate createSelect method
-    const countryOptions = ['USA', 'Poland', 'Russia'];
-    const countryValues = ['US', 'PL', 'RU'];
+    const countryOptions = ['USA', 'Russia'];
+    const countryValues = ['US', 'RU'];
     const wrapperClasses = ['registration__country-input-wrapper', 'primary-wrapper'];
     const labelClasses = ['registration__country-label', 'primary-label'];
     const selectClasses = ['registration__country-input', 'primary-input'];
@@ -289,11 +319,15 @@ class RegistrationView extends View {
     countryAddressInputWrapper.addInnerElement(countryAddressInputLabel.getElement());
     countryAddressInputLabel.addInnerElement(countryAddressInputCreator.getElement());
     const countryAddressInputElement = countryAddressInputCreator.getElement() as HTMLSelectElement;
-    this.countryAddressInput = countryAddressInputElement;
+    if (type === 'shipping') {
+      this.countryShippingAddressInput = countryAddressInputElement;
+    } else if (type === 'billing') {
+      this.countryBillingAddressInput = countryAddressInputElement;
+    }
     wrapper?.addInnerElement(countryAddressInputWrapper.getElement());
   }
 
-  private addDefaultCheckbox(wrapper: ElementCreator): void {
+  private addDefaultCheckbox(wrapper: ElementCreator, type: string): void {
     const defaultAddressCheckboxCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.SET_DEFAULT_ADDRESS,
@@ -302,14 +336,17 @@ class RegistrationView extends View {
       'checkbox',
       ''
     );
-    console.log(defaultAddressCheckboxCreator);
-    // const cityAddressInputElement = cityAddressInputCreator.getInputElement();
+    const defaultShippingAddressInputElement = defaultAddressCheckboxCreator.getInputElement();
     // this.cityAddressInput = cityAddressInputElement;
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    if (type === 'shipping') {
+      this.defaultShippingAddressInput = defaultShippingAddressInputElement;
+    } else if (type === 'billing') {
+      this.defaultBillingAddressInput = defaultShippingAddressInputElement;
+    }
     wrapper?.addInnerElement(defaultAddressCheckboxCreator.getElement());
-    const kek = defaultAddressCheckboxCreator.getElement().lastChild?.firstChild as HTMLElement;
-    console.log(kek);
-    kek.classList.remove('primary-input');
+    const checkbox = defaultAddressCheckboxCreator.getElement().lastChild?.firstChild as HTMLElement;
+    checkbox.classList.remove('primary-input');
   }
 
   private addErrorLine(): void {
@@ -377,31 +414,60 @@ class RegistrationView extends View {
     }
   }
 
+  private getAddressFormData(inputType: string): Address {
+    let cityInput;
+    let streetInput;
+    let postalCodeInput;
+    let countryInput;
+    if (inputType === 'Shipping') {
+      cityInput = this.cityShippingAddressInput;
+      streetInput = this.streetShippingAddressInput;
+      postalCodeInput = this.postalCodeShippingAddressInput;
+      countryInput = this.countryShippingAddressInput;
+    } else if (inputType === 'Billing') {
+      cityInput = this.cityBillingAddressInput;
+      streetInput = this.streetBillingAddressInput;
+      postalCodeInput = this.postalCodeBillingAddressInput;
+      countryInput = this.countryBillingAddressInput;
+    }
+    return {
+      country: countryInput?.value ?? '',
+      streetName: streetInput?.value ?? '',
+      postalCode: postalCodeInput?.value ?? '',
+      city: cityInput?.value ?? '',
+    };
+  }
+
+  private getShippingAddressFormData(): Address {
+    return this.getAddressFormData('Shipping');
+  }
+
+  private getBillingAddressFormData(): Address {
+    return this.getAddressFormData('Billing');
+  }
+
   private getFormData(): MyCustomerDraft {
     const formEmail = this.emailInput?.value ?? '';
     const formPassword = this.passwordInput?.value ?? '';
     const formFirstName = this.firstNameInput?.value ?? '';
     const formLastName = this.lastNameInput?.value ?? '';
     const formDateOfBirth = this.dateOfBirthInput?.value ?? '';
-    const formCity = this.cityAddressInput?.value ?? '';
-    const formStreet = this.streetAddressInput?.value ?? '';
-    const formPostalCode = this.postalCodeAddressInput?.value ?? '';
-    const formCountry = this.countryAddressInput?.value ?? '';
+    const shippingAddress = this.getShippingAddressFormData();
+    const billingAddress = this.getBillingAddressFormData();
     const formData: MyCustomerDraft = {
       email: formEmail,
       password: formPassword,
       firstName: formFirstName,
       lastName: formLastName,
       dateOfBirth: formDateOfBirth,
-      addresses: [
-        {
-          country: formCountry,
-          streetName: formStreet,
-          postalCode: formPostalCode,
-          city: formCity,
-        },
-      ],
+      addresses: [shippingAddress, billingAddress],
     };
+    if (this.defaultShippingAddressInput?.checked) {
+      formData.defaultShippingAddress = 0;
+    }
+    if (this.defaultBillingAddressInput?.checked) {
+      formData.defaultBillingAddress = 1;
+    }
     return formData;
   }
 
