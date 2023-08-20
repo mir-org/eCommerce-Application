@@ -16,7 +16,7 @@
     margin: 15px 0 5px;
   }
 
-  .login_error-line {
+  &_error-line {
     height: 30px;
     line-height: 28px;
     text-align: center;
@@ -30,7 +30,7 @@
     transition: 0.1s;
   }
 
-  .login_error-line.show {
+  &_error-line.show {
     opacity: 1;
     visibility: visible;
   }
@@ -43,7 +43,7 @@
     gap: 5px;
   }
 
-  .login__show-hide-icon {
+  &__show-hide-icon {
     width: 10px;
     height: 10px;
     position: absolute;
