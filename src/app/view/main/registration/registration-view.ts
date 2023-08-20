@@ -66,7 +66,7 @@ class RegistrationView extends View {
   }
 
   private addForm(): void {
-    this.form = new ElementCreator('form', 'registration-form');
+    this.form = new ElementCreator('form', 'registration__form');
     this.form?.getElement().addEventListener('submit', (event: Event) => this.handleSubmit(event));
     this.viewElementCreator.addInnerElement(this.form.getElement());
   }
@@ -89,7 +89,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.FIRST_NAME,
       '',
       'text',
-      SIGN_UP_TEXT.FIRST_NAME
+      ''
     );
     const firstNameInputElement = firstNameInputCreator.getInputElement();
     this.firstNameInput = firstNameInputElement;
@@ -104,7 +104,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.LAST_NAME,
       '',
       'text',
-      SIGN_UP_TEXT.LAST_NAME
+      ''
     );
     const lastNameInputElement = lastNameInputCreator.getInputElement();
     this.lastNameInput = lastNameInputElement;
@@ -119,7 +119,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.DATE_OF_BIRTH,
       '',
       'date',
-      SIGN_UP_TEXT.DATE_OF_BIRTH
+      ''
     );
     const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
     this.dateOfBirthInput = dateOfBirthInputElement;
@@ -134,7 +134,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.EMAIL,
       '',
       'email',
-      SIGN_UP_TEXT.EMAIL
+      ''
     );
     const emailInputElement = emailInputCreator.getInputElement();
     this.emailInput = emailInputElement;
@@ -149,7 +149,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.PASSWORD,
       '',
       'password',
-      SIGN_UP_TEXT.PASSWORD
+      ''
     );
     const passwordInputElement = passwordInputCreator.getInputElement();
     this.passwordInput = passwordInputElement;
@@ -160,11 +160,11 @@ class RegistrationView extends View {
   private addConfirmPasswordInput(): void {
     const confirmPasswordInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
-      SIGN_UP_CLASSES.PASSWORD,
-      SIGN_UP_TEXT.PASSWORD,
+      SIGN_UP_CLASSES.CONFIRM_PASSWORD,
+      SIGN_UP_TEXT.CONFIRM_PASSWORD,
       '',
       'password',
-      SIGN_UP_TEXT.PASSWORD
+      ''
     );
     const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
     this.confirmPasswordInput = confirmPasswordInputElement;
@@ -186,7 +186,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.CITY,
       '',
       'text',
-      SIGN_UP_TEXT.CITY
+      ''
     );
     const cityAddressInputElement = cityAddressInputCreator.getInputElement();
     this.cityAddressInput = cityAddressInputElement;
@@ -201,7 +201,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.STREET,
       '',
       'text',
-      SIGN_UP_TEXT.STREET
+      ''
     );
     const streetAddressInputElement = streetAddressInputCreator.getInputElement();
     this.streetAddressInput = streetAddressInputElement;
@@ -216,7 +216,7 @@ class RegistrationView extends View {
       SIGN_UP_TEXT.POSTAL_CODE,
       '',
       'number',
-      SIGN_UP_TEXT.POSTAL_CODE
+      ''
     );
     const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
     this.postalCodeAddressInput = postalCodeAddressInputElement;

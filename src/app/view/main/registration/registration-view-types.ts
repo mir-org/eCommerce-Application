@@ -1,6 +1,6 @@
 export const SIGN_UP_CLASSES = {
   REGISTRATION: 'registration',
-  TITLE: 'title',
+  TITLE: 'registration__title',
   EMAIL: 'email',
   PASSWORD: 'password',
   CONFIRM_PASSWORD: 'confirm-password',
@@ -11,8 +11,8 @@ export const SIGN_UP_CLASSES = {
   STREET: 'street',
   POSTAL_CODE: 'postal-code',
   COUNTRY: 'country',
-  REGISTER_BTN: 'create-account',
-  LOGIN_BTN: 'login',
+  REGISTER_BTN: 'primary-button',
+  LOGIN_BTN: 'primary-button',
 };
 
 export const SIGN_UP_TEXT = {
