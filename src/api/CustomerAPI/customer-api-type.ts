@@ -3,6 +3,7 @@ export type MyCustomerDraft = {
   password: string;
   firstName: string;
   lastName: string;
+  dateOfBirth: string;
   addresses: Address[];
 };
 

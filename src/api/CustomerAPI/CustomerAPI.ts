@@ -29,6 +29,7 @@ export class CustomerAPI {
         password: customerData.password,
         firstName: customerData.firstName,
         lastName: customerData.lastName,
+        dateOfBirth: customerData.dateOfBirth,
         addresses: customerData.addresses,
       }),
     });
