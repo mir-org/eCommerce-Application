@@ -5,6 +5,10 @@ export type MyCustomerDraft = {
   lastName: string;
   dateOfBirth: string;
   addresses: Address[];
+  defaultShippingAddress?: number;
+  shippingAddresses?: number[];
+  defaultBillingAddress?: number;
+  billingAddresses?: number[];
 };
 
 export type Address = {

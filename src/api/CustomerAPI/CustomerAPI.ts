@@ -36,6 +36,10 @@ export class CustomerAPI {
         lastName: customerData.lastName,
         dateOfBirth: customerData.dateOfBirth,
         addresses: customerData.addresses,
+        defaultShippingAddress: customerData.defaultShippingAddress,
+        shippingAddresses: customerData.shippingAddresses,
+        defaultBillingAddress: customerData.defaultBillingAddress,
+        billingAddresses: customerData.billingAddresses,
       }),
     });
     if (response.status !== StatusCodes.successfulRegistration) {
