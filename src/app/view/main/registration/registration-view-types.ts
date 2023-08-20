@@ -13,6 +13,7 @@ export const SIGN_UP_CLASSES = {
   COUNTRY: 'country',
   REGISTER_BTN: 'primary-button',
   LOGIN_BTN: 'primary-button',
+  SHOW_HIDE_ICON: ['material-symbols-outlined', 'registration__show-hide-icon'],
 };
 
 export const SIGN_UP_TEXT = {
@@ -29,4 +30,16 @@ export const SIGN_UP_TEXT = {
   TITLE: 'Sign Up',
   REGISTER_BTN: 'Create Account',
   LOGIN_BTN: 'Login',
+  SHOW_HIDE_ICON: {
+    VISIBLE: 'visibility',
+    VISIBLE_OFF: 'visibility_off',
+  },
+};
+
+export const TYPE = {
+  INPUT_TYPE: {
+    EMAIL: 'email',
+    PASSWORD: 'password',
+    TEXT: 'text',
+  },
 };

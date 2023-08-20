@@ -7,7 +7,7 @@ import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
-import { SIGN_UP_CLASSES, SIGN_UP_TEXT } from './registration-view-types';
+import { SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE } from './registration-view-types';
 
 class RegistrationView extends View {
   private form: ElementCreator | null;
@@ -153,6 +153,7 @@ class RegistrationView extends View {
     );
     const passwordInputElement = passwordInputCreator.getInputElement();
     this.passwordInput = passwordInputElement;
+    this.addShowHidePasswordIcon(this.passwordInput, passwordInputCreator);
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     this.form?.addInnerElement(passwordInputCreator.getElement());
   }
@@ -168,8 +169,21 @@ class RegistrationView extends View {
     );
     const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
     this.confirmPasswordInput = confirmPasswordInputElement;
+    this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     this.form?.addInnerElement(confirmPasswordInputCreator.getElement());
+  }
+
+  private addShowHidePasswordIcon(passwordInput: HTMLInputElement, passwordInputCreator: InputFieldsCreator): void {
+    const showHideIconCreator = new ElementCreator(
+      'span',
+      SIGN_UP_CLASSES.SHOW_HIDE_ICON,
+      SIGN_UP_TEXT.SHOW_HIDE_ICON.VISIBLE
+    );
+    showHideIconCreator
+      .getElement()
+      .addEventListener('click', this.showHidePasswordFn.bind(this, passwordInput, showHideIconCreator));
+    passwordInputCreator.addInnerElement(showHideIconCreator);
   }
 
   private addAddressInput(): void {
@@ -233,6 +247,7 @@ class RegistrationView extends View {
     const selectClasses = ['registration__country-input', 'primary-input'];
     const countryAddressInputWrapper = new ElementCreator('div', wrapperClasses);
     const countryAddressInputLabel = new ElementCreator('label', labelClasses);
+    countryAddressInputLabel.getElement().textContent = 'Country';
     const countryAddressInputCreator = new ElementCreator('select', selectClasses);
     for (let i = 0; i < countryOptions.length; i += 1) {
       const option = document.createElement('option');
@@ -291,6 +306,17 @@ class RegistrationView extends View {
       this.router.navigate(Pages.INDEX);
     } else {
       console.log(validationErrors);
+    }
+  }
+
+  private showHidePasswordFn(passwordInput: HTMLInputElement, showHideIconCreator: ElementCreator): void {
+    const showHideIconElement = showHideIconCreator.getElement();
+    if (passwordInput.getAttribute('type') === TYPE.INPUT_TYPE.PASSWORD) {
+      passwordInput.setAttribute('type', TYPE.INPUT_TYPE.TEXT);
+      showHideIconElement.textContent = SIGN_UP_TEXT.SHOW_HIDE_ICON.VISIBLE_OFF;
+    } else {
+      passwordInput.setAttribute('type', TYPE.INPUT_TYPE.PASSWORD);
+      showHideIconElement.textContent = SIGN_UP_TEXT.SHOW_HIDE_ICON.VISIBLE;
     }
   }
 
