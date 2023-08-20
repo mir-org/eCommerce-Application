@@ -26,6 +26,10 @@ class RegistrationView extends View {
 
   private confirmPasswordInput: HTMLInputElement | null;
 
+  private shippingAddressFieldSet: ElementCreator | null;
+
+  private billingAddressFieldSet: ElementCreator | null;
+
   private cityAddressInput: HTMLInputElement | null;
 
   private streetAddressInput: HTMLInputElement | null;
@@ -46,6 +50,8 @@ class RegistrationView extends View {
     this.emailInput = null;
     this.passwordInput = null;
     this.confirmPasswordInput = null;
+    this.shippingAddressFieldSet = null;
+    this.billingAddressFieldSet = null;
     this.cityAddressInput = null;
     this.streetAddressInput = null;
     this.postalCodeAddressInput = null;
@@ -78,7 +84,10 @@ class RegistrationView extends View {
     this.addEmailInput();
     this.addPasswordInput();
     this.addConfirmPasswordInput();
-    this.addAddressInput();
+    this.addShippingFieldSet();
+    this.addAddressInput(this.shippingAddressFieldSet);
+    this.addBillingFieldSet();
+    this.addAddressInput(this.billingAddressFieldSet);
     this.addErrorLine();
     this.addControlButtons();
   }
@@ -187,14 +196,35 @@ class RegistrationView extends View {
     passwordInputCreator.addInnerElement(showHideIconCreator);
   }
 
-  private addAddressInput(): void {
-    this.addCityAddressInput();
-    this.addStreetAddressInput();
-    this.addPostalCodeAddressInput();
-    this.addCountryAddressInput();
+  private addAddressInput(wrapper: ElementCreator | null): void {
+    if (wrapper) {
+      this.addCityAddressInput(wrapper);
+      this.addStreetAddressInput(wrapper);
+      this.addPostalCodeAddressInput(wrapper);
+      this.addCountryAddressInput(wrapper);
+      this.addDefaultCheckbox(wrapper);
+    }
   }
 
-  private addCityAddressInput(): void {
+  private addShippingFieldSet(): void {
+    const fieldSet = new ElementCreator('fieldset', 'fieldset');
+    this.shippingAddressFieldSet = fieldSet;
+    const legendFieldSet = new ElementCreator('legend', 'legend');
+    legendFieldSet.getElement().textContent = 'Shipping Address';
+    fieldSet.addInnerElement(legendFieldSet);
+    this.form?.addInnerElement(fieldSet);
+  }
+
+  private addBillingFieldSet(): void {
+    const fieldSet = new ElementCreator('fieldset', 'fieldset');
+    this.billingAddressFieldSet = fieldSet;
+    const legendFieldSet = new ElementCreator('legend', 'legend');
+    legendFieldSet.getElement().textContent = 'Billing Address';
+    fieldSet.addInnerElement(legendFieldSet);
+    this.form?.addInnerElement(fieldSet);
+  }
+
+  private addCityAddressInput(wrapper: ElementCreator): void {
     const cityAddressInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.CITY,
@@ -206,10 +236,10 @@ class RegistrationView extends View {
     const cityAddressInputElement = cityAddressInputCreator.getInputElement();
     this.cityAddressInput = cityAddressInputElement;
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
-    this.form?.addInnerElement(cityAddressInputCreator.getElement());
+    wrapper?.addInnerElement(cityAddressInputCreator.getElement());
   }
 
-  private addStreetAddressInput(): void {
+  private addStreetAddressInput(wrapper: ElementCreator | null): void {
     const streetAddressInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.STREET,
@@ -221,10 +251,10 @@ class RegistrationView extends View {
     const streetAddressInputElement = streetAddressInputCreator.getInputElement();
     this.streetAddressInput = streetAddressInputElement;
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
-    this.form?.addInnerElement(streetAddressInputCreator.getElement());
+    wrapper?.addInnerElement(streetAddressInputCreator.getElement());
   }
 
-  private addPostalCodeAddressInput(): void {
+  private addPostalCodeAddressInput(wrapper: ElementCreator | null): void {
     const postalCodeAddressInputCreator = new InputFieldsCreator(
       SIGN_UP_CLASSES.REGISTRATION,
       SIGN_UP_CLASSES.POSTAL_CODE,
@@ -236,10 +266,10 @@ class RegistrationView extends View {
     const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
     this.postalCodeAddressInput = postalCodeAddressInputElement;
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
-    this.form?.addInnerElement(postalCodeAddressInputCreator.getElement());
+    wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
   }
 
-  private addCountryAddressInput(): void {
+  private addCountryAddressInput(wrapper: ElementCreator | null): void {
     // TODO refactor to separate createSelect method
     const countryOptions = ['USA', 'Poland', 'Russia'];
     const countryValues = ['US', 'PL', 'RU'];
@@ -260,7 +290,26 @@ class RegistrationView extends View {
     countryAddressInputLabel.addInnerElement(countryAddressInputCreator.getElement());
     const countryAddressInputElement = countryAddressInputCreator.getElement() as HTMLSelectElement;
     this.countryAddressInput = countryAddressInputElement;
-    this.form?.addInnerElement(countryAddressInputWrapper.getElement());
+    wrapper?.addInnerElement(countryAddressInputWrapper.getElement());
+  }
+
+  private addDefaultCheckbox(wrapper: ElementCreator): void {
+    const defaultAddressCheckboxCreator = new InputFieldsCreator(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.SET_DEFAULT_ADDRESS,
+      SIGN_UP_TEXT.SET_DEFAULT_ADDRESS,
+      '',
+      'checkbox',
+      ''
+    );
+    console.log(defaultAddressCheckboxCreator);
+    // const cityAddressInputElement = cityAddressInputCreator.getInputElement();
+    // this.cityAddressInput = cityAddressInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    wrapper?.addInnerElement(defaultAddressCheckboxCreator.getElement());
+    const kek = defaultAddressCheckboxCreator.getElement().lastChild?.firstChild as HTMLElement;
+    console.log(kek);
+    kek.classList.remove('primary-input');
   }
 
   private addErrorLine(): void {

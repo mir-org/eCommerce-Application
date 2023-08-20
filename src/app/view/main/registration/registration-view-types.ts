@@ -15,6 +15,7 @@ export const SIGN_UP_CLASSES = {
   REGISTER_BTN: 'primary-button',
   LOGIN_BTN: 'primary-button',
   SHOW_HIDE_ICON: ['material-symbols-outlined', 'registration__show-hide-icon'],
+  SET_DEFAULT_ADDRESS: 'set-default',
 };
 
 export const SIGN_UP_TEXT = {
@@ -32,6 +33,7 @@ export const SIGN_UP_TEXT = {
   REGISTER_BTN: 'Create Account',
   LOGIN_BTN: 'Login',
   ERROR_LINE: 'Error',
+  SET_DEFAULT_ADDRESS: 'Set Default Address',
   SHOW_HIDE_ICON: {
     VISIBLE: 'visibility',
     VISIBLE_OFF: 'visibility_off',
