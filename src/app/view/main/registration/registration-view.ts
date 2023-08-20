@@ -34,7 +34,7 @@ class RegistrationView extends View {
 
   private countryAddressInput: HTMLSelectElement | null;
 
-  // private errorLine: HTMLElement | null;
+  private errorLine: HTMLElement | null;
 
   constructor(private router: Router) {
     super('section', SIGN_UP_CLASSES.REGISTRATION);
@@ -50,7 +50,7 @@ class RegistrationView extends View {
     this.streetAddressInput = null;
     this.postalCodeAddressInput = null;
     this.countryAddressInput = null;
-    // this.errorLine = null;
+    this.errorLine = null;
     this.configView();
   }
 
@@ -79,6 +79,7 @@ class RegistrationView extends View {
     this.addPasswordInput();
     this.addConfirmPasswordInput();
     this.addAddressInput();
+    this.addErrorLine();
     this.addControlButtons();
   }
 
@@ -262,6 +263,13 @@ class RegistrationView extends View {
     this.form?.addInnerElement(countryAddressInputWrapper.getElement());
   }
 
+  private addErrorLine(): void {
+    const errorLineCreator = new ElementCreator('div', SIGN_UP_CLASSES.ERROR_LINE, SIGN_UP_TEXT.ERROR_LINE);
+    const errorLineElement = errorLineCreator.getElement();
+    this.errorLine = errorLineElement;
+    this.form?.addInnerElement(errorLineElement);
+  }
+
   private addControlButtons(): void {
     this.btnsWrapper = new ElementCreator('div', 'form-buttons');
     this.btnsWrapper?.addInnerElement(this.addRegisterButton());
@@ -304,8 +312,8 @@ class RegistrationView extends View {
       await CustomerAPI.getCustomerInfo();
       await CustomerAPI.loginCustomer(formData.email, formData.password);
       this.router.navigate(Pages.INDEX);
-    } else {
-      console.log(validationErrors);
+    } else if (this.errorLine) {
+      this.errorLine.textContent = `${validationErrors}`;
     }
   }
 

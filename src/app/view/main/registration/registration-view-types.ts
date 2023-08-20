@@ -11,6 +11,7 @@ export const SIGN_UP_CLASSES = {
   STREET: 'street',
   POSTAL_CODE: 'postal-code',
   COUNTRY: 'country',
+  ERROR_LINE: 'error',
   REGISTER_BTN: 'primary-button',
   LOGIN_BTN: 'primary-button',
   SHOW_HIDE_ICON: ['material-symbols-outlined', 'registration__show-hide-icon'],
@@ -30,6 +31,7 @@ export const SIGN_UP_TEXT = {
   TITLE: 'Sign Up',
   REGISTER_BTN: 'Create Account',
   LOGIN_BTN: 'Login',
+  ERROR_LINE: 'Error',
   SHOW_HIDE_ICON: {
     VISIBLE: 'visibility',
     VISIBLE_OFF: 'visibility_off',
