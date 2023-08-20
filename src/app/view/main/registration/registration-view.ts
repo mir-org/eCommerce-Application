@@ -337,7 +337,6 @@ class RegistrationView extends View {
       ''
     );
     const defaultShippingAddressInputElement = defaultAddressCheckboxCreator.getInputElement();
-    // this.cityAddressInput = cityAddressInputElement;
     // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     if (type === 'shipping') {
       this.defaultShippingAddressInput = defaultShippingAddressInputElement;
@@ -360,6 +359,7 @@ class RegistrationView extends View {
     this.btnsWrapper = new ElementCreator('div', 'form-buttons');
     this.btnsWrapper?.addInnerElement(this.addRegisterButton());
     this.btnsWrapper?.addInnerElement(this.addLoginButton());
+    this.btnsWrapper?.addInnerElement(this.addCopyButton());
     this.form?.addInnerElement(this.btnsWrapper.getElement());
   }
 
@@ -374,6 +374,13 @@ class RegistrationView extends View {
     loginBtn.getElement().setAttribute('type', 'button');
     loginBtn.getElement().addEventListener('click', () => this.router.navigate(Pages.LOGIN));
     return loginBtn;
+  }
+
+  private addCopyButton(): ElementCreator {
+    const copyBtn = new ElementCreator('button', 'copy', 'copy');
+    copyBtn.getElement().setAttribute('type', 'button');
+    copyBtn.getElement().addEventListener('click', this.copyShippingAddressToBillingAddress.bind(this));
+    return copyBtn;
   }
 
   private async handleSubmit(event: Event): Promise<void> {
@@ -400,6 +407,31 @@ class RegistrationView extends View {
       this.router.navigate(Pages.INDEX);
     } else if (this.errorLine) {
       this.errorLine.textContent = `${validationErrors}`;
+    }
+  }
+
+  private copyShippingAddressToBillingAddress(): void {
+    const cityValue = this.cityShippingAddressInput?.value;
+    const streetValue = this.streetShippingAddressInput?.value;
+    const postalCodeValue = this.postalCodeShippingAddressInput?.value;
+    const countryValue = this.countryShippingAddressInput?.value;
+    if (cityValue !== undefined && this.cityBillingAddressInput !== null) {
+      this.cityBillingAddressInput.value = cityValue;
+      this.cityBillingAddressInput.focus();
+      this.cityBillingAddressInput.blur();
+    }
+    if (streetValue !== undefined && this.streetBillingAddressInput !== null) {
+      this.streetBillingAddressInput.value = streetValue;
+      this.streetBillingAddressInput.focus();
+      this.streetBillingAddressInput.blur();
+    }
+    if (postalCodeValue !== undefined && this.postalCodeBillingAddressInput !== null) {
+      this.postalCodeBillingAddressInput.value = postalCodeValue;
+      this.postalCodeBillingAddressInput.focus();
+      this.postalCodeBillingAddressInput.blur();
+    }
+    if (countryValue !== undefined && this.countryBillingAddressInput !== null) {
+      this.countryBillingAddressInput.value = countryValue;
     }
   }
 
