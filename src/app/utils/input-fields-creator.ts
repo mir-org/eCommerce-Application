@@ -29,7 +29,7 @@ class InputFieldsCreator {
     this.setPlaceholder(placeholder);
   }
 
-  public setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string): void {
+  private setElement(classNames: string, subClassNames: string, labelTextContent: string, type: string): void {
     this.setLabelTextContent(labelTextContent);
     this.setCssClasses(classNames, subClassNames);
     this.labelElement.prepend(this.inputElement);
@@ -39,6 +39,10 @@ class InputFieldsCreator {
 
   public getElement(): HTMLElement {
     return this.element;
+  }
+
+  public getInputElement(): HTMLInputElement {
+    return this.inputElement;
   }
 
   private setValue(inputValue: string): void {
@@ -51,11 +55,11 @@ class InputFieldsCreator {
     this.labelElement.classList.add(`${classNames}__${subClassNames}-label`, CssClasses.label);
   }
 
-  public setLabelTextContent(text: string): void {
+  private setLabelTextContent(text: string): void {
     if (this.labelElement) this.labelElement.textContent = text;
   }
 
-  public setType(type: string): void {
+  private setType(type: string): void {
     this.inputElement.setAttribute('type', type);
   }
 

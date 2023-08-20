@@ -18,7 +18,7 @@ class RegistrationView extends View {
 
   private lastNameInput: HTMLInputElement | null;
 
-  // private dateOfBirthInput: HTMLInputElement | null;
+  private dateOfBirthInput: HTMLInputElement | null;
 
   private emailInput: HTMLInputElement | null;
 
@@ -42,7 +42,7 @@ class RegistrationView extends View {
     this.btnsWrapper = null;
     this.firstNameInput = null;
     this.lastNameInput = null;
-    // this.dateOfBirthInput = null;
+    this.dateOfBirthInput = null;
     this.emailInput = null;
     this.passwordInput = null;
     this.confirmPasswordInput = null;
@@ -74,7 +74,7 @@ class RegistrationView extends View {
   private configForm(): void {
     this.addFirstNameInput();
     this.addLastNameInput();
-    // this.addDateOfBirthInput();
+    this.addDateOfBirthInput();
     this.addEmailInput();
     this.addPasswordInput();
     this.addConfirmPasswordInput();
@@ -112,20 +112,20 @@ class RegistrationView extends View {
     this.form?.addInnerElement(lastNameInputCreator.getElement());
   }
 
-  // private addDateOfBirthInput(): void {
-  //   const dateOfBirthInputCreator = new InputFieldsCreator(
-  //     SIGN_UP_CLASSES.REGISTRATION,
-  //     SIGN_UP_CLASSES.DATE_OF_BIRTH,
-  //     SIGN_UP_TEXT.DATE_OF_BIRTH,
-  //     '',
-  //     'date',
-  //     SIGN_UP_TEXT.DATE_OF_BIRTH
-  //   );
-  //   const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
-  //   this.dateOfBirthInput = dateOfBirthInputElement;
-  //   // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
-  //   this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
-  // }
+  private addDateOfBirthInput(): void {
+    const dateOfBirthInputCreator = new InputFieldsCreator(
+      SIGN_UP_CLASSES.REGISTRATION,
+      SIGN_UP_CLASSES.DATE_OF_BIRTH,
+      SIGN_UP_TEXT.DATE_OF_BIRTH,
+      '',
+      'date',
+      SIGN_UP_TEXT.DATE_OF_BIRTH
+    );
+    const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
+    this.dateOfBirthInput = dateOfBirthInputElement;
+    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
+  }
 
   private addEmailInput(): void {
     const emailInputCreator = new InputFieldsCreator(
@@ -269,15 +269,28 @@ class RegistrationView extends View {
 
   private async handleSubmit(event: Event): Promise<void> {
     event.preventDefault();
+    const validationErrors = [];
     const formData = this.getFormData();
-    if (Validator.passwordField(formData.password)) {
+    if (Validator.nameField(formData.firstName).length > 0) {
+      validationErrors.push(...Validator.nameField(formData.firstName));
+    }
+    if (Validator.nameField(formData.lastName).length > 0) {
+      validationErrors.push(...Validator.nameField(formData.lastName));
+    }
+    if (Validator.emailField(formData.email).length > 0) {
+      validationErrors.push(...Validator.emailField(formData.email));
+    }
+    if (Validator.passwordField(formData.password).length > 0) {
+      validationErrors.push(...Validator.passwordField(formData.password));
+    }
+    if (validationErrors.length === 0) {
       await CustomerAPI.registerCustomer(formData);
       await AuthAPI.fetchPasswordToken(formData.email, formData.password);
       await CustomerAPI.getCustomerInfo();
       await CustomerAPI.loginCustomer(formData.email, formData.password);
       this.router.navigate(Pages.INDEX);
     } else {
-      console.log('братан, твой пароль не очень');
+      console.log(validationErrors);
     }
   }
 
@@ -286,7 +299,7 @@ class RegistrationView extends View {
     const formPassword = this.passwordInput?.value ?? '';
     const formFirstName = this.firstNameInput?.value ?? '';
     const formLastName = this.lastNameInput?.value ?? '';
-    // const formDateOfBirth = this.dateOfBirthInput?.value ?? '';
+    const formDateOfBirth = this.dateOfBirthInput?.value ?? '';
     const formCity = this.cityAddressInput?.value ?? '';
     const formStreet = this.streetAddressInput?.value ?? '';
     const formPostalCode = this.postalCodeAddressInput?.value ?? '';
@@ -296,7 +309,7 @@ class RegistrationView extends View {
       password: formPassword,
       firstName: formFirstName,
       lastName: formLastName,
-      // dateOfBirth: formDateOfBirth,
+      dateOfBirth: formDateOfBirth,
       addresses: [
         {
           country: formCountry,
