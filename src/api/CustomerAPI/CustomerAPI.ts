@@ -1,4 +1,5 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
+import { AuthAPI } from '../authAPI/authAPI';
 import { MyCustomerDraft, RegisterCustomerAnswer, StatusCodes } from './customer-api-type';
 
 export class CustomerAPI {
@@ -14,6 +15,10 @@ export class CustomerAPI {
         password,
       }),
     });
+    // TODO change 200 to enum's value
+    if (response.status === 200) {
+      await AuthAPI.fetchPasswordToken(email, password);
+    }
     return response.status;
   }
 
@@ -40,6 +45,7 @@ export class CustomerAPI {
         statusCode: data.statusCode,
       };
     }
+    await AuthAPI.fetchPasswordToken(customerData.email, customerData.password);
     return response.status;
   }
 
