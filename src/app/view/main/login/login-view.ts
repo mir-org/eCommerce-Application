@@ -1,6 +1,5 @@
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
 import { StatusCodes } from '../../../../api/CustomerAPI/customer-api-type';
-import { AuthAPI } from '../../../../api/authAPI/authAPI';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
 import { ElementCreator } from '../../../utils/element-creator';
@@ -115,7 +114,6 @@ class LoginView extends View {
     const password = this.passwordInput.value;
     const loginStatusCode = await CustomerAPI.loginCustomer(email, password);
     if (loginStatusCode === StatusCodes.successfulLogin) {
-      await AuthAPI.fetchPasswordToken(email, password);
       this.router.navigate(Pages.INDEX);
       await CustomerAPI.getCustomerInfo();
     } else {
