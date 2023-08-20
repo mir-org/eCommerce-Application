@@ -7,6 +7,7 @@ export const CssClasses = {
   PASSWORD_INPUT: 'password',
   LOGIN_BUTTON: ['login__button', 'primary-button'],
   SHOW_HIDE_ICON: ['material-symbols-outlined', 'login__show-hide-icon'],
+  REGISTRATION_LINK: ['login__registration-link'],
 };
 
 export const TEXT = {
@@ -20,6 +21,7 @@ export const TEXT = {
     VISIBLE: 'visibility',
     VISIBLE_OFF: 'visibility_off',
   },
+  REGISTRATION_LINK: 'Зарегистрироваться',
 };
 
 export const TYPE = {

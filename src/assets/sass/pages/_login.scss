@@ -52,4 +52,27 @@
     z-index: 20;
     user-select: none;
   }
+
+  &__registration-link {
+    position: relative;
+    display: block;
+    margin-top: 35px;
+    padding: 10px;
+    background-color: $login-registration-link-background-color;
+    border-radius: 8px;
+    color: $login-registration-link-color;
+    text-align: center;
+    cursor: pointer;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 1.5px;
+      background-color: $login-registration-section-border-color;
+    }
+  }
 }

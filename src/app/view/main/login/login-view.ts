@@ -30,6 +30,7 @@ class LoginView extends View {
     this.addErrorLine();
     this.addForm();
     this.configForm();
+    this.addRegistrationLink();
   }
 
   private configForm(): void {
@@ -101,6 +102,13 @@ class LoginView extends View {
     this.form?.addInnerElement(loginButtonElement);
   }
 
+  private addRegistrationLink(): void {
+    const registrationLinkCreator = new ElementCreator('a', CssClasses.REGISTRATION_LINK, TEXT.REGISTRATION_LINK);
+    const registrationLinkElement = registrationLinkCreator.getElement();
+    registrationLinkElement.addEventListener('click', (e) => this.registrationLinkClickFn.call(this, e));
+    this.viewElementCreator.addInnerElement(registrationLinkElement);
+  }
+
   private inputKeydownFn(): void {
     this.errorLine?.classList.remove('show');
   }
@@ -130,6 +138,11 @@ class LoginView extends View {
       this.passwordInput?.setAttribute('type', TYPE.INPUT_TYPE.PASSWORD);
       showHideIconElement.textContent = TEXT.SHOW_HIDE_ICON.VISIBLE;
     }
+  }
+
+  private registrationLinkClickFn(event: Event): void {
+    event.preventDefault();
+    this.router.navigate(Pages.REGISTRATION);
   }
 }
 
