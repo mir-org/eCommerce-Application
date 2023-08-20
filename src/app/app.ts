@@ -20,6 +20,7 @@ class App {
   private main: MainView | null;
 
   constructor() {
+    AuthAPI.setAccessToken();
     this.header = null;
     this.main = null;
     const state = new State();

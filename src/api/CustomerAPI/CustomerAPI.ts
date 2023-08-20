@@ -1,5 +1,6 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
-import { MyCustomerDraft } from './customer-api-type';
+import { AuthAPI } from '../authAPI/authAPI';
+import { MyCustomerDraft, RegisterCustomerAnswer, StatusCodes } from './customer-api-type';
 
 export class CustomerAPI {
   public static async loginCustomer(email: string, password: string): Promise<number> {
@@ -14,13 +15,16 @@ export class CustomerAPI {
         password,
       }),
     });
-    const data = await response.json();
-    return data.statusCode;
+    // TODO change 200 to enum's value
+    if (response.status === 200) {
+      await AuthAPI.fetchPasswordToken(email, password);
+    }
+    return response.status;
   }
 
-  public static async registerCustomer(customerData: MyCustomerDraft): Promise<void> {
+  public static async registerCustomer(customerData: MyCustomerDraft): Promise<RegisterCustomerAnswer | number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -30,9 +34,23 @@ export class CustomerAPI {
         password: customerData.password,
         firstName: customerData.firstName,
         lastName: customerData.lastName,
+        dateOfBirth: customerData.dateOfBirth,
         addresses: customerData.addresses,
+        defaultShippingAddress: customerData.defaultShippingAddress,
+        shippingAddresses: customerData.shippingAddresses,
+        defaultBillingAddress: customerData.defaultBillingAddress,
+        billingAddresses: customerData.billingAddresses,
       }),
     });
+    if (response.status !== StatusCodes.successfulRegistration) {
+      const data = await response.json();
+      return {
+        message: data.message,
+        statusCode: data.statusCode,
+      };
+    }
+    await AuthAPI.fetchPasswordToken(customerData.email, customerData.password);
+    return response.status;
   }
 
   public static async getCustomerInfo(): Promise<void> {

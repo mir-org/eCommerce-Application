@@ -41,15 +41,11 @@ class InputFieldsCreator {
     return this.element;
   }
 
-  public setValue(inputValue: string): void {
+  private setValue(inputValue: string): void {
     this.inputElement.value = inputValue;
   }
 
-  public getInputElement(): HTMLInputElement {
-    return this.inputElement;
-  }
-
-  public setCssClasses(classNames: string, subClassNames: string): void {
+  private setCssClasses(classNames: string, subClassNames: string): void {
     this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`, CssClasses.wrapper);
     this.inputElement.classList.add(`${classNames}__${subClassNames}-input`, CssClasses.input);
     this.labelElement.classList.add(`${classNames}__${subClassNames}-label`, CssClasses.label);
@@ -59,12 +55,12 @@ class InputFieldsCreator {
     if (this.labelElement) this.labelElement.textContent = text;
   }
 
-  private setPlaceholder(placeholder: string): void {
-    this.inputElement.setAttribute('placeholder', placeholder);
-  }
-
   public setType(type: string): void {
     this.inputElement.setAttribute('type', type);
+  }
+
+  private setPlaceholder(placeholder: string): void {
+    this.inputElement.setAttribute('placeholder', placeholder);
   }
 
   public addInnerElement(element: HTMLElement | ElementCreator): void {

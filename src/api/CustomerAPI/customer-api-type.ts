@@ -3,7 +3,12 @@ export type MyCustomerDraft = {
   password: string;
   firstName: string;
   lastName: string;
+  dateOfBirth: string;
   addresses: Address[];
+  defaultShippingAddress?: number;
+  shippingAddresses?: number[];
+  defaultBillingAddress?: number;
+  billingAddresses?: number[];
 };
 
 export type Address = {
@@ -13,7 +18,11 @@ export type Address = {
   city: string;
 };
 
+export type RegisterCustomerAnswer = {
+  statusCode: number;
+  message: string;
+};
+
 export enum StatusCodes {
-  successfulLogin = 200,
   successfulRegistration = 201,
 }
