@@ -200,12 +200,7 @@ class Router {
     redirectToNotFound() {
         const routeNotFound = this.routes.find((item) => item.path === pages_1.Pages.NOT_FOUND);
         if (routeNotFound) {
-            if (routeNotFound.path === undefined) {
-                this.navigate('');
-            }
-            else {
-                this.navigate(routeNotFound.path);
-            }
+            this.navigate(routeNotFound.path);
         }
     }
     browserChangeHandler() {
@@ -214,11 +209,11 @@ class Router {
     }
     getCurrentPath() {
         if (window.location.hash) {
-            console.log(window.location.hash.slice(1));
-            return window.location.hash.slice(1);
+            console.log(window.location.hash.slice(1).replace('Commerce-Application/', ''));
+            return window.location.hash.slice(1).replace('Commerce-Application/', '');
         }
-        console.log(window.location.pathname.slice(1));
-        return window.location.pathname.slice(1);
+        console.log(window.location.pathname.slice(1).replace('Commerce-Application/', ''));
+        return window.location.pathname.slice(1).replace('Commerce-Application/', '');
     }
 }
 exports.Router = Router;
