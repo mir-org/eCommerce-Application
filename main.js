@@ -83,8 +83,16 @@ class App {
             .append(this.header.getHTMLElement(), this.main.getHTMLElement(), footer.getHTMLElement());
         document.body.append(wrapperView.getHTMLElement());
     }
+    /* eslint-disable max-lines-per-function */
     createRoutes(state) {
         const result = [
+            {
+                path: undefined,
+                callback: () => __awaiter(this, void 0, void 0, function* () {
+                    const { default: IndexView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/index/index-view */ "./app/view/main/index/index-view.ts")));
+                    this.setContent(pages_1.Pages.INDEX, new IndexView());
+                }),
+            },
             {
                 path: '',
                 callback: () => __awaiter(this, void 0, void 0, function* () {
@@ -199,7 +207,8 @@ class Router {
     redirectToNotFound() {
         const routeNotFound = this.routes.find((item) => item.path === pages_1.Pages.NOT_FOUND);
         if (routeNotFound) {
-            this.navigate(routeNotFound.path);
+            if (routeNotFound.path)
+                this.navigate(routeNotFound.path);
         }
     }
     browserChangeHandler() {
@@ -208,10 +217,10 @@ class Router {
     }
     getCurrentPath() {
         if (window.location.hash) {
-            console.log(window.location.hash.slice(1).replace('eCommerce-Application/', 'test'));
+            console.log(window.location.hash.slice(1));
             return window.location.hash.slice(1);
         }
-        console.log(window.location.pathname.slice(1).replace('eCommerce-Application/', 'test'));
+        console.log(window.location.pathname.slice(1));
         return window.location.pathname.slice(1);
     }
 }
