@@ -2,9 +2,11 @@ export const CssClasses = {
   TITLE: 'login__title',
   LOGIN: 'login',
   ERROR_LINE: 'login_error-line',
+  ERROR_LINE_SHOW: 'show',
   FORM: 'login__form',
   EMAIL_INPUT: 'email',
   PASSWORD_INPUT: 'password',
+  INPUT_INVALID: 'invalid',
   LOGIN_BUTTON: ['login__button', 'primary-button'],
   SHOW_HIDE_ICON: ['material-symbols-outlined', 'login__show-hide-icon'],
   REGISTRATION_LINK: ['login__registration-link'],
@@ -42,4 +44,5 @@ export const INITIAL_VALUE = {
     EMAIL: '',
     PASSWORD: '',
   },
+  ERROR_LINE: '',
 };
