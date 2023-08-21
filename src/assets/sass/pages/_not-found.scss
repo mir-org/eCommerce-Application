@@ -1,0 +1,56 @@
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  &__image {
+    flex: 0 1 auto;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  &__text {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    &__head {
+      font-size: 4rem;
+      color: $primary-error-line-text-color;
+    }
+    &-l {
+      font-size: 3rem;
+    }
+    &-m {
+      font-size: 2rem;
+    }
+    &-s {
+      font-size: 1rem;
+    }
+    &-link {
+      position: relative;
+      display: block;
+      margin-top: 35px;
+      padding: 10px;
+      background-color: $login-registration-link-background-color;
+      border-radius: 8px;
+      color: $login-registration-link-color;
+      text-align: center;
+      cursor: pointer;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 1.5px;
+        background-color: $login-registration-section-border-color;
+      }
+    }
+  }
+}
