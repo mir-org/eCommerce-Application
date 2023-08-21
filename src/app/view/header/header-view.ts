@@ -39,9 +39,7 @@ class HeaderView extends View {
   }
 
   public setSelectedItem(namePage: string): void {
-    console.log(namePage);
     const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
-    console.log(linkItem);
     if (linkItem instanceof LinkView) {
       linkItem.setSelectedStatus();
     }
