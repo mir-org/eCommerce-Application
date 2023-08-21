@@ -87,13 +87,6 @@ class App {
     createRoutes(state) {
         const result = [
             {
-                path: undefined,
-                callback: () => __awaiter(this, void 0, void 0, function* () {
-                    const { default: IndexView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/index/index-view */ "./app/view/main/index/index-view.ts")));
-                    this.setContent(pages_1.Pages.INDEX, new IndexView());
-                }),
-            },
-            {
                 path: '',
                 callback: () => __awaiter(this, void 0, void 0, function* () {
                     const { default: IndexView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/index/index-view */ "./app/view/main/index/index-view.ts")));
@@ -207,8 +200,12 @@ class Router {
     redirectToNotFound() {
         const routeNotFound = this.routes.find((item) => item.path === pages_1.Pages.NOT_FOUND);
         if (routeNotFound) {
-            if (routeNotFound.path)
+            if (routeNotFound.path === undefined) {
+                this.navigate('');
+            }
+            else {
                 this.navigate(routeNotFound.path);
+            }
         }
     }
     browserChangeHandler() {
