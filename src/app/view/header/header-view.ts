@@ -8,7 +8,7 @@ import State from '../../state/state';
 
 const CssClasses = {
   HEADER: 'header',
-  NAV: 'header__nav',
+  NAV: ['header__nav', 'nav'],
   LOGOUT_BUTTON: 'header__logout-button',
   SHOW_LOGOUT_BUTTON: 'show',
   HIDE_LINK_ELEMENT: 'hide',
@@ -45,10 +45,11 @@ class HeaderView extends View {
     this.addLogoutButton(router, state);
   }
 
-  // TODO удалить?
   public setSelectedItem(namePage: string): void {
-    const linkComponent = this.headerLinkElements.get(namePage);
-    linkComponent?.setSelectedStatus();
+    const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
+    if (linkItem instanceof LinkView) {
+      linkItem.setSelectedStatus();
+    }
   }
 
   public customerLogin(state: State): void {
