@@ -71,6 +71,8 @@ class App {
         const state = new state_1.default();
         const routes = this.createRoutes(state);
         this.router = new router_1.Router(routes);
+        this.router.navigate('');
+        console.log('роутер на пустую строку бахнул перед созданием');
         this.createView();
     }
     createView() {
@@ -82,8 +84,6 @@ class App {
             .getHTMLElement()
             .append(this.header.getHTMLElement(), this.main.getHTMLElement(), footer.getHTMLElement());
         document.body.append(wrapperView.getHTMLElement());
-        this.router.navigate('');
-        console.log('роутер на пустую строку бахнул');
     }
     createRoutes(state) {
         const result = [
