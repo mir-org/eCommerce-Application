@@ -28,7 +28,7 @@ export const TEXT = {
 
 export const TYPE = {
   INPUT_TYPE: {
-    EMAIL: 'email',
+    EMAIL: 'text',
     PASSWORD: 'password',
     TEXT: 'text',
   },
