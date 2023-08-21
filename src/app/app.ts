@@ -59,7 +59,7 @@ class App {
         path: `${Pages.LOGIN}`,
         callback: async () => {
           const { default: LoginView } = await import('./view/main/login/login-view');
-          this.setContent(Pages.LOGIN, new LoginView(state));
+          this.setContent(Pages.LOGIN, new LoginView(this.router, this.header, state));
         },
       },
       {
