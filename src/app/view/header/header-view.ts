@@ -8,7 +8,7 @@ import State from '../../state/state';
 
 const CssClasses = {
   HEADER: 'header',
-  NAV: 'header__nav',
+  NAV: ['header__nav', 'nav'],
   LOGOUT_BUTTON: 'header__logout-button',
   SHOW_LOGOUT_BUTTON: 'show',
   HIDE_LINK_ELEMENT: 'hide',
