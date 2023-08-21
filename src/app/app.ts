@@ -26,12 +26,12 @@ class App {
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes);
-    this.createView();
+    this.createView(state);
   }
 
-  private createView(): void {
+  private createView(state: State): void {
     const wrapperView = new WrapperView();
-    this.header = new HeaderView(this.router);
+    this.header = new HeaderView(this.router, state);
     this.main = new MainView();
     const footer = new FooterView();
 
@@ -59,7 +59,7 @@ class App {
       {
         path: `${Pages.LOGIN}`,
         callback: () => {
-          this.main?.setContent(new LoginView(this.router));
+          this.main?.setContent(new LoginView(this.router, this.header, state));
         },
       },
       {
