@@ -80,11 +80,17 @@ class HeaderView extends View {
       };
       const linkElement = new LinkView(linkParams.name, linkParams.callback, this.headerLinkElements);
       creatorNav.addInnerElement(linkElement.getHTMLElement());
-      this.headerLinkElements.set(Pages[key], linkElement);
+      this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
     });
     this.hideLoginLink(state);
     this.viewElementCreator.addInnerElement(creatorNav);
   }
+
+  public setSelectedItem(namePage: string): void {
+    const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
+    if (linkItem instanceof LinkView) {
+      linkItem.setSelectedStatus();
+    }
 
   private addLogoutButton(router: Router, state: State): void {
     const logoutButtonCreator = new ElementCreator('button', CssClasses.LOGOUT_BUTTON, TEXT.LOGOUT_BUTTON);
