@@ -71,7 +71,7 @@ class App {
       {
         path: `${Pages.NOT_FOUND}`,
         callback: () => {
-          this.main?.setContent(new NotFoundView());
+          this.main?.setContent(new NotFoundView(this.router));
         },
       },
     ];
