@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
 import { Address, MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
 import { AuthAPI } from '../../../../api/authAPI/authAPI';
@@ -426,40 +425,29 @@ class RegistrationView extends View {
 
   // TODO refactor, this is horrible
   private async handleSubmit(event: Event): Promise<void> {
-    console.log(event);
-    //   event.preventDefault();
-    //   const formData = this.getFormData();
-    //   const isFormsValid = this.isFormValid.call(this, this.emailInput, this.passwordInput, this.confirmPasswordInput);
-    //   if (!isFormsValid) return;
-    //   await CustomerAPI.registerCustomer(formData);
-    //   await AuthAPI.fetchPasswordToken(formData.email, formData.password);
-    //   await CustomerAPI.getCustomerInfo();
-    //   await CustomerAPI.loginCustomer(formData.email, formData.password);
-    //   this.router.navigate(Pages.INDEX);
+    event.preventDefault();
+    const formData = this.getFormData();
+    const allErrors = document.querySelectorAll('.primary-error-line');
+    let allEmpty = true;
+    allErrors.forEach((errorElement) => {
+      if (errorElement.textContent?.trim() !== '') {
+        allEmpty = false;
+        return '';
+      }
+      return '';
+    });
+    if (this.errorLine) {
+      if (allEmpty) {
+        await CustomerAPI.registerCustomer(formData);
+        await AuthAPI.fetchPasswordToken(formData.email, formData.password);
+        await CustomerAPI.getCustomerInfo();
+        await CustomerAPI.loginCustomer(formData.email, formData.password);
+        this.router.navigate(Pages.INDEX);
+      } else {
+        this.errorLine.textContent = 'Fix all errors';
+      }
+    }
   }
-
-  // private isFormValid(
-  //   emailInputCreator: InputFieldsCreator,
-  //   passwordInputCreator: InputFieldsCreator,
-  //   confirmPasswordInputCreator: InputFieldsCreator
-  // ): boolean {
-  //   const isEmailValid = this.inputValidation.call(this, emailInputCreator, () =>
-  //     Validator.emailField(emailInputCreator.getInputElement().value)
-  //   );
-  //   const isPasswordValid = this.inputValidation.call(this, passwordInputCreator, () =>
-  //     Validator.passwordField(passwordInputCreator.getInputElement().value)
-  //   );
-  //   const isConfirmPasswordValid = this.inputValidation.call(this, confirmPasswordInputCreator, () =>
-  //     Validator.confirmPasswordField(
-  //       confirmPasswordInputCreator.getInputElement().value,
-  //       passwordInputCreator.getInputElement().value
-  //     )
-  //   );
-  //   if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
   private copyShippingAddressToBillingAddress(): void {
     const cityValue = this.cityShippingAddressInput?.value;
