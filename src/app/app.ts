@@ -59,7 +59,7 @@ class App {
       {
         path: `${Pages.LOGIN}`,
         callback: () => {
-          this.main?.setContent(new LoginView(state));
+          this.main?.setContent(new LoginView(this.router));
         },
       },
       {
