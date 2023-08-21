@@ -45,7 +45,6 @@ class Router {
       resource: '',
     };
     [result.path = '', result.resource = ''] = path;
-    console.log(result);
     return result;
   }
 

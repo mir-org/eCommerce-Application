@@ -45,10 +45,11 @@ class HeaderView extends View {
     this.addLogoutButton(router, state);
   }
 
-  // TODO удалить?
   public setSelectedItem(namePage: string): void {
-    const linkComponent = this.headerLinkElements.get(namePage);
-    linkComponent?.setSelectedStatus();
+    const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
+    if (linkItem instanceof LinkView) {
+      linkItem.setSelectedStatus();
+    }
   }
 
   public customerLogin(state: State): void {

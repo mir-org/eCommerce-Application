@@ -73,7 +73,7 @@ class App {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
-          this.setContent(Pages.NOT_FOUND, new NotFoundView());
+          this.setContent(Pages.NOT_FOUND, new NotFoundView(this.router));
         },
       },
     ];

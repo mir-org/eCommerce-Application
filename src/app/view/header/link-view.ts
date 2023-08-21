@@ -2,7 +2,7 @@ import { View } from '../view';
 
 const CssClasses = {
   ITEM: 'nav-item',
-  ITEM_SELECTED: 'nav-item__selected',
+  ITEM_SELECTED: 'nav-item_selected',
 };
 
 class LinkView extends View {
