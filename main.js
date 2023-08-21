@@ -83,6 +83,7 @@ class App {
             .append(this.header.getHTMLElement(), this.main.getHTMLElement(), footer.getHTMLElement());
         document.body.append(wrapperView.getHTMLElement());
         this.router.navigate('');
+        console.log('роутер на пустую строку бахнул');
     }
     createRoutes(state) {
         const result = [
