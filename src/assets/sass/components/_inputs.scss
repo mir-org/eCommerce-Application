@@ -31,10 +31,14 @@
   left: 0;
   z-index: -5;
   transition: 0.3s;
-
+  
   &.invalid {
     border-color: $primary-input-invalid-border-color;
   }
+}
+
+.primary-input:focus {
+  border: 1px solid $primary-input-focus-border-color;
 }
 
 .primary-error-line {
@@ -56,4 +60,8 @@
   transform: translateY(7px);
   padding-bottom: 0px;
   font-size: 1.7em;
+}
+
+input[type="password"] {
+  padding-right: 43px;
 }
