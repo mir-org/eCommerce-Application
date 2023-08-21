@@ -17,13 +17,11 @@ class LinkView extends View {
     this.configView();
   }
 
-  // TODO дробануть
   public setSelectedStatus(): void {
     this.linkElements.forEach((link) => link.setNotSelectedStatus());
 
     const element = this.viewElementCreator.getElement();
     element.classList.add(CssClasses.ITEM_SELECTED);
-    this.pageCallback();
   }
 
   private setNotSelectedStatus(): void {
@@ -33,7 +31,10 @@ class LinkView extends View {
 
   private configView(): void {
     const element = this.viewElementCreator.getElement();
-    element.addEventListener('click', this.setSelectedStatus.bind(this));
+    element.addEventListener('click', () => {
+      this.setSelectedStatus.bind(this);
+      this.pageCallback();
+    });
   }
 }
 

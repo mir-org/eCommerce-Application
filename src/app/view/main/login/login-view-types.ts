@@ -43,3 +43,7 @@ export const INITIAL_VALUE = {
     PASSWORD: '',
   },
 };
+
+export const KEY_FOR_SAVE = {
+  LOGIN_STATUS: 'false',
+};
