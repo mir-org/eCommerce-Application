@@ -169,8 +169,6 @@ class Router {
         this.routes = routes;
         document.addEventListener('DOMContentLoaded', () => {
             const path = this.getCurrentPath();
-            if (path === undefined)
-                console.log('Словил андефайнд');
             this.navigate(path);
         });
         window.addEventListener('popstate', this.browserChangeHandler.bind(this));
@@ -178,6 +176,7 @@ class Router {
     }
     navigate(url) {
         const request = this.parseUrl(url);
+        console.log('реквест', typeof (request === null || request === void 0 ? void 0 : request.path), request === null || request === void 0 ? void 0 : request.path);
         const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
         const route = this.routes.find((item) => item.path === pathForFind);
         console.log('путь', typeof (route === null || route === void 0 ? void 0 : route.path), route === null || route === void 0 ? void 0 : route.path);
