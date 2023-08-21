@@ -86,35 +86,35 @@ class App {
     createRoutes(state) {
         const result = [
             {
-                path: 'eCommerce-Application/',
+                path: '',
                 callback: () => __awaiter(this, void 0, void 0, function* () {
                     const { default: IndexView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/index/index-view */ "./app/view/main/index/index-view.ts")));
                     this.setContent(pages_1.Pages.INDEX, new IndexView());
                 }),
             },
             {
-                path: `eCommerce-Application/${pages_1.Pages.INDEX}`,
+                path: `${pages_1.Pages.INDEX}`,
                 callback: () => __awaiter(this, void 0, void 0, function* () {
                     const { default: IndexView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/index/index-view */ "./app/view/main/index/index-view.ts")));
                     this.setContent(pages_1.Pages.INDEX, new IndexView());
                 }),
             },
             {
-                path: `eCommerce-Application/${pages_1.Pages.LOGIN}`,
+                path: `${pages_1.Pages.LOGIN}`,
                 callback: () => __awaiter(this, void 0, void 0, function* () {
                     const { default: LoginView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/login/login-view */ "./app/view/main/login/login-view.ts")));
                     this.setContent(pages_1.Pages.LOGIN, new LoginView(state));
                 }),
             },
             {
-                path: `eCommerce-Application/${pages_1.Pages.REGISTRATION}`,
+                path: `${pages_1.Pages.REGISTRATION}`,
                 callback: () => __awaiter(this, void 0, void 0, function* () {
                     const { default: RegistrationView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/registration/registration-view */ "./app/view/main/registration/registration-view.ts")));
                     this.setContent(pages_1.Pages.REGISTRATION, new RegistrationView(state));
                 }),
             },
             {
-                path: `eCommerce-Application/${pages_1.Pages.NOT_FOUND}`,
+                path: `${pages_1.Pages.NOT_FOUND}`,
                 callback: () => __awaiter(this, void 0, void 0, function* () {
                     const { default: NotFoundView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/not-found/not-found-view */ "./app/view/main/not-found/not-found-view.ts")));
                     this.setContent(pages_1.Pages.NOT_FOUND, new NotFoundView());
