@@ -6,6 +6,7 @@ import WrapperView from './view/wrapper';
 import { Pages } from './router/pages';
 import { View } from './view/view';
 import State from './state/state';
+import { AuthAPI } from '../api/authAPI/authAPI';
 
 class App {
   private router: Router;
@@ -15,6 +16,7 @@ class App {
   private main: MainView | null;
 
   constructor() {
+    AuthAPI.setAccessToken();
     this.header = null;
     this.main = null;
     const state = new State();
@@ -55,9 +57,11 @@ class App {
       },
       {
         path: `${Pages.LOGIN}`,
+
         callback: async () => {
           const { default: LoginView } = await import('./view/main/login/login-view');
           this.setContent(Pages.LOGIN, new LoginView(state));
+
         },
       },
       {
