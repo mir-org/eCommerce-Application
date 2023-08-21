@@ -16,6 +16,8 @@ export const SIGN_UP_CLASSES = {
   LOGIN_BTN: 'primary-button',
   SHOW_HIDE_ICON: ['material-symbols-outlined', 'registration__show-hide-icon'],
   SET_DEFAULT_ADDRESS: 'set-default',
+  INPUT_INVALID: 'invalid',
+  ERROR_LINE_SHOW: 'show',
 };
 
 export const SIGN_UP_TEXT = {
@@ -32,7 +34,7 @@ export const SIGN_UP_TEXT = {
   TITLE: 'Sign Up',
   REGISTER_BTN: 'Create Account',
   LOGIN_BTN: 'Login',
-  ERROR_LINE: 'Error',
+  ERROR_LINE: '',
   SET_DEFAULT_ADDRESS: 'Set Default Address',
   SHOW_HIDE_ICON: {
     VISIBLE: 'visibility',
@@ -46,4 +48,17 @@ export const TYPE = {
     PASSWORD: 'password',
     TEXT: 'text',
   },
+  BUTTON_TYPE: 'submit',
+};
+
+export const INITIAL_VALUE = {
+  INPUT_VALUE: {
+    EMAIL: '',
+    PASSWORD: '',
+  },
+  PLACEHOLDER: {
+    EMAIL: '',
+    PASSWORD: '',
+  },
+  ERROR_LINE: '',
 };

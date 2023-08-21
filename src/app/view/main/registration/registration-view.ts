@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
 import { Address, MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
 import { AuthAPI } from '../../../../api/authAPI/authAPI';
@@ -7,7 +8,7 @@ import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
-import { SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE } from './registration-view-types';
+import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE } from './registration-view-types';
 
 class RegistrationView extends View {
   private form: ElementCreator | null;
@@ -104,6 +105,7 @@ class RegistrationView extends View {
     this.addConfirmPasswordInput();
     this.addShippingFieldSet();
     this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
+    this.addCopyButton();
     this.addBillingFieldSet();
     this.addAddressInput(this.billingAddressFieldSet, 'billing');
     this.addErrorLine();
@@ -121,7 +123,10 @@ class RegistrationView extends View {
     );
     const firstNameInputElement = firstNameInputCreator.getInputElement();
     this.firstNameInput = firstNameInputElement;
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    firstNameInputElement.addEventListener('input', () => {
+      this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
+      this.inputKeydownFn();
+    });
     this.form?.addInnerElement(firstNameInputCreator.getElement());
   }
 
@@ -136,7 +141,10 @@ class RegistrationView extends View {
     );
     const lastNameInputElement = lastNameInputCreator.getInputElement();
     this.lastNameInput = lastNameInputElement;
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    lastNameInputElement.addEventListener('input', () => {
+      this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
+      this.inputKeydownFn();
+    });
     this.form?.addInnerElement(lastNameInputCreator.getElement());
   }
 
@@ -151,7 +159,10 @@ class RegistrationView extends View {
     );
     const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
     this.dateOfBirthInput = dateOfBirthInputElement;
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    dateOfBirthInputElement.addEventListener('input', () => {
+      this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
+      this.inputKeydownFn();
+    });
     this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
   }
 
@@ -166,7 +177,10 @@ class RegistrationView extends View {
     );
     const emailInputElement = emailInputCreator.getInputElement();
     this.emailInput = emailInputElement;
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    emailInputElement.addEventListener('input', () => {
+      this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
+      this.inputKeydownFn();
+    });
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
 
@@ -182,7 +196,10 @@ class RegistrationView extends View {
     const passwordInputElement = passwordInputCreator.getInputElement();
     this.passwordInput = passwordInputElement;
     this.addShowHidePasswordIcon(this.passwordInput, passwordInputCreator);
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    passwordInputElement.addEventListener('input', () => {
+      this.inputValidation(passwordInputCreator, () => Validator.passwordField(passwordInputElement.value));
+      this.inputKeydownFn();
+    });
     this.form?.addInnerElement(passwordInputCreator.getElement());
   }
 
@@ -196,9 +213,17 @@ class RegistrationView extends View {
       ''
     );
     const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
+    const passwordValue = this.passwordInput?.value;
     this.confirmPasswordInput = confirmPasswordInputElement;
     this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    confirmPasswordInputElement.addEventListener('input', () => {
+      if (passwordValue !== undefined) {
+        this.inputValidation(confirmPasswordInputCreator, () =>
+          Validator.confirmPasswordField(confirmPasswordInputElement.value, passwordValue)
+        );
+        this.inputKeydownFn();
+      }
+    });
     this.form?.addInnerElement(confirmPasswordInputCreator.getElement());
   }
 
@@ -257,7 +282,10 @@ class RegistrationView extends View {
     } else if (type === 'billing') {
       this.cityBillingAddressInput = cityAddressInputElement;
     }
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    cityAddressInputElement.addEventListener('input', () => {
+      this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
+      this.inputKeydownFn();
+    });
     wrapper?.addInnerElement(cityAddressInputCreator.getElement());
   }
 
@@ -276,7 +304,10 @@ class RegistrationView extends View {
     } else if (type === 'billing') {
       this.streetBillingAddressInput = streetAddressInputElement;
     }
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    streetAddressInputElement.addEventListener('input', () => {
+      this.inputValidation(streetAddressInputCreator, () => Validator.cityField(streetAddressInputElement.value));
+      this.inputKeydownFn();
+    });
     wrapper?.addInnerElement(streetAddressInputCreator.getElement());
   }
 
@@ -286,7 +317,7 @@ class RegistrationView extends View {
       SIGN_UP_CLASSES.POSTAL_CODE,
       SIGN_UP_TEXT.POSTAL_CODE,
       '',
-      'number',
+      'text',
       ''
     );
     const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
@@ -295,7 +326,18 @@ class RegistrationView extends View {
     } else if (type === 'billing') {
       this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
     }
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    postalCodeAddressInputElement.addEventListener('input', () => {
+      let country = '';
+      this.inputValidation(postalCodeAddressInputCreator, () => {
+        if (type === 'shipping') {
+          country = this.countryShippingAddressInput?.value ?? '';
+        } else if (type === 'billing') {
+          country = this.countryBillingAddressInput?.value ?? '';
+        }
+        return Validator.postalCodeField(postalCodeAddressInputElement.value, country);
+      });
+      this.inputKeydownFn();
+    });
     wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
   }
 
@@ -337,7 +379,6 @@ class RegistrationView extends View {
       ''
     );
     const defaultShippingAddressInputElement = defaultAddressCheckboxCreator.getInputElement();
-    // firstNameInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
     if (type === 'shipping') {
       this.defaultShippingAddressInput = defaultShippingAddressInputElement;
     } else if (type === 'billing') {
@@ -360,7 +401,6 @@ class RegistrationView extends View {
     this.btnsWrapper = new ElementCreator('div', 'form-buttons');
     this.btnsWrapper?.addInnerElement(this.addRegisterButton());
     this.btnsWrapper?.addInnerElement(this.addLoginButton());
-    this.btnsWrapper?.addInnerElement(this.addCopyButton());
     this.form?.addInnerElement(this.btnsWrapper.getElement());
   }
 
@@ -377,39 +417,49 @@ class RegistrationView extends View {
     return loginBtn;
   }
 
-  private addCopyButton(): ElementCreator {
-    const copyBtn = new ElementCreator('button', 'copy', 'copy');
+  private addCopyButton(): void {
+    const copyBtn = new ElementCreator('button', 'copy', 'Set as Billing Address');
     copyBtn.getElement().setAttribute('type', 'button');
     copyBtn.getElement().addEventListener('click', this.copyShippingAddressToBillingAddress.bind(this));
-    return copyBtn;
+    this.form?.addInnerElement(copyBtn);
   }
 
+  // TODO refactor, this is horrible
   private async handleSubmit(event: Event): Promise<void> {
-    event.preventDefault();
-    const validationErrors = [];
-    const formData = this.getFormData();
-    if (Validator.nameField(formData.firstName).length > 0) {
-      validationErrors.push(...Validator.nameField(formData.firstName));
-    }
-    if (Validator.nameField(formData.lastName).length > 0) {
-      validationErrors.push(...Validator.nameField(formData.lastName));
-    }
-    if (Validator.emailField(formData.email).length > 0) {
-      validationErrors.push(...Validator.emailField(formData.email));
-    }
-    if (Validator.passwordField(formData.password).length > 0) {
-      validationErrors.push(...Validator.passwordField(formData.password));
-    }
-    if (validationErrors.length === 0) {
-      await CustomerAPI.registerCustomer(formData);
-      await AuthAPI.fetchPasswordToken(formData.email, formData.password);
-      await CustomerAPI.getCustomerInfo();
-      await CustomerAPI.loginCustomer(formData.email, formData.password);
-      this.router.navigate(Pages.INDEX);
-    } else if (this.errorLine) {
-      this.errorLine.textContent = `${validationErrors}`;
-    }
+    console.log(event);
+    //   event.preventDefault();
+    //   const formData = this.getFormData();
+    //   const isFormsValid = this.isFormValid.call(this, this.emailInput, this.passwordInput, this.confirmPasswordInput);
+    //   if (!isFormsValid) return;
+    //   await CustomerAPI.registerCustomer(formData);
+    //   await AuthAPI.fetchPasswordToken(formData.email, formData.password);
+    //   await CustomerAPI.getCustomerInfo();
+    //   await CustomerAPI.loginCustomer(formData.email, formData.password);
+    //   this.router.navigate(Pages.INDEX);
   }
+
+  // private isFormValid(
+  //   emailInputCreator: InputFieldsCreator,
+  //   passwordInputCreator: InputFieldsCreator,
+  //   confirmPasswordInputCreator: InputFieldsCreator
+  // ): boolean {
+  //   const isEmailValid = this.inputValidation.call(this, emailInputCreator, () =>
+  //     Validator.emailField(emailInputCreator.getInputElement().value)
+  //   );
+  //   const isPasswordValid = this.inputValidation.call(this, passwordInputCreator, () =>
+  //     Validator.passwordField(passwordInputCreator.getInputElement().value)
+  //   );
+  //   const isConfirmPasswordValid = this.inputValidation.call(this, confirmPasswordInputCreator, () =>
+  //     Validator.confirmPasswordField(
+  //       confirmPasswordInputCreator.getInputElement().value,
+  //       passwordInputCreator.getInputElement().value
+  //     )
+  //   );
+  //   if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   private copyShippingAddressToBillingAddress(): void {
     const cityValue = this.cityShippingAddressInput?.value;
@@ -504,9 +554,23 @@ class RegistrationView extends View {
     return formData;
   }
 
-  // private inputKeydownFn(): void {
-  //   this.errorLine?.classList.remove('show');
-  // }
+  private inputValidation(inputCreator: InputFieldsCreator, validatorFn: () => string): boolean {
+    const inputElement = inputCreator.getInputElement();
+    const errorLineElement = inputCreator.getErrorLine();
+    const error = validatorFn();
+    if (error) {
+      inputElement.classList.add(SIGN_UP_CLASSES.INPUT_INVALID);
+      errorLineElement.textContent = `${error}`;
+      return false;
+    }
+    inputElement.classList.remove(SIGN_UP_CLASSES.INPUT_INVALID);
+    errorLineElement.textContent = INITIAL_VALUE.ERROR_LINE;
+    return true;
+  }
+
+  private inputKeydownFn(): void {
+    this.errorLine?.classList.remove(SIGN_UP_CLASSES.ERROR_LINE_SHOW);
+  }
 }
 
 export default RegistrationView;
