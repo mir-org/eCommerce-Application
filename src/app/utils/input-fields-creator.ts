@@ -4,6 +4,7 @@ const CssClasses = {
   wrapper: 'primary-wrapper',
   input: 'primary-input',
   label: 'primary-label',
+  errorLine: 'primary-error-line',
 };
 
 class InputFieldsCreator {
@@ -12,6 +13,8 @@ class InputFieldsCreator {
   private inputElement: HTMLInputElement;
 
   private labelElement: HTMLLabelElement;
+
+  private errorLineElement: HTMLElement;
 
   constructor(
     classNames: string,
@@ -24,6 +27,7 @@ class InputFieldsCreator {
     this.element = document.createElement('div');
     this.inputElement = document.createElement('input');
     this.labelElement = document.createElement('label');
+    this.errorLineElement = document.createElement('div');
     this.setElement(classNames, subClassNames, labelTextContent, type);
     this.setValue(inputValue);
     this.setPlaceholder(placeholder);
@@ -34,6 +38,7 @@ class InputFieldsCreator {
     this.setCssClasses(classNames, subClassNames);
     this.labelElement.prepend(this.inputElement);
     this.element.append(this.labelElement);
+    this.element.append(this.errorLineElement);
     this.setType(type);
   }
 
@@ -45,6 +50,10 @@ class InputFieldsCreator {
     return this.inputElement;
   }
 
+  public getErrorLine(): HTMLElement {
+    return this.errorLineElement;
+  }
+
   private setValue(inputValue: string): void {
     this.inputElement.value = inputValue;
   }
@@ -53,6 +62,7 @@ class InputFieldsCreator {
     this.element.classList.add(`${classNames}__${subClassNames}-input-wrapper`, CssClasses.wrapper);
     this.inputElement.classList.add(`${classNames}__${subClassNames}-input`, CssClasses.input);
     this.labelElement.classList.add(`${classNames}__${subClassNames}-label`, CssClasses.label);
+    this.errorLineElement.classList.add(CssClasses.errorLine);
   }
 
   private setLabelTextContent(text: string): void {
