@@ -71,8 +71,6 @@ class App {
         const state = new state_1.default();
         const routes = this.createRoutes(state);
         this.router = new router_1.Router(routes);
-        this.router.navigate('');
-        console.log('роутер на пустую строку бахнул перед созданием');
         this.createView();
     }
     createView() {
@@ -171,6 +169,8 @@ class Router {
         this.routes = routes;
         document.addEventListener('DOMContentLoaded', () => {
             const path = this.getCurrentPath();
+            if (path === undefined)
+                console.log('Словил андефайнд');
             this.navigate(path);
         });
         window.addEventListener('popstate', this.browserChangeHandler.bind(this));
