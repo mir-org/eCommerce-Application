@@ -36,6 +36,7 @@ class App {
     document.body.append(wrapperView.getHTMLElement());
   }
 
+  /* eslint-disable max-lines-per-function */
   private createRoutes(state: State): Route[] {
     const result: Route[] = [
       {
@@ -76,6 +77,7 @@ class App {
     ];
     return result;
   }
+  /* eslint-enable max-lines-per-function */
 
   private setContent(page: string, view: View): void {
     this.header?.setSelectedItem(page);
