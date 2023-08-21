@@ -31,7 +31,10 @@ class LinkView extends View {
 
   private configView(): void {
     const element = this.viewElementCreator.getElement();
-    element.addEventListener('click', this.setSelectedStatus.bind(this));
+    element.addEventListener('click', () => {
+      this.setSelectedStatus.bind(this);
+      this.pageCallback();
+    });
   }
 }
 
