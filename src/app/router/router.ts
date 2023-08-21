@@ -1,5 +1,7 @@
 import { Pages } from './pages';
 
+const BROWSER_ROUTER_BASENAME = 'eCommerce-Application/';
+
 interface Route {
   path: string;
   callback: () => void;
@@ -28,7 +30,6 @@ class Router {
     const request = this.parseUrl(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
     const route = this.routes.find((item) => item.path === pathForFind);
-    console.log('путь', typeof route?.path, route?.path);
     if (!route) {
       this.redirectToNotFound();
     } else {
@@ -61,9 +62,9 @@ class Router {
 
   private getCurrentPath(): string {
     if (window.location.hash) {
-      return window.location.hash.slice(1);
+      return window.location.hash.slice(1).replace(BROWSER_ROUTER_BASENAME, '');
     }
-    return window.location.pathname.slice(1);
+    return window.location.pathname.slice(1).replace(BROWSER_ROUTER_BASENAME, '');
   }
 }
 

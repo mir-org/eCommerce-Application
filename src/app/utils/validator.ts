@@ -33,7 +33,7 @@ class Validator {
     }
     return error;
   }
-
+  
   public static confirmPasswordField(confirmPassword: string, password: string): string {
     let error = '';
     if (!confirmPassword) {

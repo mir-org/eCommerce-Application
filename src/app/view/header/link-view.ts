@@ -1,8 +1,8 @@
 import { View } from '../view';
 
 const CssClasses = {
-  ITEM: 'nav-item',
-  ITEM_SELECTED: 'nav-item__selected',
+  ITEM: 'nav__item',
+  ITEM_SELECTED: 'nav__item_selected',
 };
 
 class LinkView extends View {
@@ -17,13 +17,11 @@ class LinkView extends View {
     this.configView();
   }
 
-  // TODO дробануть
   public setSelectedStatus(): void {
     this.linkElements.forEach((link) => link.setNotSelectedStatus());
 
     const element = this.viewElementCreator.getElement();
     element.classList.add(CssClasses.ITEM_SELECTED);
-    this.pageCallback();
   }
 
   private setNotSelectedStatus(): void {
@@ -33,7 +31,10 @@ class LinkView extends View {
 
   private configView(): void {
     const element = this.viewElementCreator.getElement();
-    element.addEventListener('click', this.setSelectedStatus.bind(this));
+    element.addEventListener('click', () => {
+      this.setSelectedStatus.bind(this);
+      this.pageCallback();
+    });
   }
 }
 

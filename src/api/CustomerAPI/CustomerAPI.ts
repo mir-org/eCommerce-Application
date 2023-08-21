@@ -1,10 +1,14 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
-import { AuthAPI } from '../authAPI/authAPI';
+import { AuthAPI, AuthStatusCodes } from '../authAPI/authAPI';
 import { MyCustomerDraft, RegisterCustomerAnswer, StatusCodes } from './customer-api-type';
 
 export class CustomerAPI {
   public static async loginCustomer(email: string, password: string): Promise<number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/login`;
+    const responseStatus = await AuthAPI.fetchPasswordToken(email, password);
+    if (responseStatus !== AuthStatusCodes.successfulPasswordTokenFetch) {
+      return responseStatus;
+    }
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -15,10 +19,6 @@ export class CustomerAPI {
         password,
       }),
     });
-    // TODO change 200 to enum's value
-    if (response.status === 200) {
-      await AuthAPI.fetchPasswordToken(email, password);
-    }
     return response.status;
   }
 
@@ -50,6 +50,7 @@ export class CustomerAPI {
       };
     }
     await AuthAPI.fetchPasswordToken(customerData.email, customerData.password);
+    await this.loginCustomer(customerData.email, customerData.password);
     return response.status;
   }
 
