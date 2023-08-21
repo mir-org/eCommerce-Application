@@ -82,6 +82,7 @@ class App {
             .getHTMLElement()
             .append(this.header.getHTMLElement(), this.main.getHTMLElement(), footer.getHTMLElement());
         document.body.append(wrapperView.getHTMLElement());
+        this.router.navigate('');
     }
     createRoutes(state) {
         const result = [
@@ -188,7 +189,6 @@ class Router {
         }
     }
     parseUrl(url) {
-        console.log('из парс юрла', url);
         const path = url.split('/');
         const result = {
             path: '',
