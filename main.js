@@ -210,11 +210,11 @@ class Router {
     }
     getCurrentPath() {
         if (window.location.hash) {
-            console.log(window.location.hash.slice(1).replace('Commerce-Application/', ''));
-            return window.location.hash.slice(1).replace('Commerce-Application/', '');
+            console.log(window.location.hash.slice(1));
+            return window.location.hash.slice(1);
         }
-        console.log(window.location.pathname.slice(1).replace('Commerce-Application/', ''));
-        return window.location.pathname.slice(1).replace('Commerce-Application/', '');
+        console.log(window.location.pathname.slice(1));
+        return window.location.pathname.slice(1);
     }
 }
 exports.Router = Router;
