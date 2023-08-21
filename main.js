@@ -208,10 +208,10 @@ class Router {
     }
     getCurrentPath() {
         if (window.location.hash) {
-            console.log(window.location.hash.slice(1).replace('eCommerce-Application/', 'test'));
+            console.log(window.location.hash.slice(1).replace('eCommerce-Application/', ''));
             return window.location.hash.slice(1);
         }
-        console.log(window.location.pathname.slice(1).replace('eCommerce-Application/', 'test'));
+        console.log(window.location.pathname.slice(1).replace('eCommerce-Application/', ''));
         return window.location.pathname.slice(1);
     }
 }
