@@ -170,6 +170,7 @@ class Router {
         this.routes = routes;
         document.addEventListener('DOMContentLoaded', () => {
             const path = this.getCurrentPath();
+            console.log(path, 'пас из геткурента');
             this.navigate(path);
         });
         window.addEventListener('popstate', this.browserChangeHandler.bind(this));
