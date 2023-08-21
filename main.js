@@ -335,7 +335,7 @@ class App {
                 path: `${pages_1.Pages.REGISTRATION}`,
                 callback: () => __awaiter(this, void 0, void 0, function* () {
                     const { default: RegistrationView } = yield Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./view/main/registration/registration-view */ "./app/view/main/registration/registration-view.ts")));
-                    this.setContent(pages_1.Pages.REGISTRATION, new RegistrationView(state));
+                    this.setContent(pages_1.Pages.REGISTRATION, new RegistrationView(this.router));
                 }),
             },
             {
@@ -649,6 +649,69 @@ class Validator {
         else if (!passwordRegex.test(password)) {
             error =
                 'Password must be at least 8 characters long; must contain at least one uppercase letter (A-Z),  at least one lowercase letter (a-z), at least one digit (0-9), must not contain leading or trailing whitespace ';
+        }
+        return error;
+    }
+    static confirmPasswordField(confirmPassword, password) {
+        let error = '';
+        if (!confirmPassword) {
+            error = 'Password is empty.';
+        }
+        else if (confirmPassword !== password) {
+            error = 'Passwords do not match';
+        }
+        return error;
+    }
+    static birthField(dateOfBirth) {
+        let error = '';
+        const MIN_AGE = 13;
+        if (!dateOfBirth) {
+            error = 'Date of birth is empty.';
+        }
+        else {
+            const birthDate = new Date(dateOfBirth);
+            const currentDate = new Date();
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            if (currentDate.getMonth() < birthDate.getMonth() ||
+                (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())) {
+                age -= 1;
+            }
+            if (age < MIN_AGE) {
+                error = `You must be at least ${MIN_AGE} years old.`;
+            }
+        }
+        return error;
+    }
+    static streetField(street) {
+        let error = '';
+        if (!street) {
+            error = 'Street is empty.';
+        }
+        return error;
+    }
+    static cityField(city) {
+        const cityRegex = /^[a-zA-Z\s]+$/;
+        let error = '';
+        if (!city) {
+            error = 'City is empty.';
+        }
+        else if (!cityRegex.test(city)) {
+            error = 'City must contain only letters and spaces.';
+        }
+        return error;
+    }
+    static postalCodeField(postalCode, selectedCountry) {
+        const usaPostalCodeRegex = /^\d{5}(-\d{4})?$/;
+        const russiaPostalCodeRegex = /^[0-9]{6}$/;
+        let error = '';
+        if (!postalCode) {
+            error = 'Postal code is empty.';
+        }
+        else {
+            const countrySpecificRegex = selectedCountry === 'US' ? usaPostalCodeRegex : russiaPostalCodeRegex;
+            if (!countrySpecificRegex.test(postalCode)) {
+                error = selectedCountry === 'US' ? 'Invalid USA postal code format.' : 'Invalid Russian postal code format.';
+            }
         }
         return error;
     }
@@ -1201,6 +1264,80 @@ exports["default"] = NotFoundView;
 
 /***/ }),
 
+/***/ "./app/view/main/registration/registration-view-types.ts":
+/*!***************************************************************!*\
+  !*** ./app/view/main/registration/registration-view-types.ts ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, exports) {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.INITIAL_VALUE = exports.TYPE = exports.SIGN_UP_TEXT = exports.SIGN_UP_CLASSES = void 0;
+exports.SIGN_UP_CLASSES = {
+    REGISTRATION: 'registration',
+    TITLE: 'registration__title',
+    EMAIL: 'email',
+    PASSWORD: 'password',
+    CONFIRM_PASSWORD: 'confirm-password',
+    FIRST_NAME: 'first-name',
+    LAST_NAME: 'last-name',
+    DATE_OF_BIRTH: 'date-of-birth',
+    CITY: 'city',
+    STREET: 'street',
+    POSTAL_CODE: 'postal-code',
+    COUNTRY: 'country',
+    ERROR_LINE: 'error',
+    REGISTER_BTN: 'primary-button',
+    LOGIN_BTN: 'primary-button',
+    SHOW_HIDE_ICON: ['material-symbols-outlined', 'registration__show-hide-icon'],
+    SET_DEFAULT_ADDRESS: 'set-default',
+    INPUT_INVALID: 'invalid',
+    ERROR_LINE_SHOW: 'show',
+};
+exports.SIGN_UP_TEXT = {
+    EMAIL: 'Email',
+    PASSWORD: 'Password',
+    CONFIRM_PASSWORD: 'Confirm Password',
+    FIRST_NAME: 'First Name',
+    LAST_NAME: 'Last Name',
+    DATE_OF_BIRTH: 'Date of Birth',
+    CITY: 'City',
+    STREET: 'Street',
+    POSTAL_CODE: 'Postal Code',
+    COUNTRY: 'Country',
+    TITLE: 'Sign Up',
+    REGISTER_BTN: 'Create Account',
+    LOGIN_BTN: 'Login',
+    ERROR_LINE: '',
+    SET_DEFAULT_ADDRESS: 'Set Default Address',
+    SHOW_HIDE_ICON: {
+        VISIBLE: 'visibility',
+        VISIBLE_OFF: 'visibility_off',
+    },
+};
+exports.TYPE = {
+    INPUT_TYPE: {
+        EMAIL: 'email',
+        PASSWORD: 'password',
+        TEXT: 'text',
+    },
+    BUTTON_TYPE: 'submit',
+};
+exports.INITIAL_VALUE = {
+    INPUT_VALUE: {
+        EMAIL: '',
+        PASSWORD: '',
+    },
+    PLACEHOLDER: {
+        EMAIL: '',
+        PASSWORD: '',
+    },
+    ERROR_LINE: '',
+};
+
+
+/***/ }),
+
 /***/ "./app/view/main/registration/registration-view.ts":
 /*!*********************************************************!*\
   !*** ./app/view/main/registration/registration-view.ts ***!
@@ -1208,46 +1345,456 @@ exports["default"] = NotFoundView;
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const CustomerAPI_1 = __webpack_require__(/*! ../../../../api/CustomerAPI/CustomerAPI */ "./api/CustomerAPI/CustomerAPI.ts");
+const authAPI_1 = __webpack_require__(/*! ../../../../api/authAPI/authAPI */ "./api/authAPI/authAPI.ts");
+const pages_1 = __webpack_require__(/*! ../../../router/pages */ "./app/router/pages.ts");
 const element_creator_1 = __webpack_require__(/*! ../../../utils/element-creator */ "./app/utils/element-creator.ts");
 const input_fields_creator_1 = __importDefault(__webpack_require__(/*! ../../../utils/input-fields-creator */ "./app/utils/input-fields-creator.ts"));
+const validator_1 = __webpack_require__(/*! ../../../utils/validator */ "./app/utils/validator.ts");
 const view_1 = __webpack_require__(/*! ../../view */ "./app/view/view.ts");
-const CssClasses = {
-    REGISTRATION: 'registration',
-    TITLE: 'registration__title',
-    EMAIL: 'email',
-    PASSWORD: 'password',
-};
-const TEXT = {
-    FIELD_TEXT_ONE: 'Ваш мейл',
-    FIELD_TEXT_TWO: 'Ваш пароль',
-    TITLE: 'ЭТО СТРАНИЦА РЕГИСТРАЦИИ',
-};
-const KEY_FOR_SAVE = {
-    email: 'registration__email-input',
-    password: 'registration__password-input',
-};
+const registration_view_types_1 = __webpack_require__(/*! ./registration-view-types */ "./app/view/main/registration/registration-view-types.ts");
 class RegistrationView extends view_1.View {
-    constructor(state) {
-        super('section', CssClasses.REGISTRATION);
-        this.state = state;
+    constructor(router) {
+        super('section', registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION);
+        this.router = router;
+        this.form = null;
+        this.btnsWrapper = null;
+        this.firstNameInput = null;
+        this.lastNameInput = null;
+        this.dateOfBirthInput = null;
+        this.emailInput = null;
+        this.passwordInput = null;
+        this.confirmPasswordInput = null;
+        this.shippingAddressFieldSet = null;
+        this.billingAddressFieldSet = null;
+        this.cityShippingAddressInput = null;
+        this.streetShippingAddressInput = null;
+        this.postalCodeShippingAddressInput = null;
+        this.countryShippingAddressInput = null;
+        this.defaultShippingAddressInput = null;
+        this.cityBillingAddressInput = null;
+        this.streetBillingAddressInput = null;
+        this.postalCodeBillingAddressInput = null;
+        this.countryBillingAddressInput = null;
+        this.defaultBillingAddressInput = null;
+        this.errorLine = null;
         this.configView();
     }
     configView() {
-        const title = new element_creator_1.ElementCreator('h1', CssClasses.TITLE, TEXT.TITLE);
-        this.viewElementCreator.addInnerElement(title);
-        const emailInput = new input_fields_creator_1.default(CssClasses.REGISTRATION, CssClasses.EMAIL, TEXT.FIELD_TEXT_ONE, this.state.getValue(KEY_FOR_SAVE.email));
-        this.viewElementCreator.addInnerElement(emailInput.getElement());
-        const passwordInput = new input_fields_creator_1.default(CssClasses.REGISTRATION, CssClasses.PASSWORD, TEXT.FIELD_TEXT_TWO, this.state.getValue(KEY_FOR_SAVE.password));
-        this.viewElementCreator.addInnerElement(passwordInput.getElement());
+        this.addTitle();
+        this.addForm();
+        this.configForm();
     }
-    keyupHandler(event, fieldName) {
-        if (event.target instanceof HTMLInputElement) {
-            this.state.setValue(fieldName, event.target.value);
+    addTitle() {
+        const title = new element_creator_1.ElementCreator('h1', registration_view_types_1.SIGN_UP_CLASSES.TITLE, registration_view_types_1.SIGN_UP_TEXT.TITLE);
+        this.viewElementCreator.addInnerElement(title);
+    }
+    addForm() {
+        var _a;
+        this.form = new element_creator_1.ElementCreator('form', 'registration__form');
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.getElement().addEventListener('submit', (event) => this.handleSubmit(event));
+        this.viewElementCreator.addInnerElement(this.form.getElement());
+    }
+    configForm() {
+        this.addFirstNameInput();
+        this.addLastNameInput();
+        this.addDateOfBirthInput();
+        this.addEmailInput();
+        this.addPasswordInput();
+        this.addConfirmPasswordInput();
+        this.addShippingFieldSet();
+        this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
+        this.addCopyButton();
+        this.addBillingFieldSet();
+        this.addAddressInput(this.billingAddressFieldSet, 'billing');
+        this.addErrorLine();
+        this.addControlButtons();
+    }
+    addFirstNameInput() {
+        var _a;
+        const firstNameInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.FIRST_NAME, registration_view_types_1.SIGN_UP_TEXT.FIRST_NAME, '', 'text', '');
+        const firstNameInputElement = firstNameInputCreator.getInputElement();
+        this.firstNameInput = firstNameInputElement;
+        firstNameInputElement.addEventListener('input', () => {
+            this.inputValidation(firstNameInputCreator, () => validator_1.Validator.nameField(firstNameInputElement.value));
+            this.inputKeydownFn();
+        });
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(firstNameInputCreator.getElement());
+    }
+    addLastNameInput() {
+        var _a;
+        const lastNameInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.LAST_NAME, registration_view_types_1.SIGN_UP_TEXT.LAST_NAME, '', 'text', '');
+        const lastNameInputElement = lastNameInputCreator.getInputElement();
+        this.lastNameInput = lastNameInputElement;
+        lastNameInputElement.addEventListener('input', () => {
+            this.inputValidation(lastNameInputCreator, () => validator_1.Validator.nameField(lastNameInputElement.value));
+            this.inputKeydownFn();
+        });
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(lastNameInputCreator.getElement());
+    }
+    addDateOfBirthInput() {
+        var _a;
+        const dateOfBirthInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.DATE_OF_BIRTH, registration_view_types_1.SIGN_UP_TEXT.DATE_OF_BIRTH, '', 'date', '');
+        const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
+        this.dateOfBirthInput = dateOfBirthInputElement;
+        dateOfBirthInputElement.addEventListener('input', () => {
+            this.inputValidation(dateOfBirthInputCreator, () => validator_1.Validator.birthField(dateOfBirthInputElement.value));
+            this.inputKeydownFn();
+        });
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(dateOfBirthInputCreator.getElement());
+    }
+    addEmailInput() {
+        var _a;
+        const emailInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.EMAIL, registration_view_types_1.SIGN_UP_TEXT.EMAIL, '', 'email', '');
+        const emailInputElement = emailInputCreator.getInputElement();
+        this.emailInput = emailInputElement;
+        emailInputElement.addEventListener('input', () => {
+            this.inputValidation(emailInputCreator, () => validator_1.Validator.emailField(emailInputElement.value));
+            this.inputKeydownFn();
+        });
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(emailInputCreator.getElement());
+    }
+    addPasswordInput() {
+        var _a;
+        const passwordInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.PASSWORD, registration_view_types_1.SIGN_UP_TEXT.PASSWORD, '', 'password', '');
+        const passwordInputElement = passwordInputCreator.getInputElement();
+        this.passwordInput = passwordInputElement;
+        this.addShowHidePasswordIcon(this.passwordInput, passwordInputCreator);
+        passwordInputElement.addEventListener('input', () => {
+            this.inputValidation(passwordInputCreator, () => validator_1.Validator.passwordField(passwordInputElement.value));
+            this.inputKeydownFn();
+        });
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(passwordInputCreator.getElement());
+    }
+    addConfirmPasswordInput() {
+        var _a, _b;
+        const confirmPasswordInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.CONFIRM_PASSWORD, registration_view_types_1.SIGN_UP_TEXT.CONFIRM_PASSWORD, '', 'password', '');
+        const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
+        const passwordValue = (_a = this.passwordInput) === null || _a === void 0 ? void 0 : _a.value;
+        this.confirmPasswordInput = confirmPasswordInputElement;
+        this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
+        confirmPasswordInputElement.addEventListener('input', () => {
+            if (passwordValue !== undefined) {
+                this.inputValidation(confirmPasswordInputCreator, () => validator_1.Validator.confirmPasswordField(confirmPasswordInputElement.value, passwordValue));
+                this.inputKeydownFn();
+            }
+        });
+        (_b = this.form) === null || _b === void 0 ? void 0 : _b.addInnerElement(confirmPasswordInputCreator.getElement());
+    }
+    addShowHidePasswordIcon(passwordInput, passwordInputCreator) {
+        const showHideIconCreator = new element_creator_1.ElementCreator('span', registration_view_types_1.SIGN_UP_CLASSES.SHOW_HIDE_ICON, registration_view_types_1.SIGN_UP_TEXT.SHOW_HIDE_ICON.VISIBLE);
+        showHideIconCreator
+            .getElement()
+            .addEventListener('click', this.showHidePasswordFn.bind(this, passwordInput, showHideIconCreator));
+        passwordInputCreator.addInnerElement(showHideIconCreator);
+    }
+    addAddressInput(wrapper, type) {
+        if (wrapper) {
+            this.addCityAddressInput(wrapper, type);
+            this.addStreetAddressInput(wrapper, type);
+            this.addPostalCodeAddressInput(wrapper, type);
+            this.addCountryAddressInput(wrapper, type);
+            this.addDefaultCheckbox(wrapper, type);
         }
+    }
+    addShippingFieldSet() {
+        var _a;
+        const fieldSet = new element_creator_1.ElementCreator('fieldset', 'fieldset');
+        this.shippingAddressFieldSet = fieldSet;
+        const legendFieldSet = new element_creator_1.ElementCreator('legend', 'legend');
+        legendFieldSet.getElement().textContent = 'Shipping Address';
+        fieldSet.addInnerElement(legendFieldSet);
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(fieldSet);
+    }
+    addBillingFieldSet() {
+        var _a;
+        const fieldSet = new element_creator_1.ElementCreator('fieldset', 'fieldset');
+        this.billingAddressFieldSet = fieldSet;
+        const legendFieldSet = new element_creator_1.ElementCreator('legend', 'legend');
+        legendFieldSet.getElement().textContent = 'Billing Address';
+        fieldSet.addInnerElement(legendFieldSet);
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(fieldSet);
+    }
+    addCityAddressInput(wrapper, type) {
+        const cityAddressInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.CITY, registration_view_types_1.SIGN_UP_TEXT.CITY, '', 'text', '');
+        const cityAddressInputElement = cityAddressInputCreator.getInputElement();
+        if (type === 'shipping') {
+            this.cityShippingAddressInput = cityAddressInputElement;
+        }
+        else if (type === 'billing') {
+            this.cityBillingAddressInput = cityAddressInputElement;
+        }
+        cityAddressInputElement.addEventListener('input', () => {
+            this.inputValidation(cityAddressInputCreator, () => validator_1.Validator.cityField(cityAddressInputElement.value));
+            this.inputKeydownFn();
+        });
+        wrapper === null || wrapper === void 0 ? void 0 : wrapper.addInnerElement(cityAddressInputCreator.getElement());
+    }
+    addStreetAddressInput(wrapper, type) {
+        const streetAddressInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.STREET, registration_view_types_1.SIGN_UP_TEXT.STREET, '', 'text', '');
+        const streetAddressInputElement = streetAddressInputCreator.getInputElement();
+        if (type === 'shipping') {
+            this.streetShippingAddressInput = streetAddressInputElement;
+        }
+        else if (type === 'billing') {
+            this.streetBillingAddressInput = streetAddressInputElement;
+        }
+        streetAddressInputElement.addEventListener('input', () => {
+            this.inputValidation(streetAddressInputCreator, () => validator_1.Validator.cityField(streetAddressInputElement.value));
+            this.inputKeydownFn();
+        });
+        wrapper === null || wrapper === void 0 ? void 0 : wrapper.addInnerElement(streetAddressInputCreator.getElement());
+    }
+    addPostalCodeAddressInput(wrapper, type) {
+        const postalCodeAddressInputCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.POSTAL_CODE, registration_view_types_1.SIGN_UP_TEXT.POSTAL_CODE, '', 'text', '');
+        const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
+        if (type === 'shipping') {
+            this.postalCodeShippingAddressInput = postalCodeAddressInputElement;
+        }
+        else if (type === 'billing') {
+            this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
+        }
+        postalCodeAddressInputElement.addEventListener('input', () => {
+            let country = '';
+            this.inputValidation(postalCodeAddressInputCreator, () => {
+                var _a, _b, _c, _d;
+                if (type === 'shipping') {
+                    country = (_b = (_a = this.countryShippingAddressInput) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : '';
+                }
+                else if (type === 'billing') {
+                    country = (_d = (_c = this.countryBillingAddressInput) === null || _c === void 0 ? void 0 : _c.value) !== null && _d !== void 0 ? _d : '';
+                }
+                return validator_1.Validator.postalCodeField(postalCodeAddressInputElement.value, country);
+            });
+            this.inputKeydownFn();
+        });
+        wrapper === null || wrapper === void 0 ? void 0 : wrapper.addInnerElement(postalCodeAddressInputCreator.getElement());
+    }
+    addCountryAddressInput(wrapper, type) {
+        // TODO refactor to separate createSelect method
+        const countryOptions = ['USA', 'Russia'];
+        const countryValues = ['US', 'RU'];
+        const wrapperClasses = ['registration__country-input-wrapper', 'primary-wrapper'];
+        const labelClasses = ['registration__country-label', 'primary-label'];
+        const selectClasses = ['registration__country-input', 'primary-input'];
+        const countryAddressInputWrapper = new element_creator_1.ElementCreator('div', wrapperClasses);
+        const countryAddressInputLabel = new element_creator_1.ElementCreator('label', labelClasses);
+        countryAddressInputLabel.getElement().textContent = 'Country';
+        const countryAddressInputCreator = new element_creator_1.ElementCreator('select', selectClasses);
+        for (let i = 0; i < countryOptions.length; i += 1) {
+            const option = document.createElement('option');
+            option.setAttribute('value', countryValues[i]);
+            option.textContent = countryOptions[i];
+            countryAddressInputCreator.getElement().appendChild(option);
+        }
+        countryAddressInputWrapper.addInnerElement(countryAddressInputLabel.getElement());
+        countryAddressInputLabel.addInnerElement(countryAddressInputCreator.getElement());
+        const countryAddressInputElement = countryAddressInputCreator.getElement();
+        if (type === 'shipping') {
+            this.countryShippingAddressInput = countryAddressInputElement;
+        }
+        else if (type === 'billing') {
+            this.countryBillingAddressInput = countryAddressInputElement;
+        }
+        wrapper === null || wrapper === void 0 ? void 0 : wrapper.addInnerElement(countryAddressInputWrapper.getElement());
+    }
+    addDefaultCheckbox(wrapper, type) {
+        var _a;
+        const defaultAddressCheckboxCreator = new input_fields_creator_1.default(registration_view_types_1.SIGN_UP_CLASSES.REGISTRATION, registration_view_types_1.SIGN_UP_CLASSES.SET_DEFAULT_ADDRESS, registration_view_types_1.SIGN_UP_TEXT.SET_DEFAULT_ADDRESS, '', 'checkbox', '');
+        const defaultShippingAddressInputElement = defaultAddressCheckboxCreator.getInputElement();
+        if (type === 'shipping') {
+            this.defaultShippingAddressInput = defaultShippingAddressInputElement;
+        }
+        else if (type === 'billing') {
+            this.defaultBillingAddressInput = defaultShippingAddressInputElement;
+        }
+        wrapper === null || wrapper === void 0 ? void 0 : wrapper.addInnerElement(defaultAddressCheckboxCreator.getElement());
+        const checkbox = (_a = defaultAddressCheckboxCreator.getElement().firstChild) === null || _a === void 0 ? void 0 : _a.firstChild;
+        console.log(checkbox);
+        checkbox.classList.remove('primary-input');
+    }
+    addErrorLine() {
+        var _a;
+        const errorLineCreator = new element_creator_1.ElementCreator('div', registration_view_types_1.SIGN_UP_CLASSES.ERROR_LINE, registration_view_types_1.SIGN_UP_TEXT.ERROR_LINE);
+        const errorLineElement = errorLineCreator.getElement();
+        this.errorLine = errorLineElement;
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(errorLineElement);
+    }
+    addControlButtons() {
+        var _a, _b, _c;
+        this.btnsWrapper = new element_creator_1.ElementCreator('div', 'form-buttons');
+        (_a = this.btnsWrapper) === null || _a === void 0 ? void 0 : _a.addInnerElement(this.addRegisterButton());
+        (_b = this.btnsWrapper) === null || _b === void 0 ? void 0 : _b.addInnerElement(this.addLoginButton());
+        (_c = this.form) === null || _c === void 0 ? void 0 : _c.addInnerElement(this.btnsWrapper.getElement());
+    }
+    addRegisterButton() {
+        const registerBtn = new element_creator_1.ElementCreator('button', registration_view_types_1.SIGN_UP_CLASSES.REGISTER_BTN, registration_view_types_1.SIGN_UP_TEXT.REGISTER_BTN);
+        registerBtn.getElement().setAttribute('type', 'submit');
+        return registerBtn;
+    }
+    addLoginButton() {
+        const loginBtn = new element_creator_1.ElementCreator('button', registration_view_types_1.SIGN_UP_CLASSES.LOGIN_BTN, registration_view_types_1.SIGN_UP_TEXT.LOGIN_BTN);
+        loginBtn.getElement().setAttribute('type', 'button');
+        loginBtn.getElement().addEventListener('click', () => this.router.navigate(pages_1.Pages.LOGIN));
+        return loginBtn;
+    }
+    addCopyButton() {
+        var _a;
+        const copyBtn = new element_creator_1.ElementCreator('button', 'copy', 'Set as Billing Address');
+        copyBtn.getElement().setAttribute('type', 'button');
+        copyBtn.getElement().addEventListener('click', this.copyShippingAddressToBillingAddress.bind(this));
+        (_a = this.form) === null || _a === void 0 ? void 0 : _a.addInnerElement(copyBtn);
+    }
+    // TODO refactor, this is horrible
+    handleSubmit(event) {
+        return __awaiter(this, void 0, void 0, function* () {
+            event.preventDefault();
+            const formData = this.getFormData();
+            const allErrors = document.querySelectorAll('.primary-error-line');
+            let allEmpty = true;
+            allErrors.forEach((errorElement) => {
+                var _a;
+                if (((_a = errorElement.textContent) === null || _a === void 0 ? void 0 : _a.trim()) !== '') {
+                    allEmpty = false;
+                    return '';
+                }
+                return '';
+            });
+            if (this.errorLine) {
+                if (allEmpty) {
+                    yield CustomerAPI_1.CustomerAPI.registerCustomer(formData);
+                    yield authAPI_1.AuthAPI.fetchPasswordToken(formData.email, formData.password);
+                    yield CustomerAPI_1.CustomerAPI.getCustomerInfo();
+                    yield CustomerAPI_1.CustomerAPI.loginCustomer(formData.email, formData.password);
+                    this.router.navigate(pages_1.Pages.INDEX);
+                }
+                else {
+                    this.errorLine.textContent = 'Fix all errors';
+                }
+            }
+        });
+    }
+    copyShippingAddressToBillingAddress() {
+        var _a, _b, _c, _d;
+        const cityValue = (_a = this.cityShippingAddressInput) === null || _a === void 0 ? void 0 : _a.value;
+        const streetValue = (_b = this.streetShippingAddressInput) === null || _b === void 0 ? void 0 : _b.value;
+        const postalCodeValue = (_c = this.postalCodeShippingAddressInput) === null || _c === void 0 ? void 0 : _c.value;
+        const countryValue = (_d = this.countryShippingAddressInput) === null || _d === void 0 ? void 0 : _d.value;
+        if (cityValue !== undefined && this.cityBillingAddressInput !== null) {
+            this.cityBillingAddressInput.value = cityValue;
+            this.cityBillingAddressInput.focus();
+            this.cityBillingAddressInput.blur();
+        }
+        if (streetValue !== undefined && this.streetBillingAddressInput !== null) {
+            this.streetBillingAddressInput.value = streetValue;
+            this.streetBillingAddressInput.focus();
+            this.streetBillingAddressInput.blur();
+        }
+        if (postalCodeValue !== undefined && this.postalCodeBillingAddressInput !== null) {
+            this.postalCodeBillingAddressInput.value = postalCodeValue;
+            this.postalCodeBillingAddressInput.focus();
+            this.postalCodeBillingAddressInput.blur();
+        }
+        if (countryValue !== undefined && this.countryBillingAddressInput !== null) {
+            this.countryBillingAddressInput.value = countryValue;
+        }
+    }
+    showHidePasswordFn(passwordInput, showHideIconCreator) {
+        const showHideIconElement = showHideIconCreator.getElement();
+        if (passwordInput.getAttribute('type') === registration_view_types_1.TYPE.INPUT_TYPE.PASSWORD) {
+            passwordInput.setAttribute('type', registration_view_types_1.TYPE.INPUT_TYPE.TEXT);
+            showHideIconElement.textContent = registration_view_types_1.SIGN_UP_TEXT.SHOW_HIDE_ICON.VISIBLE_OFF;
+        }
+        else {
+            passwordInput.setAttribute('type', registration_view_types_1.TYPE.INPUT_TYPE.PASSWORD);
+            showHideIconElement.textContent = registration_view_types_1.SIGN_UP_TEXT.SHOW_HIDE_ICON.VISIBLE;
+        }
+    }
+    getAddressFormData(inputType) {
+        var _a, _b, _c, _d;
+        let cityInput;
+        let streetInput;
+        let postalCodeInput;
+        let countryInput;
+        if (inputType === 'Shipping') {
+            cityInput = this.cityShippingAddressInput;
+            streetInput = this.streetShippingAddressInput;
+            postalCodeInput = this.postalCodeShippingAddressInput;
+            countryInput = this.countryShippingAddressInput;
+        }
+        else if (inputType === 'Billing') {
+            cityInput = this.cityBillingAddressInput;
+            streetInput = this.streetBillingAddressInput;
+            postalCodeInput = this.postalCodeBillingAddressInput;
+            countryInput = this.countryBillingAddressInput;
+        }
+        return {
+            country: (_a = countryInput === null || countryInput === void 0 ? void 0 : countryInput.value) !== null && _a !== void 0 ? _a : '',
+            streetName: (_b = streetInput === null || streetInput === void 0 ? void 0 : streetInput.value) !== null && _b !== void 0 ? _b : '',
+            postalCode: (_c = postalCodeInput === null || postalCodeInput === void 0 ? void 0 : postalCodeInput.value) !== null && _c !== void 0 ? _c : '',
+            city: (_d = cityInput === null || cityInput === void 0 ? void 0 : cityInput.value) !== null && _d !== void 0 ? _d : '',
+        };
+    }
+    getShippingAddressFormData() {
+        return this.getAddressFormData('Shipping');
+    }
+    getBillingAddressFormData() {
+        return this.getAddressFormData('Billing');
+    }
+    getFormData() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        const formEmail = (_b = (_a = this.emailInput) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : '';
+        const formPassword = (_d = (_c = this.passwordInput) === null || _c === void 0 ? void 0 : _c.value) !== null && _d !== void 0 ? _d : '';
+        const formFirstName = (_f = (_e = this.firstNameInput) === null || _e === void 0 ? void 0 : _e.value) !== null && _f !== void 0 ? _f : '';
+        const formLastName = (_h = (_g = this.lastNameInput) === null || _g === void 0 ? void 0 : _g.value) !== null && _h !== void 0 ? _h : '';
+        const formDateOfBirth = (_k = (_j = this.dateOfBirthInput) === null || _j === void 0 ? void 0 : _j.value) !== null && _k !== void 0 ? _k : '';
+        const shippingAddress = this.getShippingAddressFormData();
+        const billingAddress = this.getBillingAddressFormData();
+        const formData = {
+            email: formEmail,
+            password: formPassword,
+            firstName: formFirstName,
+            lastName: formLastName,
+            dateOfBirth: formDateOfBirth,
+            addresses: [shippingAddress, billingAddress],
+        };
+        if ((_l = this.defaultShippingAddressInput) === null || _l === void 0 ? void 0 : _l.checked) {
+            formData.defaultShippingAddress = 0;
+        }
+        if ((_m = this.defaultBillingAddressInput) === null || _m === void 0 ? void 0 : _m.checked) {
+            formData.defaultBillingAddress = 1;
+        }
+        return formData;
+    }
+    inputValidation(inputCreator, validatorFn) {
+        const inputElement = inputCreator.getInputElement();
+        const errorLineElement = inputCreator.getErrorLine();
+        const error = validatorFn();
+        if (error) {
+            inputElement.classList.add(registration_view_types_1.SIGN_UP_CLASSES.INPUT_INVALID);
+            errorLineElement.textContent = `${error}`;
+            return false;
+        }
+        inputElement.classList.remove(registration_view_types_1.SIGN_UP_CLASSES.INPUT_INVALID);
+        errorLineElement.textContent = registration_view_types_1.INITIAL_VALUE.ERROR_LINE;
+        return true;
+    }
+    inputKeydownFn() {
+        var _a;
+        (_a = this.errorLine) === null || _a === void 0 ? void 0 : _a.classList.remove(registration_view_types_1.SIGN_UP_CLASSES.ERROR_LINE_SHOW);
     }
 }
 exports["default"] = RegistrationView;

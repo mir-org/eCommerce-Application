@@ -508,6 +508,10 @@ input {
   border-color: rgb(255, 0, 0);
 }
 
+.primary-input:focus {
+  border: 1px solid rgb(0, 0, 0);
+}
+
 .primary-error-line {
   position: relative;
   color: rgb(255, 0, 0);
@@ -529,6 +533,10 @@ input {
   font-size: 1.7em;
 }
 
+input[type=password] {
+  padding-right: 43px;
+}
+
 .index {
   display: flex;
   flex-direction: column;
@@ -544,14 +552,50 @@ input {
   justify-content: center;
   align-content: center;
   padding: 20px;
-  gap: 20px;
+  gap: 5px;
+  width: 40%;
+  margin: 20px auto 0;
+  border: 1px solid rgb(171, 171, 171);
+  border-radius: 2px;
 }
 .registration__title {
   text-align: center;
   font-size: 24px;
+  margin: 15px 0 5px;
 }
-.registration input {
-  margin: 0 15px 0 0;
+.registration .registration_error-line {
+  height: 30px;
+  line-height: 28px;
+  text-align: center;
+  border: 1px solid rgb(171, 171, 171);
+  border-radius: 5px;
+  color: rgb(90, 0, 0);
+  background-color: rgb(255, 189, 189);
+  opacity: 0;
+  visibility: hidden;
+  margin-bottom: 5px;
+  transition: 0.1s;
+}
+.registration .registration_error-line.show {
+  opacity: 1;
+  visibility: visible;
+}
+.registration__form,
+.registration .fieldset {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  gap: 5px;
+}
+.registration .registration__show-hide-icon {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 20;
+  user-select: none;
 }
 
 .login {
