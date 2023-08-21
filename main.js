@@ -175,6 +175,7 @@ class Router {
         window.addEventListener('hashchange', this.browserChangeHandler.bind(this));
     }
     navigate(url) {
+        console.log('сравнение', url === undefined);
         const request = this.parseUrl(url);
         const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
         const route = this.routes.find((item) => item.path === pathForFind);
