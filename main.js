@@ -165,6 +165,7 @@ exports.Pages = Pages;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Router = void 0;
 const pages_1 = __webpack_require__(/*! ./pages */ "./app/router/pages.ts");
+const BROWSER_ROUTER_BASENAME = 'eCommerce-Application/';
 class Router {
     constructor(routes) {
         this.routes = routes;
@@ -212,10 +213,10 @@ class Router {
     getCurrentPath() {
         if (window.location.hash) {
             // console.log(window.location.hash.slice(1).replace('Commerce-Application/', ''));
-            return window.location.hash.slice(1).replace('eCommerce-Application/', '');
+            return window.location.hash.slice(1).replace(BROWSER_ROUTER_BASENAME, '');
         }
         // console.log(window.location.pathname.slice(1).replace('Commerce-Application/', ''));
-        return window.location.pathname.slice(1).replace('eCommerce-Application/', '');
+        return window.location.pathname.slice(1).replace(BROWSER_ROUTER_BASENAME, '');
     }
 }
 exports.Router = Router;
