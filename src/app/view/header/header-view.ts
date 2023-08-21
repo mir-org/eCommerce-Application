@@ -86,12 +86,6 @@ class HeaderView extends View {
     this.viewElementCreator.addInnerElement(creatorNav);
   }
 
-  public setSelectedItem(namePage: string): void {
-    const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
-    if (linkItem instanceof LinkView) {
-      linkItem.setSelectedStatus();
-    }
-
   private addLogoutButton(router: Router, state: State): void {
     const logoutButtonCreator = new ElementCreator('button', CssClasses.LOGOUT_BUTTON, TEXT.LOGOUT_BUTTON);
     const logoutButtonElement = logoutButtonCreator.getElement();
