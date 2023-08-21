@@ -8,15 +8,16 @@ import InputFieldsCreator from '../../../utils/input-fields-creator';
 import HeaderView from '../../header/header-view';
 import { View } from '../../view';
 import { CssClasses, INITIAL_VALUE, KEY_FOR_SAVE, TEXT, TYPE } from './login-view-types';
+import { Validator } from '../../../utils/validator';
 
 class LoginView extends View {
   private form: ElementCreator | null;
 
   private errorLine: HTMLElement | null;
 
-  private emailInput: HTMLInputElement | null;
+  private emailInput: InputFieldsCreator | null;
 
-  private passwordInput: HTMLInputElement | null;
+  private passwordInput: InputFieldsCreator | null;
 
   constructor(
     private router: Router,
@@ -73,8 +74,11 @@ class LoginView extends View {
       INITIAL_VALUE.PLACEHOLDER.EMAIL
     );
     const emailInputElement = emailInputCreator.getInputElement();
-    this.emailInput = emailInputElement;
-    emailInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.emailInput = emailInputCreator;
+    emailInputElement.addEventListener('input', () => {
+      this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
+      this.inputKeydownFn();
+    });
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
 
@@ -89,8 +93,11 @@ class LoginView extends View {
     );
     this.addShowHidePasswordIcon(passwordInputCreator);
     const passwordInputElement = passwordInputCreator.getInputElement();
-    this.passwordInput = passwordInputElement;
-    passwordInputElement.addEventListener('keydown', this.inputKeydownFn.bind(this));
+    this.passwordInput = passwordInputCreator;
+    passwordInputElement.addEventListener('input', () => {
+      this.inputValidation(passwordInputCreator, () => Validator.passwordField(passwordInputElement.value));
+      this.inputKeydownFn();
+    });
     this.form?.addInnerElement(passwordInputCreator.getElement());
   }
 
@@ -116,7 +123,21 @@ class LoginView extends View {
   }
 
   private inputKeydownFn(): void {
-    this.errorLine?.classList.remove('show');
+    this.errorLine?.classList.remove(CssClasses.ERROR_LINE_SHOW);
+  }
+
+  private inputValidation(inputCreator: InputFieldsCreator, validatorFn: () => string): boolean {
+    const inputElement = inputCreator.getInputElement();
+    const errorLineElement = inputCreator.getErrorLine();
+    const error = validatorFn();
+    if (error) {
+      inputElement.classList.add(CssClasses.INPUT_INVALID);
+      errorLineElement.textContent = `${error}`;
+      return false;
+    }
+    inputElement.classList.remove(CssClasses.INPUT_INVALID);
+    errorLineElement.textContent = INITIAL_VALUE.ERROR_LINE;
+    return true;
   }
 
   private async loginButtonClickFn(event: Event): Promise<void> {
@@ -124,8 +145,10 @@ class LoginView extends View {
       throw new Error();
     }
     event.preventDefault();
-    const email = this.emailInput.value;
-    const password = this.passwordInput.value;
+    const isFormsValid = this.isFormsValid.call(this, this.emailInput, this.passwordInput);
+    if (!isFormsValid) return;
+    const email = this.emailInput.getInputElement().value;
+    const password = this.passwordInput.getInputElement().value;
     const loginStatusCode = await CustomerAPI.loginCustomer(email, password);
     if (loginStatusCode === AuthStatusCodes.successfulPasswordTokenFetch) {
       console.log(this.router);
@@ -134,17 +157,30 @@ class LoginView extends View {
       this.header?.customerLogin(this.state);
       await CustomerAPI.getCustomerInfo();
     } else {
-      this.errorLine?.classList.add('show');
+      this.errorLine?.classList.add(CssClasses.ERROR_LINE_SHOW);
     }
+  }
+
+  private isFormsValid(emailInputCreator: InputFieldsCreator, passwordInputCreator: InputFieldsCreator): boolean {
+    const isEmailValid = this.inputValidation.call(this, emailInputCreator, () =>
+      Validator.emailField(emailInputCreator.getInputElement().value)
+    );
+    const isPasswordValid = this.inputValidation.call(this, passwordInputCreator, () =>
+      Validator.passwordField(passwordInputCreator.getInputElement().value)
+    );
+    if (isEmailValid && isPasswordValid) {
+      return true;
+    }
+    return false;
   }
 
   private showHidePasswordFn(showHideIconCreator: ElementCreator): void {
     const showHideIconElement = showHideIconCreator.getElement();
-    if (this.passwordInput?.getAttribute('type') === TYPE.INPUT_TYPE.PASSWORD) {
-      this.passwordInput.setAttribute('type', TYPE.INPUT_TYPE.TEXT);
+    if (this.passwordInput?.getInputElement().getAttribute('type') === TYPE.INPUT_TYPE.PASSWORD) {
+      this.passwordInput.getInputElement().setAttribute('type', TYPE.INPUT_TYPE.TEXT);
       showHideIconElement.textContent = TEXT.SHOW_HIDE_ICON.VISIBLE_OFF;
     } else {
-      this.passwordInput?.setAttribute('type', TYPE.INPUT_TYPE.PASSWORD);
+      this.passwordInput?.getInputElement().setAttribute('type', TYPE.INPUT_TYPE.PASSWORD);
       showHideIconElement.textContent = TEXT.SHOW_HIDE_ICON.VISIBLE;
     }
   }
