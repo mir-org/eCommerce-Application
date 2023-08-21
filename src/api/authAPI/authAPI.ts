@@ -1,5 +1,9 @@
 import { TOKEN_STORAGE_KEY, CTP_AUTH_URL, CTP_PROJECT_KEY, CTP_CLIENT_ID, CTP_CLIENT_SECRET } from '../api-data';
 
+export enum AuthStatusCodes {
+  successfulPasswordTokenFetch = 200,
+}
+
 export class AuthAPI {
   public static async setAccessToken(): Promise<void> {
     if (!localStorage.getItem(TOKEN_STORAGE_KEY)) {
@@ -20,7 +24,7 @@ export class AuthAPI {
     localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
   }
 
-  public static async fetchPasswordToken(email: string, password: string): Promise<void> {
+  public static async fetchPasswordToken(email: string, password: string): Promise<number> {
     const url = `${CTP_AUTH_URL}/oauth/${CTP_PROJECT_KEY}/customers/token?grant_type=password&username=${email}&password=${password}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -28,9 +32,13 @@ export class AuthAPI {
         Authorization: `Basic ${btoa(`${CTP_CLIENT_ID}:${CTP_CLIENT_SECRET}`)}`,
       },
     });
+    if (response.status !== AuthStatusCodes.successfulPasswordTokenFetch) {
+      return response.status;
+    }
     const data = await response.json();
     const accessToken = data.access_token;
     localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
+    return response.status;
   }
 
   private static async fetchRefreshToken(token: string): Promise<void> {
