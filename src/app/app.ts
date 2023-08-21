@@ -4,11 +4,7 @@ import HeaderView from './view/header/header-view';
 import MainView from './view/main/main-view';
 import WrapperView from './view/wrapper';
 import { Pages } from './router/pages';
-import IndexView from './view/main/index/index-view';
 import { View } from './view/view';
-import LoginView from './view/main/login/login-view';
-import NotFoundView from './view/main/not-found/not-found-view';
-import RegistrationView from './view/main/registration/registration-view';
 import State from './state/state';
 
 class App {
@@ -43,43 +39,46 @@ class App {
   private createRoutes(state: State): Route[] {
     const result: Route[] = [
       {
-        path: ``,
-        callback: () => {
-          this.main?.setContent(new IndexView());
+        path: '',
+        callback: async () => {
+          const { default: IndexView } = await import('./view/main/index/index-view');
+          this.setContent(Pages.INDEX, new IndexView());
         },
       },
       {
         path: `${Pages.INDEX}`,
-        callback: () => {
-          this.main?.setContent(new IndexView());
+        callback: async () => {
+          const { default: IndexView } = await import('./view/main/index/index-view');
+          this.setContent(Pages.INDEX, new IndexView());
         },
       },
       {
         path: `${Pages.LOGIN}`,
-        callback: () => {
-          this.main?.setContent(new LoginView(state));
+        callback: async () => {
+          const { default: LoginView } = await import('./view/main/login/login-view');
+          this.setContent(Pages.LOGIN, new LoginView(state));
         },
       },
       {
         path: `${Pages.REGISTRATION}`,
-        callback: () => {
-          this.main?.setContent(new RegistrationView(state));
+        callback: async () => {
+          const { default: RegistrationView } = await import('./view/main/registration/registration-view');
+          this.setContent(Pages.REGISTRATION, new RegistrationView(state));
         },
       },
       {
         path: `${Pages.NOT_FOUND}`,
-        callback: () => {
-          this.main?.setContent(new NotFoundView());
+        callback: async () => {
+          const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
+          this.setContent(Pages.NOT_FOUND, new NotFoundView());
         },
       },
     ];
     return result;
   }
 
-  // TODO из-за этого багался колл-стек, разобрать.
-  public setContent(pageName: string, view: View): void {
-    // TODO или из-за этого.
-    this.header?.setSelectedItem(pageName);
+  private setContent(page: string, view: View): void {
+    this.header?.setSelectedItem(page);
     this.main?.setContent(view);
   }
 }

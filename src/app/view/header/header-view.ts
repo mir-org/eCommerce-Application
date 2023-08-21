@@ -33,15 +33,18 @@ class HeaderView extends View {
       };
       const linkElement = new LinkView(linkParams.name, linkParams.callback, this.headerLinkElements);
       creatorNav.addInnerElement(linkElement.getHTMLElement());
-      this.headerLinkElements.set(Pages[key], linkElement);
+      this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
     });
     this.viewElementCreator.addInnerElement(creatorNav);
   }
 
-  // TODO удалить?
   public setSelectedItem(namePage: string): void {
-    const linkComponent = this.headerLinkElements.get(namePage);
-    linkComponent?.setSelectedStatus();
+    console.log(namePage);
+    const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
+    console.log(linkItem);
+    if (linkItem instanceof LinkView) {
+      linkItem.setSelectedStatus();
+    }
   }
 }
 
