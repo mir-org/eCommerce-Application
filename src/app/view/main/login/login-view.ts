@@ -1,11 +1,13 @@
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { StatusCodes } from '../../../../api/CustomerAPI/customer-api-type';
+import { AuthStatusCodes } from '../../../../api/authAPI/authAPI';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
+import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
+import HeaderView from '../../header/header-view';
 import { View } from '../../view';
-import { CssClasses, INITIAL_VALUE, TEXT, TYPE } from './login-view-types';
+import { CssClasses, INITIAL_VALUE, KEY_FOR_SAVE, TEXT, TYPE } from './login-view-types';
 import { Validator } from '../../../utils/validator';
 
 class LoginView extends View {
@@ -17,7 +19,11 @@ class LoginView extends View {
 
   private passwordInput: InputFieldsCreator | null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private header: HeaderView | null,
+    private state: State
+  ) {
     super('section', CssClasses.LOGIN);
     this.form = null;
     this.errorLine = null;
@@ -144,8 +150,11 @@ class LoginView extends View {
     const email = this.emailInput.getInputElement().value;
     const password = this.passwordInput.getInputElement().value;
     const loginStatusCode = await CustomerAPI.loginCustomer(email, password);
-    if (loginStatusCode === StatusCodes.successfulLogin) {
+    if (loginStatusCode === AuthStatusCodes.successfulPasswordTokenFetch) {
+      console.log(this.router);
       this.router.navigate(Pages.INDEX);
+      this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
+      this.header?.customerLogin(this.state);
       await CustomerAPI.getCustomerInfo();
     } else {
       this.errorLine?.classList.add(CssClasses.ERROR_LINE_SHOW);
