@@ -7,7 +7,7 @@ export class AuthAPI {
     }
   }
 
-  private static async fetchAnonymousToken(): Promise<void> {
+  public static async fetchAnonymousToken(): Promise<void> {
     const url = `${CTP_AUTH_URL}/oauth/${CTP_PROJECT_KEY}/anonymous/token?grant_type=client_credentials`;
     const response = await fetch(url, {
       method: 'POST',
