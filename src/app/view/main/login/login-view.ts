@@ -1,5 +1,5 @@
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { StatusCodes } from '../../../../api/CustomerAPI/customer-api-type';
+import { AuthStatusCodes } from '../../../../api/authAPI/authAPI';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
 import State from '../../../state/state';
@@ -127,7 +127,8 @@ class LoginView extends View {
     const email = this.emailInput.value;
     const password = this.passwordInput.value;
     const loginStatusCode = await CustomerAPI.loginCustomer(email, password);
-    if (loginStatusCode === StatusCodes.successfulLogin) {
+    if (loginStatusCode === AuthStatusCodes.successfulPasswordTokenFetch) {
+      console.log(this.router);
       this.router.navigate(Pages.INDEX);
       this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
       this.header?.customerLogin(this.state);
