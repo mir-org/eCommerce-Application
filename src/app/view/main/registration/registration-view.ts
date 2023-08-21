@@ -344,7 +344,8 @@ class RegistrationView extends View {
       this.defaultBillingAddressInput = defaultShippingAddressInputElement;
     }
     wrapper?.addInnerElement(defaultAddressCheckboxCreator.getElement());
-    const checkbox = defaultAddressCheckboxCreator.getElement().lastChild?.firstChild as HTMLElement;
+    const checkbox = defaultAddressCheckboxCreator.getElement().firstChild?.firstChild as HTMLElement;
+    console.log(checkbox);
     checkbox.classList.remove('primary-input');
   }
 

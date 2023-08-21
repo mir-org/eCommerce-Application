@@ -1,10 +1,10 @@
 .primary-wrapper {
-  height: 40px;
+  height: 60px;
   position: relative;
 }
 
 .primary-label {
-  height: 100%;
+  height: 40px;
   padding: 10px;
   margin: 0 auto;
   display: block;
@@ -27,16 +27,27 @@
   left: 0;
   z-index: -5;
   transition: 0.3s;
+  &.invalid {
+    border-color: $primary-input-invalid-border-color;
+  }
+}
+
+.primary-input:focus {
+  border: 1px solid $primary-input-focus-border-color;
+}
+
+.primary-error-line {
+  position: relative;
+  color: $primary-error-line-text-color;
+  z-index: 40;
+  margin: 2px 5px 0;
+  font-size: 14px;
 }
 
 .primary-label:has(.primary-input:focus),
 .primary-label:has(.primary-input:not(:placeholder-shown)) {
   transform: translateY(-7px);
   font-size: 0.6em;
-}
-
-.primary-input:focus {
-  border: 1px solid $primary-input-focus-border-color;
 }
 
 .primary-input:focus,
