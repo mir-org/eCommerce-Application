@@ -212,10 +212,10 @@ class RegistrationView extends View {
       ''
     );
     const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
-    const passwordValue = this.passwordInput?.value;
     this.confirmPasswordInput = confirmPasswordInputElement;
     this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
     confirmPasswordInputElement.addEventListener('input', () => {
+      const passwordValue = this.passwordInput?.value;
       if (passwordValue !== undefined) {
         this.inputValidation(confirmPasswordInputCreator, () =>
           Validator.confirmPasswordField(confirmPasswordInputElement.value, passwordValue)
