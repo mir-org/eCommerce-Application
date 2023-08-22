@@ -21,7 +21,7 @@ class App {
     this.main = null;
     const state = new State();
     const routes = this.createRoutes(state);
-    this.router = new Router(routes);
+    this.router = new Router(routes, state);
     this.createView(state);
   }
 
