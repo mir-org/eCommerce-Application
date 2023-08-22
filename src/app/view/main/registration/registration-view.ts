@@ -3,11 +3,13 @@ import { Address, MyCustomerDraft } from '../../../../api/CustomerAPI/customer-a
 import { AuthAPI } from '../../../../api/authAPI/authAPI';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
+import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
+import HeaderView from '../../header/header-view';
 import { View } from '../../view';
-import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE } from './registration-view-types';
+import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE, KEY_FOR_SAVE } from './registration-view-types';
 
 class RegistrationView extends View {
   private form: ElementCreator | null;
@@ -52,7 +54,11 @@ class RegistrationView extends View {
 
   private errorLine: HTMLElement | null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private header: HeaderView | null,
+    private state: State
+  ) {
     super('section', SIGN_UP_CLASSES.REGISTRATION);
     this.form = null;
     this.btnsWrapper = null;
@@ -437,12 +443,14 @@ class RegistrationView extends View {
       return '';
     });
     if (this.errorLine) {
-      if (allEmpty) {
+      if (allEmpty && this.emailInput?.value !== '') {
         await CustomerAPI.registerCustomer(formData);
         await AuthAPI.fetchPasswordToken(formData.email, formData.password);
-        await CustomerAPI.getCustomerInfo();
         await CustomerAPI.loginCustomer(formData.email, formData.password);
         this.router.navigate(Pages.INDEX);
+        this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
+        this.header?.customerLogin(this.state);
+        await CustomerAPI.getCustomerInfo();
       } else {
         this.errorLine.textContent = 'Fix all errors';
       }

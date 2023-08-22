@@ -62,3 +62,7 @@ export const INITIAL_VALUE = {
   },
   ERROR_LINE: '',
 };
+
+export const KEY_FOR_SAVE = {
+  LOGIN_STATUS: 'login-status',
+};

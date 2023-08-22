@@ -66,7 +66,7 @@ class App {
         path: `${Pages.REGISTRATION}`,
         callback: async () => {
           const { default: RegistrationView } = await import('./view/main/registration/registration-view');
-          this.setContent(Pages.REGISTRATION, new RegistrationView(this.router));
+          this.setContent(Pages.REGISTRATION, new RegistrationView(this.router, this.header, state));
         },
       },
       {
