@@ -151,7 +151,6 @@ class LoginView extends View {
     const password = this.passwordInput.getInputElement().value;
     const loginStatusCode = await CustomerAPI.loginCustomer(email, password);
     if (loginStatusCode === AuthStatusCodes.successfulPasswordTokenFetch) {
-      console.log(this.router);
       this.router.navigate(Pages.INDEX);
       this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
       this.header?.customerLogin(this.state);
