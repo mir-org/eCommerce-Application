@@ -45,14 +45,14 @@ class App {
         path: '',
         callback: async () => {
           const { default: IndexView } = await import('./view/main/index/index-view');
-          this.setContent(Pages.INDEX, new IndexView());
+          this.setContent(Pages.INDEX, new IndexView(this.router));
         },
       },
       {
         path: `${Pages.INDEX}`,
         callback: async () => {
           const { default: IndexView } = await import('./view/main/index/index-view');
-          this.setContent(Pages.INDEX, new IndexView());
+          this.setContent(Pages.INDEX, new IndexView(this.router));
         },
       },
       {
