@@ -14,7 +14,7 @@ class FooterView extends View {
     footerRssLink.getElement().setAttribute('rel', 'noopener noreferrer');
     this.viewElementCreator.addInnerElement(footerRssLink);
     const rssImage = new ElementCreator('img', 'footer__link-image', '');
-    rssImage.getElement().setAttribute('src', '../../../../assets/images/rs_school_js.svg');
+    rssImage.getElement().setAttribute('src', './assets/images/rs_school_js.svg');
     footerRssLink.addInnerElement(rssImage);
     const teamText = new ElementCreator('div', 'footer__text-team', 'Developed by New World Disorder');
     this.viewElementCreator.addInnerElement(teamText);

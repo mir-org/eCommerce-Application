@@ -63,6 +63,10 @@ const WebpackConfig = {
           to: path.resolve(__dirname, 'dist/'),
         },
         {
+          from: path.resolve(__dirname, 'src/assets/images/'),
+          to: path.resolve(__dirname, 'dist/assets/images/'),
+        },
+        {
           from: path.resolve(__dirname, 'src/app/utils/spa-deploy/404.html'),
           to: path.resolve(__dirname, 'dist/'),
         },
