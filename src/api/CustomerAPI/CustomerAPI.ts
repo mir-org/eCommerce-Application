@@ -1,6 +1,6 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
 import { AuthAPI, AuthStatusCodes } from '../authAPI/authAPI';
-import { MyCustomerDraft, RegisterCustomerAnswer, StatusCodes } from './customer-api-type';
+import { MyCustomerDraft, StatusCodes } from './customer-api-type';
 
 export class CustomerAPI {
   public static async loginCustomer(email: string, password: string): Promise<number> {
@@ -22,7 +22,7 @@ export class CustomerAPI {
     return response.status;
   }
 
-  public static async registerCustomer(customerData: MyCustomerDraft): Promise<RegisterCustomerAnswer | number> {
+  public static async registerCustomer(customerData: MyCustomerDraft): Promise<number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
     const response = await fetch(url, {
       method: 'POST',
@@ -43,11 +43,7 @@ export class CustomerAPI {
       }),
     });
     if (response.status !== StatusCodes.successfulRegistration) {
-      const data = await response.json();
-      return {
-        message: data.message,
-        statusCode: data.statusCode,
-      };
+      return response.status;
     }
     await AuthAPI.fetchPasswordToken(customerData.email, customerData.password);
     await this.loginCustomer(customerData.email, customerData.password);
