@@ -25,7 +25,7 @@ const TEXT = {
 };
 
 const KEY_FOR_SAVE = {
-  LOGIN_STATUS: 'false',
+  LOGIN_STATUS: 'login-status',
 };
 
 class HeaderView extends View {
