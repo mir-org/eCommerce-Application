@@ -416,14 +416,13 @@ class RegistrationView extends View {
   }
 
   private addLoginButton(): ElementCreator {
-    const loginBtn = new ElementCreator('button', SIGN_UP_CLASSES.LOGIN_BTN, SIGN_UP_TEXT.LOGIN_BTN);
-    loginBtn.getElement().setAttribute('type', 'button');
+    const loginBtn = new ElementCreator('a', SIGN_UP_CLASSES.LOGIN_BTN, SIGN_UP_TEXT.LOGIN_BTN);
     loginBtn.getElement().addEventListener('click', () => this.router.navigate(Pages.LOGIN));
     return loginBtn;
   }
 
   private addCopyButton(): void {
-    const copyBtn = new ElementCreator('button', 'copy', 'Set as Billing Address');
+    const copyBtn = new ElementCreator('button', 'primary-button', 'Set as Billing Address');
     copyBtn.getElement().setAttribute('type', 'button');
     copyBtn.getElement().addEventListener('click', this.copyShippingAddressToBillingAddress.bind(this));
     this.form?.addInnerElement(copyBtn);
