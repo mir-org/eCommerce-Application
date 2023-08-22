@@ -444,17 +444,17 @@ class RegistrationView extends View {
     if (this.errorLine) {
       if (allEmpty && this.emailInput?.value !== '') {
         try {
-          const response: RegisterCustomerAnswer = (await CustomerAPI.registerCustomer(
-            formData
-          )) as RegisterCustomerAnswer;
-          console.log(response);
-          if (response.statusCode === 201) {
+          const response = await CustomerAPI.registerCustomer(formData);
+
+          if (response === 201) {
             this.router.navigate(Pages.INDEX);
             this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
             this.header?.customerLogin(this.state);
             await CustomerAPI.getCustomerInfo();
+          } else if (response === 400) {
+            this.errorLine.textContent = 'The user with that email already exists!';
           } else {
-            this.errorLine.textContent = `${response.message}`;
+            this.errorLine.textContent = 'Something went wrong!';
           }
         } catch (error) {
           this.errorLine.textContent = `${error}`;
