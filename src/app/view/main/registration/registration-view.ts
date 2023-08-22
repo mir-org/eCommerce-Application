@@ -392,7 +392,6 @@ class RegistrationView extends View {
     }
     wrapper?.addInnerElement(defaultAddressCheckboxCreator.getElement());
     const checkbox = defaultAddressCheckboxCreator.getElement().firstChild?.firstChild as HTMLElement;
-    console.log(checkbox);
     checkbox.classList.remove('primary-input');
   }
 
