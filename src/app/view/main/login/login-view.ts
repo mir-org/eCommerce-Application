@@ -155,7 +155,6 @@ class LoginView extends View {
       this.router.navigate(Pages.INDEX);
       this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
       this.header?.customerLogin(this.state);
-      await CustomerAPI.getCustomerInfo();
     } else {
       this.errorLine?.classList.add(CssClasses.ERROR_LINE_SHOW);
     }
