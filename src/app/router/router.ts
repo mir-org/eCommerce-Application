@@ -1,4 +1,9 @@
+import State from '../state/state';
 import { Pages } from './pages';
+
+const KEY_FOR_SAVE = {
+  LOGIN_STATUS: 'login-status',
+};
 
 const BROWSER_ROUTER_BASENAME = 'eCommerce-Application/';
 
@@ -15,8 +20,11 @@ interface UserRequest {
 class Router {
   private routes: Route[];
 
-  constructor(routes: Route[]) {
+  private state: State;
+
+  constructor(routes: Route[], state: State) {
     this.routes = routes;
+    this.state = state;
     document.addEventListener('DOMContentLoaded', () => {
       const path = this.getCurrentPath();
       this.navigate(path);
@@ -30,6 +38,15 @@ class Router {
     const request = this.parseUrl(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
     const route = this.routes.find((item) => item.path === pathForFind);
+    const isLoggedIn = this.state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
+
+    if (request.path === Pages.REGISTRATION || request.path === Pages.LOGIN) {
+      if (isLoggedIn === 'true') {
+        this.redirectToMain();
+        return;
+      }
+    }
+
     if (!route) {
       this.redirectToNotFound();
     } else {
@@ -52,6 +69,13 @@ class Router {
     const routeNotFound = this.routes.find((item) => item.path === Pages.NOT_FOUND);
     if (routeNotFound) {
       this.navigate(routeNotFound.path);
+    }
+  }
+
+  private redirectToMain(): void {
+    const routeMainPage = this.routes.find((item) => item.path === Pages.INDEX);
+    if (routeMainPage) {
+      this.navigate(routeMainPage.path);
     }
   }
 

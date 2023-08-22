@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { Address, MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
+import { Address, MyCustomerDraft, RegisterCustomerAnswer } from '../../../../api/CustomerAPI/customer-api-type';
 import { AuthAPI } from '../../../../api/authAPI/authAPI';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
+import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
+import HeaderView from '../../header/header-view';
 import { View } from '../../view';
-import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE } from './registration-view-types';
+import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE, KEY_FOR_SAVE } from './registration-view-types';
 
 class RegistrationView extends View {
   private form: ElementCreator | null;
@@ -52,7 +55,11 @@ class RegistrationView extends View {
 
   private errorLine: HTMLElement | null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private header: HeaderView | null,
+    private state: State
+  ) {
     super('section', SIGN_UP_CLASSES.REGISTRATION);
     this.form = null;
     this.btnsWrapper = null;
@@ -385,7 +392,6 @@ class RegistrationView extends View {
     }
     wrapper?.addInnerElement(defaultAddressCheckboxCreator.getElement());
     const checkbox = defaultAddressCheckboxCreator.getElement().firstChild?.firstChild as HTMLElement;
-    console.log(checkbox);
     checkbox.classList.remove('primary-input');
   }
 
@@ -410,14 +416,13 @@ class RegistrationView extends View {
   }
 
   private addLoginButton(): ElementCreator {
-    const loginBtn = new ElementCreator('button', SIGN_UP_CLASSES.LOGIN_BTN, SIGN_UP_TEXT.LOGIN_BTN);
-    loginBtn.getElement().setAttribute('type', 'button');
+    const loginBtn = new ElementCreator('a', SIGN_UP_CLASSES.LOGIN_BTN, SIGN_UP_TEXT.LOGIN_BTN);
     loginBtn.getElement().addEventListener('click', () => this.router.navigate(Pages.LOGIN));
     return loginBtn;
   }
 
   private addCopyButton(): void {
-    const copyBtn = new ElementCreator('button', 'copy', 'Set as Billing Address');
+    const copyBtn = new ElementCreator('button', 'primary-button', 'Set as Billing Address');
     copyBtn.getElement().setAttribute('type', 'button');
     copyBtn.getElement().addEventListener('click', this.copyShippingAddressToBillingAddress.bind(this));
     this.form?.addInnerElement(copyBtn);
@@ -437,14 +442,26 @@ class RegistrationView extends View {
       return '';
     });
     if (this.errorLine) {
-      if (allEmpty) {
-        await CustomerAPI.registerCustomer(formData);
-        await AuthAPI.fetchPasswordToken(formData.email, formData.password);
-        await CustomerAPI.getCustomerInfo();
-        await CustomerAPI.loginCustomer(formData.email, formData.password);
-        this.router.navigate(Pages.INDEX);
+      if (allEmpty && this.emailInput?.value !== '') {
+        try {
+          const response = await CustomerAPI.registerCustomer(formData);
+
+          if (response === 201) {
+            this.router.navigate(Pages.INDEX);
+            this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
+            this.header?.customerLogin(this.state);
+            await CustomerAPI.getCustomerInfo();
+          } else if (response === 400) {
+            this.errorLine.textContent = 'The user with that email already exists!';
+          } else {
+            this.errorLine.textContent = 'Something went wrong!';
+          }
+        } catch (error) {
+          this.errorLine.textContent = `${error}`;
+        }
       } else {
         this.errorLine.textContent = 'Fix all errors';
+        this.errorLine?.classList.add(SIGN_UP_CLASSES.ERROR_LINE_SHOW);
       }
     }
   }

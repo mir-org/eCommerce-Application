@@ -13,7 +13,7 @@ export const SIGN_UP_CLASSES = {
   COUNTRY: 'country',
   ERROR_LINE: 'error',
   REGISTER_BTN: 'primary-button',
-  LOGIN_BTN: 'primary-button',
+  LOGIN_BTN: 'login__registration-link',
   SHOW_HIDE_ICON: ['material-symbols-outlined', 'registration__show-hide-icon'],
   SET_DEFAULT_ADDRESS: 'set-default',
   INPUT_INVALID: 'invalid',
@@ -61,4 +61,8 @@ export const INITIAL_VALUE = {
     PASSWORD: '',
   },
   ERROR_LINE: '',
+};
+
+export const KEY_FOR_SAVE = {
+  LOGIN_STATUS: 'login-status',
 };

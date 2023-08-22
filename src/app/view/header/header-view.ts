@@ -25,7 +25,7 @@ const TEXT = {
 };
 
 const KEY_FOR_SAVE = {
-  LOGIN_STATUS: 'false',
+  LOGIN_STATUS: 'login-status',
 };
 
 class HeaderView extends View {
@@ -60,8 +60,10 @@ class HeaderView extends View {
   private hideLoginLink(state: State): void {
     const isLoggedIn = state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
     if (isLoggedIn === 'true') {
-      const loginLink = this.headerLinkElements.get('login');
+      const loginLink = this.headerLinkElements.get('LOGIN');
       loginLink?.getHTMLElement().classList.add(CssClasses.HIDE_LINK_ELEMENT);
+      const registrationLink = this.headerLinkElements.get('REGISTRATION');
+      registrationLink?.getHTMLElement().classList.add(CssClasses.HIDE_LINK_ELEMENT);
     }
   }
 
@@ -100,8 +102,10 @@ class HeaderView extends View {
     await AuthAPI.fetchAnonymousToken();
     router.navigate(Pages.LOGIN);
     this.logoutButton?.classList.remove(CssClasses.SHOW_LOGOUT_BUTTON);
-    const loginLink = this.headerLinkElements.get('login');
+    const loginLink = this.headerLinkElements.get('LOGIN');
     loginLink?.getHTMLElement().classList.remove(CssClasses.HIDE_LINK_ELEMENT);
+    const registrationLink = this.headerLinkElements.get('REGISTRATION');
+    registrationLink?.getHTMLElement().classList.remove(CssClasses.HIDE_LINK_ELEMENT);
     state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'false');
   }
 }

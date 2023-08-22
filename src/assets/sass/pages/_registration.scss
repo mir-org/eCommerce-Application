@@ -6,6 +6,7 @@
   padding: 20px;
   gap: 5px;
   width: 40%;
+  min-width: 300px;
   margin: 20px auto 0;
   border: 1px solid $login-registration-section-border-color;
   border-radius: 2px;
@@ -53,4 +54,8 @@
     z-index: 20;
     user-select: none;
   }
+}
+
+.error {
+  color: red;
 }

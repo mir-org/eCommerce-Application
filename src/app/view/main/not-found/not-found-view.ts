@@ -18,7 +18,7 @@ class NotFoundView extends View {
     const imageBlock = new ElementCreator('div', 'not-found__image-block', '');
     this.viewElementCreator.addInnerElement(imageBlock);
     const image = new ElementCreator('img', 'not-found__image-block-img', '');
-    image.getElement().setAttribute('src', '../../../../assets/images/error-404.png');
+    image.getElement().setAttribute('src', './assets/images/error-404.png');
     imageBlock.addInnerElement(image);
   }
 

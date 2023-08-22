@@ -21,7 +21,7 @@ class App {
     this.main = null;
     const state = new State();
     const routes = this.createRoutes(state);
-    this.router = new Router(routes);
+    this.router = new Router(routes, state);
     this.createView(state);
   }
 
@@ -45,14 +45,14 @@ class App {
         path: '',
         callback: async () => {
           const { default: IndexView } = await import('./view/main/index/index-view');
-          this.setContent(Pages.INDEX, new IndexView());
+          this.setContent(Pages.INDEX, new IndexView(this.router));
         },
       },
       {
         path: `${Pages.INDEX}`,
         callback: async () => {
           const { default: IndexView } = await import('./view/main/index/index-view');
-          this.setContent(Pages.INDEX, new IndexView());
+          this.setContent(Pages.INDEX, new IndexView(this.router));
         },
       },
       {
@@ -66,7 +66,7 @@ class App {
         path: `${Pages.REGISTRATION}`,
         callback: async () => {
           const { default: RegistrationView } = await import('./view/main/registration/registration-view');
-          this.setContent(Pages.REGISTRATION, new RegistrationView(state));
+          this.setContent(Pages.REGISTRATION, new RegistrationView(this.router, this.header, state));
         },
       },
       {
