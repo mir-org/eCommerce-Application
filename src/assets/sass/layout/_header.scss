@@ -22,12 +22,12 @@
   &__item {
     cursor: pointer;
 
+    &.hide {
+      display: none;
+    }
+
     &_selected {
       text-decoration: underline;
     }
   }
-}
-
-.nav-item.hide {
-  display: none;
 }
