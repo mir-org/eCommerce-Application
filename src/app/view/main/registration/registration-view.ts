@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { Address, MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
+import { Address, MyCustomerDraft, RegisterCustomerAnswer } from '../../../../api/CustomerAPI/customer-api-type';
 import { AuthAPI } from '../../../../api/authAPI/authAPI';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
@@ -443,15 +444,25 @@ class RegistrationView extends View {
     });
     if (this.errorLine) {
       if (allEmpty && this.emailInput?.value !== '') {
-        await CustomerAPI.registerCustomer(formData);
-        await AuthAPI.fetchPasswordToken(formData.email, formData.password);
-        await CustomerAPI.loginCustomer(formData.email, formData.password);
-        this.router.navigate(Pages.INDEX);
-        this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
-        this.header?.customerLogin(this.state);
-        await CustomerAPI.getCustomerInfo();
+        try {
+          const response: RegisterCustomerAnswer = (await CustomerAPI.registerCustomer(
+            formData
+          )) as RegisterCustomerAnswer;
+          console.log(response);
+          if (response.statusCode === 201) {
+            this.router.navigate(Pages.INDEX);
+            this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
+            this.header?.customerLogin(this.state);
+            await CustomerAPI.getCustomerInfo();
+          } else {
+            this.errorLine.textContent = `${response.message}`;
+          }
+        } catch (error) {
+          this.errorLine.textContent = `${error}`;
+        }
       } else {
         this.errorLine.textContent = 'Fix all errors';
+        this.errorLine?.classList.add(SIGN_UP_CLASSES.ERROR_LINE_SHOW);
       }
     }
   }
