@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { Address, MyCustomerDraft, RegisterCustomerAnswer } from '../../../../api/CustomerAPI/customer-api-type';
-import { AuthAPI } from '../../../../api/authAPI/authAPI';
+import { Address, MyCustomerDraft } from '../../../../api/CustomerAPI/customer-api-type';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
 import State from '../../../state/state';
@@ -128,6 +126,7 @@ class RegistrationView extends View {
       ''
     );
     const firstNameInputElement = firstNameInputCreator.getInputElement();
+    firstNameInputCreator.getInputElement().setAttribute('required', '');
     this.firstNameInput = firstNameInputElement;
     firstNameInputElement.addEventListener('input', () => {
       this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
@@ -146,6 +145,7 @@ class RegistrationView extends View {
       ''
     );
     const lastNameInputElement = lastNameInputCreator.getInputElement();
+    lastNameInputCreator.getInputElement().setAttribute('required', '');
     this.lastNameInput = lastNameInputElement;
     lastNameInputElement.addEventListener('input', () => {
       this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
@@ -164,6 +164,7 @@ class RegistrationView extends View {
       ''
     );
     const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
+    dateOfBirthInputCreator.getInputElement().setAttribute('required', '');
     this.dateOfBirthInput = dateOfBirthInputElement;
     dateOfBirthInputElement.addEventListener('input', () => {
       this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
@@ -182,6 +183,7 @@ class RegistrationView extends View {
       ''
     );
     const emailInputElement = emailInputCreator.getInputElement();
+    emailInputCreator.getInputElement().setAttribute('required', '');
     this.emailInput = emailInputElement;
     emailInputElement.addEventListener('input', () => {
       this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
@@ -200,6 +202,7 @@ class RegistrationView extends View {
       ''
     );
     const passwordInputElement = passwordInputCreator.getInputElement();
+    passwordInputCreator.getInputElement().setAttribute('required', '');
     this.passwordInput = passwordInputElement;
     this.addShowHidePasswordIcon(this.passwordInput, passwordInputCreator);
     passwordInputElement.addEventListener('input', () => {
@@ -219,6 +222,7 @@ class RegistrationView extends View {
       ''
     );
     const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
+    confirmPasswordInputCreator.getInputElement().setAttribute('required', '');
     this.confirmPasswordInput = confirmPasswordInputElement;
     this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
     confirmPasswordInputElement.addEventListener('input', () => {
@@ -311,7 +315,7 @@ class RegistrationView extends View {
       this.streetBillingAddressInput = streetAddressInputElement;
     }
     streetAddressInputElement.addEventListener('input', () => {
-      this.inputValidation(streetAddressInputCreator, () => Validator.cityField(streetAddressInputElement.value));
+      this.inputValidation(streetAddressInputCreator, () => Validator.streetField(streetAddressInputElement.value));
       this.inputKeydownFn();
     });
     wrapper?.addInnerElement(streetAddressInputCreator.getElement());
@@ -445,12 +449,12 @@ class RegistrationView extends View {
       if (allEmpty && this.emailInput?.value !== '') {
         try {
           const response = await CustomerAPI.registerCustomer(formData);
-
           if (response === 201) {
             this.router.navigate(Pages.INDEX);
             this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
             this.header?.customerLogin(this.state);
             await CustomerAPI.getCustomerInfo();
+            this.createPopupWithText('Registration successful, automatically logged in!');
           } else if (response === 400) {
             this.errorLine.textContent = 'The user with that email already exists!';
           } else {
@@ -575,6 +579,23 @@ class RegistrationView extends View {
 
   private inputKeydownFn(): void {
     this.errorLine?.classList.remove(SIGN_UP_CLASSES.ERROR_LINE_SHOW);
+  }
+
+  private createPopupWithText(message: string): void {
+    const popup = new ElementCreator('div', 'popup', message);
+
+    const closeButton = new ElementCreator('button', 'primary-button', 'Close');
+
+    closeButton.getElement().addEventListener('click', () => {
+      document.body.removeChild(popup.getElement());
+    });
+
+    popup.addInnerElement(closeButton);
+    document.body.appendChild(popup.getElement());
+
+    setTimeout(() => {
+      document.body.removeChild(popup.getElement());
+    }, 2000);
   }
 }
 
