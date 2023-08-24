@@ -43,12 +43,14 @@ const WebpackConfig = {
   },
   optimization: optimization(),
   devServer: {
+    open: true,
+    host: 'localhost',
+    port: 9000,
     static: {
       directory: path.join(__dirname, 'src'),
     },
     compress: true,
-    port: 9000,
-    open: true,
+    historyApiFallback: true,
   },
   plugins: [
     new HTMLWebpackPlugin({
@@ -58,6 +60,14 @@ const WebpackConfig = {
       patterns: [
         {
           from: path.resolve(__dirname, 'src/assets/favicon/favicon.ico'),
+          to: path.resolve(__dirname, 'dist/'),
+        },
+        {
+          from: path.resolve(__dirname, 'src/assets/images/'),
+          to: path.resolve(__dirname, 'dist/assets/images/'),
+        },
+        {
+          from: path.resolve(__dirname, 'src/app/utils/spa-deploy/404.html'),
           to: path.resolve(__dirname, 'dist/'),
         },
       ],

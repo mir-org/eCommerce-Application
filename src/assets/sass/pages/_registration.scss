@@ -1,0 +1,79 @@
+.registration {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  padding: 20px;
+  gap: 5px;
+  width: 40%;
+  min-width: 300px;
+  margin: 20px auto 0;
+  border: 1px solid $login-registration-section-border-color;
+  border-radius: 2px;
+
+  &__title {
+    text-align: center;
+    font-size: 24px;
+    margin: 15px 0 5px;
+  }
+
+  .registration_error-line {
+    height: 30px;
+    line-height: 28px;
+    text-align: center;
+    border: 1px solid $login-registration-section-border-color;
+    border-radius: 5px;
+    color: $login-registration-error-line-text-color;
+    background-color: $login-registration-error-line-background-color;
+    opacity: 0;
+    visibility: hidden;
+    margin-bottom: 5px;
+    transition: 0.1s;
+  }
+
+  .registration_error-line.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &__form,
+  .fieldset {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    gap: 5px;
+  }
+
+  .registration__show-hide-icon {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    z-index: 20;
+    user-select: none;
+  }
+}
+
+.error {
+  color: red;
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f0f0f0;
+  width: 300px;
+  height: 200px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

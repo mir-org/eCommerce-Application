@@ -30,21 +30,6 @@ aside {
   display: block;
 }
 
-html,
-body {
-  height: 100%;
-  width: 100%;
-  font-size: 100%;
-
-  // а нужен ли?
-  line-height: 1;
-  font-size: 14px;
-  //
-  -ms-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
 input,
 button,
 textarea {
@@ -57,11 +42,6 @@ input::-ms-clear {
 
 button {
   cursor: pointer;
-}
-
-button::-moz-focus-inner {
-  padding: 0;
-  border: 0;
 }
 
 a,
@@ -87,6 +67,11 @@ h3,
 h4,
 h5,
 h6 {
+  margin: 0;
   font-size: inherit;
   font-weight: inherit;
+}
+
+input {
+  border: 1px solid black;
 }
