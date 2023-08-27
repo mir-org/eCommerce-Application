@@ -18,6 +18,7 @@ const NamePages: IPages = {
   INDEX: 'Main',
   LOGIN: 'Login',
   REGISTRATION: 'Registration',
+  CATALOG: 'Catalog',
 };
 
 const TEXT = {
