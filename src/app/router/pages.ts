@@ -9,6 +9,6 @@ const Pages: IPages = {
   NOT_FOUND: 'not-found',
 };
 
-const ID_SELECTOR = '{id}';
+const ID = '{id}';
 
-export { IPages, Pages, ID_SELECTOR };
+export { IPages, Pages, ID };

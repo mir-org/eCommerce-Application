@@ -1,20 +1,16 @@
 import State from '../state/state';
-import { Pages } from './pages';
+import { Pages, ID } from './pages';
+import { HistoryRouterHandler, RequestParams } from './history-router-handler';
 
-const KEY_FOR_SAVE = {
-  LOGIN_STATUS: 'login-status',
-};
+// const KEY_FOR_SAVE = {
+//   LOGIN_STATUS: 'login-status',
+// };
 
-const BROWSER_ROUTER_BASENAME = 'eCommerce-Application/';
+// const BROWSER_ROUTER_BASENAME = 'eCommerce-Application/';
 
 interface Route {
   path: string;
-  callback: () => void;
-}
-
-interface UserRequest {
-  path: string;
-  resource: string;
+  callback: (resource?: string) => void;
 }
 
 class Router {
@@ -22,73 +18,41 @@ class Router {
 
   private state: State;
 
+  public handler: HistoryRouterHandler;
+
   constructor(routes: Route[], state: State) {
     this.routes = routes;
-    this.state = state;
-    document.addEventListener('DOMContentLoaded', () => {
-      const path = this.getCurrentPath();
-      this.navigate(path);
-    });
 
-    window.addEventListener('popstate', this.browserChangeHandler.bind(this));
-    window.addEventListener('hashchange', this.browserChangeHandler.bind(this));
+    this.handler = new HistoryRouterHandler(this.urlChangedHandler.bind(this));
+
+    this.state = state;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      this.handler.navigate('');
+    });
   }
 
   public navigate(url: string): void {
-    const request = this.parseUrl(url);
-    const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
-    const route = this.routes.find((item) => item.path === pathForFind);
-    const isLoggedIn = this.state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
+    this.handler.navigate(url);
+  }
 
-    if (request.path === Pages.REGISTRATION || request.path === Pages.LOGIN) {
-      if (isLoggedIn === 'true') {
-        this.redirectToMain();
-        return;
-      }
-    }
+  public urlChangedHandler(requestParams: RequestParams): void {
+    const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/${ID}`;
+    const route = this.routes.find((item) => item.path === pathForFind);
 
     if (!route) {
-      this.redirectToNotFound();
-    } else {
-      route.callback();
-      window.history.pushState(null, '', pathForFind);
+      this.redirectToNotFoundPage();
+      return;
     }
+
+    route.callback(requestParams.resource);
   }
 
-  private parseUrl(url: string): UserRequest {
-    const path = url.split('/');
-    const result: UserRequest = {
-      path: '',
-      resource: '',
-    };
-    [result.path = '', result.resource = ''] = path;
-    return result;
-  }
-
-  private redirectToNotFound(): void {
-    const routeNotFound = this.routes.find((item) => item.path === Pages.NOT_FOUND);
-    if (routeNotFound) {
-      this.navigate(routeNotFound.path);
+  public redirectToNotFoundPage(): void {
+    const notFoundPage = this.routes.find((item) => item.path === Pages.NOT_FOUND);
+    if (notFoundPage) {
+      this.navigate(notFoundPage.path);
     }
-  }
-
-  private redirectToMain(): void {
-    const routeMainPage = this.routes.find((item) => item.path === Pages.INDEX);
-    if (routeMainPage) {
-      this.navigate(routeMainPage.path);
-    }
-  }
-
-  private browserChangeHandler(): void {
-    const path = this.getCurrentPath();
-    this.navigate(path);
-  }
-
-  private getCurrentPath(): string {
-    if (window.location.hash) {
-      return window.location.hash.slice(1).replace(BROWSER_ROUTER_BASENAME, '');
-    }
-    return window.location.pathname.slice(1).replace(BROWSER_ROUTER_BASENAME, '');
   }
 }
 
