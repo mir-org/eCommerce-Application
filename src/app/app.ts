@@ -70,6 +70,13 @@ class App {
         },
       },
       {
+        path: `${Pages.CATALOG}`,
+        callback: async () => {
+          const { default: CatalogView } = await import('./view/main/catalog/catalog-view');
+          this.setContent(Pages.CATALOG, new CatalogView(this.router));
+        },
+      },
+      {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
