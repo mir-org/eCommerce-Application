@@ -2,6 +2,7 @@ import { View } from '../../view';
 import { Router } from '../../../router/router';
 import { ElementCreator } from '../../../utils/element-creator';
 import { CATALOG_CLASSES, CATALOG_TEXT } from './catalog-view-types';
+import { ProductAPI } from '../../../../api/product-api/product-api';
 
 class CatalogView extends View {
   private content: ElementCreator | null;
@@ -22,6 +23,9 @@ class CatalogView extends View {
   private addTitle(): void {
     const title = new ElementCreator('h1', CATALOG_CLASSES.TITLE, CATALOG_TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
+    ProductAPI.getAllProducts(1);
+    ProductAPI.getProduct('efa39720-5e7c-4158-be12-1362a4e0b095');
+    ProductAPI.getNumberOfPages();
   }
 
   private addContent(): void {
