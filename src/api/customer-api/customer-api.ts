@@ -1,6 +1,6 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
 import { AuthAPI, AuthStatusCodes } from '../auth-api/auth-api';
-import { MyCustomerDraft, StatusCodes } from './customer-api-type';
+import { MyCustomerDraft, StatusCodes } from './customer-api-types';
 
 export class CustomerAPI {
   public static async loginCustomer(email: string, password: string): Promise<number> {

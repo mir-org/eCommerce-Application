@@ -1,5 +1,5 @@
 import { CustomerAPI } from '../../../../api/customer-api/customer-api';
-import { Address, MyCustomerDraft } from '../../../../api/customer-api/customer-api-type';
+import { Address, MyCustomerDraft } from '../../../../api/customer-api/customer-api-types';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
 import State from '../../../state/state';
