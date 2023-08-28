@@ -2,9 +2,9 @@ import State from '../state/state';
 import { Pages, ID } from './pages';
 import { HistoryRouterHandler, RequestParams } from './history-router-handler';
 
-// const KEY_FOR_SAVE = {
-//   LOGIN_STATUS: 'login-status',
-// };
+const KEY_FOR_SAVE = {
+  LOGIN_STATUS: 'login-status',
+};
 
 // const BROWSER_ROUTER_BASENAME = 'eCommerce-Application/';
 
@@ -37,6 +37,14 @@ class Router {
   }
 
   public urlChangedHandler(requestParams: RequestParams): void {
+    const isLoggedIn = this.state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
+    if (requestParams.path === Pages.REGISTRATION || requestParams.path === Pages.LOGIN) {
+      if (isLoggedIn === 'true') {
+        this.redirectToMain();
+        return;
+      }
+    }
+
     const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/${ID}`;
     const route = this.routes.find((item) => item.path === pathForFind);
 
@@ -46,6 +54,13 @@ class Router {
     }
 
     route.callback(requestParams.resource);
+  }
+
+  private redirectToMain(): void {
+    const routeMainPage = this.routes.find((item) => item.path === Pages.INDEX);
+    if (routeMainPage) {
+      this.navigate(routeMainPage.path);
+    }
   }
 
   public redirectToNotFoundPage(): void {
