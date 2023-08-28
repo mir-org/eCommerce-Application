@@ -16,14 +16,14 @@ export const TEXT = {
   TITLE: 'LOGIN',
   ERROR_LINE: 'Incorrect username or password',
   FORM: '',
-  EMAIL_INPUT: 'Ел.адрес',
-  PASSWORD_INPUT: 'Пароль',
-  BUTTON: 'Войти',
+  EMAIL_INPUT: 'Email',
+  PASSWORD_INPUT: 'Password',
+  BUTTON: 'Login',
   SHOW_HIDE_ICON: {
     VISIBLE: 'visibility',
     VISIBLE_OFF: 'visibility_off',
   },
-  REGISTRATION_LINK: 'Зарегистрироваться',
+  REGISTRATION_LINK: 'Sign Up',
 };
 
 export const TYPE = {

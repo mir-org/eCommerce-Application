@@ -3,7 +3,7 @@ import { ElementCreator } from '../../utils/element-creator';
 import { View } from '../view';
 import LinkView from './link-view';
 import { IPages, Pages } from '../../router/pages';
-import { AuthAPI } from '../../../api/authAPI/authAPI';
+import { AuthAPI } from '../../../api/auth-api/auth-api';
 import State from '../../state/state';
 
 const CssClasses = {

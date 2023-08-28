@@ -1,5 +1,5 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
-import { AuthAPI, AuthStatusCodes } from '../authAPI/authAPI';
+import { AuthAPI, AuthStatusCodes } from '../auth-api/auth-api';
 import { MyCustomerDraft, StatusCodes } from './customer-api-type';
 
 export class CustomerAPI {
