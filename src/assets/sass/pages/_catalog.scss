@@ -1,0 +1,8 @@
+.catalog {
+  display: flex;
+  background-color: antiquewhite;
+  flex-direction: column;
+  &__content {
+    display: flex;
+  }
+}
