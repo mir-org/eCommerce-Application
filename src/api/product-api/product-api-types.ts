@@ -22,6 +22,15 @@ export type AllProducts = {
   total: number;
 };
 
+export type ProductCards = ProductCard[];
+
+export type ProductCard = {
+  description: string;
+  image: string;
+  name: string;
+  price: number;
+};
+
 type CreatedAndModified = {
   clientId: string;
   isPlatformClient: boolean;
@@ -43,7 +52,7 @@ type CurrentAndStaged = {
   categories: Ids[];
   categoryOrderHints: object;
   masterVariant: MasterVariant;
-  metaDescription: Language;
+  metaDescription?: Language;
   name: Language;
   searchKeywords: object;
   slug: Language;

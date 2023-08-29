@@ -12,7 +12,6 @@ export class ProductAPI {
       },
     });
     const products: AllProducts = await response.json();
-    console.log('getAllProducts', products);
     return products;
   }
 
@@ -25,14 +24,12 @@ export class ProductAPI {
       },
     });
     const product: Product = await response.json();
-    console.log('getProduct', product);
     return product;
   }
 
   public static async getNumberOfPages(): Promise<number> {
     const response = await ProductAPI.getAllProducts();
     const maxPages = Math.ceil(response.total / response.limit);
-    console.log('getNumberOfPages', maxPages);
     return maxPages;
   }
 }
