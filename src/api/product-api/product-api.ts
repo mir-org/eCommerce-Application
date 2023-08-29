@@ -12,6 +12,7 @@ export class ProductAPI {
       },
     });
     const products: AllProducts = await response.json();
+    // console.log(products);
     return products;
   }
 

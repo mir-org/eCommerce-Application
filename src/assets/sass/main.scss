@@ -42,7 +42,6 @@ body {
 .wrapper {
   min-height: 100%;
   overflow: hidden;
-
   display: flex;
   flex-direction: column;
 }
@@ -52,10 +51,10 @@ body {
 }
 
 .main {
+  display: flex;
   flex: 1 1 auto;
   border: 1px solid black;
-  display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   padding: 10px;
 }

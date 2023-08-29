@@ -1,6 +1,6 @@
 .catalog {
   display: flex;
-  flex: 1 1 auto;
+  flex: 1;
   align-items: center;
   justify-content: center;
   background-color: antiquewhite;
@@ -8,7 +8,7 @@
   &__content {
     display: flex;
     width: 100%;
-    flex: 1 1 auto;
+    flex: 1;
     align-items: center;
     justify-content: space-around;
     &-aside {
@@ -16,6 +16,8 @@
     }
     &-products {
       display: flex;
+      flex: 1;
+      flex-direction: column;
       flex-wrap: wrap;
       gap: 5px;
       width: 80%;
@@ -23,6 +25,17 @@
         width: 200px;
         height: 400px;
         border: 1px solid black;
+        word-wrap: break-word;
+      }
+      .cards-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .paginator {
+        gap: 5px;
+        flex-wrap: wrap;
+        display: flex;
       }
     }
   }
