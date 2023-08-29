@@ -53,28 +53,6 @@ class HeaderView extends View {
     }
   }
 
-  public customerLogin(state: State): void {
-    this.logoutButton?.classList.add('show');
-    this.hideLoginLink(state);
-  }
-
-  private hideLoginLink(state: State): void {
-    const isLoggedIn = state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
-    if (isLoggedIn === 'true') {
-      const loginLink = this.headerLinkElements.get('LOGIN');
-      loginLink?.getHTMLElement().classList.add(CssClasses.HIDE_LINK_ELEMENT);
-      const registrationLink = this.headerLinkElements.get('REGISTRATION');
-      registrationLink?.getHTMLElement().classList.add(CssClasses.HIDE_LINK_ELEMENT);
-    }
-  }
-
-  private showLogoutButton(state: State): void {
-    const isLoggedIn = state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
-    if (isLoggedIn === 'true') {
-      this.logoutButton?.classList.add(CssClasses.SHOW_LOGOUT_BUTTON);
-    }
-  }
-
   private addNavigation(router: Router, state: State): void {
     const creatorNav = new ElementCreator('nav', CssClasses.NAV);
     Object.keys(NamePages).forEach((key) => {
@@ -86,8 +64,35 @@ class HeaderView extends View {
       creatorNav.addInnerElement(linkElement.getHTMLElement());
       this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
     });
+    // Сука руки бы вырвал
     this.hideLoginLink(state);
     this.viewElementCreator.addInnerElement(creatorNav);
+  }
+
+  // Эта ебанина тригерится из другой вьюшки.
+  public customerLogin(state: State): void {
+    this.logoutButton?.classList.add('show');
+    this.hideLoginLink(state);
+  }
+
+  /* Эта ебанина тригерится ебаниной выше, которая тригерится из другой вьюшки.
+  Она типо прячет ссылки на логин и регистрацию */
+  private hideLoginLink(state: State): void {
+    const isLoggedIn = state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
+    if (isLoggedIn === 'true') {
+      const loginLink = this.headerLinkElements.get('LOGIN');
+      loginLink?.getHTMLElement().classList.add(CssClasses.HIDE_LINK_ELEMENT);
+      const registrationLink = this.headerLinkElements.get('REGISTRATION');
+      registrationLink?.getHTMLElement().classList.add(CssClasses.HIDE_LINK_ELEMENT);
+    }
+  }
+
+  // У это ебанины корявое название, и нахуй она учавствует в создании кнопки.
+  private showLogoutButton(state: State): void {
+    const isLoggedIn = state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
+    if (isLoggedIn === 'true') {
+      this.logoutButton?.classList.add(CssClasses.SHOW_LOGOUT_BUTTON);
+    }
   }
 
   private addLogoutButton(router: Router, state: State): void {
@@ -95,12 +100,15 @@ class HeaderView extends View {
     const logoutButtonElement = logoutButtonCreator.getElement();
     this.logoutButton = logoutButtonElement;
     logoutButtonElement.addEventListener('click', this.logoutButtonClickFn.bind(this, router, state));
+    // Тригерится ебаниной выше
     this.showLogoutButton(state);
     this.viewElementCreator.addInnerElement(logoutButtonElement);
   }
 
+  // Что это нахуй такое? Это последний триггер.
   private async logoutButtonClickFn(router: Router, state: State): Promise<void> {
     await AuthAPI.fetchAnonymousToken();
+    // Это куда, зачем?
     router.navigate(Pages.LOGIN);
     this.logoutButton?.classList.remove(CssClasses.SHOW_LOGOUT_BUTTON);
     const loginLink = this.headerLinkElements.get('LOGIN');
