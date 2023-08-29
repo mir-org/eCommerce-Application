@@ -29,6 +29,7 @@ export type ProductCard = {
   image: string;
   name: string;
   price: number;
+  discount?: number;
 };
 
 type CreatedAndModified = {
@@ -91,6 +92,10 @@ type ImageDimensions = {
 type Prices = {
   id: string;
   value: { centAmount: number; currencyCode: string; fractionDigits: number; type: number };
+  discounted?: {
+    discount: Ids;
+    value: { centAmount: number; currencyCode: string; fractionDigits: number; type: number };
+  };
   customerGroup?: Ids;
   country?: string;
   channel?: Ids;

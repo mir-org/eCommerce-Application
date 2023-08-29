@@ -31,9 +31,6 @@ class CatalogView extends View {
   private addTitle(): void {
     const title = new ElementCreator('h1', CATALOG_CLASSES.TITLE, CATALOG_TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
-    // ProductAPI.getAllProducts(1);
-    // ProductAPI.getProduct('efa39720-5e7c-4158-be12-1362a4e0b095');
-    // ProductAPI.getNumberOfPages();
   }
 
   private addContent(): void {
@@ -51,7 +48,6 @@ class CatalogView extends View {
     const products = new ElementCreator('div', CATALOG_CLASSES.PRODUCTS, '');
     this.contentProducts = products;
     this.content?.addInnerElement(products);
-    // products.addInnerElement(this.createProductCards());
     this.createAllProductCards();
     this.createPaginator();
   }
@@ -96,12 +92,19 @@ class CatalogView extends View {
     const { description } = product;
     const { price } = product;
     const { image } = product;
-    // console.log('name', name);
-    // console.log('description', description);
-    // console.log('price', price);
-    // console.log('image', image);
-    const card = new ElementCreator('div', 'product-card', `${name}, ${description}, ${price}, ${image}`);
-    // console.log(card);
+    const { discount } = product;
+    const card = new ElementCreator('div', 'product-card', '');
+    const cardTitle = new ElementCreator('h2', 'product-card-name', `${name}`);
+    const cardImg = new ElementCreator('img', 'product-card-image', '');
+    const cardPrice = new ElementCreator('div', 'product-card-price', `$${price}`);
+    const cardDiscount = new ElementCreator('div', 'product-card-discount', `$${discount}`);
+    const cardDescription = new ElementCreator('div', 'product-card-description', `${description}`);
+    cardImg.getElement().setAttribute('src', `${image}`);
+    card.addInnerElement(cardTitle);
+    card.addInnerElement(cardImg);
+    card.addInnerElement(cardPrice);
+    card.addInnerElement(cardDiscount);
+    card.addInnerElement(cardDescription);
     return card;
   }
 
@@ -115,8 +118,13 @@ class CatalogView extends View {
           description = product.masterData.current.metaDescription.en;
         }
         const price = product.masterData.current.masterVariant.prices[0].value.centAmount / 100;
+        const discountValue = product.masterData?.current?.masterVariant?.prices[0]?.discounted?.value?.centAmount;
+        let discount;
+        if (discountValue) {
+          discount = discountValue / 100;
+        }
         const image = product.masterData.current.masterVariant.images[0].url;
-        return { name, description, price, image };
+        return { name, description, price, image, discount };
       });
       return productCards;
     } catch (error) {
