@@ -118,4 +118,5 @@ type LabelObject = {
 
 export interface FilterProductsQuery {
   search?: string;
+  sort?: string;
 }

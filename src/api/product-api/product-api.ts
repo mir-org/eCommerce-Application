@@ -34,9 +34,10 @@ export class ProductAPI {
   }
 
   public static async getFilteredProducts(filterProductsQuery: FilterProductsQuery): Promise<void> {
-    const { search } = filterProductsQuery;
+    const { sort, search } = filterProductsQuery;
     const searchQuery = search ? `text.en=${search}` : '';
-    const queryParams = `${searchQuery}`;
+    const sortQuery = sort ? `sort=${sort}` : '';
+    const queryParams = `${sortQuery}&${searchQuery}`;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
     const response = await fetch(url, {
       method: 'GET',
