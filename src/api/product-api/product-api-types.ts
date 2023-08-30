@@ -115,3 +115,7 @@ type LabelObject = {
   key: string;
   label: Language;
 };
+
+export interface FilterProductsQuery {
+  search?: string;
+}

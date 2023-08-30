@@ -1,5 +1,5 @@
 import { CTP_PROJECT_KEY, CTP_API_URL, TOKEN_STORAGE_KEY } from '../api-data';
-import { AllProducts, Product } from './product-api-types';
+import { AllProducts, FilterProductsQuery, Product } from './product-api-types';
 
 export class ProductAPI {
   public static async getAllProducts(pageNumber: number = 0, limit: number = 20): Promise<AllProducts> {
@@ -31,5 +31,20 @@ export class ProductAPI {
     const response = await ProductAPI.getAllProducts();
     const maxPages = Math.ceil(response.total / response.limit);
     return maxPages;
+  }
+
+  public static async getFilteredProducts(filterProductsQuery: FilterProductsQuery): Promise<void> {
+    const { search } = filterProductsQuery;
+    const searchQuery = search ? `text.en=${search}` : '';
+    const queryParams = `${searchQuery}`;
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
+    });
+    const data = await response.json();
+    console.log('Filtered products', data);
   }
 }
