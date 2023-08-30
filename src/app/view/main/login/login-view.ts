@@ -1,5 +1,5 @@
-import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { AuthStatusCodes } from '../../../../api/authAPI/authAPI';
+import { CustomerAPI } from '../../../../api/customer-api/customer-api';
+import { AuthStatusCodes } from '../../../../api/auth-api/auth-api';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
 import State from '../../../state/state';

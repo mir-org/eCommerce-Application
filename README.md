@@ -56,17 +56,28 @@ npm install
 
 ### Running the Application
 
+```bash
 npm start
+```
 
 ### Jest
 
+```bash
 npm run test
+```
 
 ### ESLint
 
+```bash
 npm run lint
+```
+
+```bash
 npm run lint:fix
+```
 
 ### Prettier
 
+```bash
 npm run pretty
+```
