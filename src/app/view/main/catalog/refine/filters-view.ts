@@ -8,22 +8,37 @@ const CssClasses = {
   SEARCH_INPUT: 'search',
   SORT: 'filters__sort-bar',
   SORT_OPTION: 'filters__sort-option',
+  PRICE_BLOCK: 'filters__price-block',
+  PRICE_HEADER: 'filters__price-header',
+  PRICE_LINE: 'filters__price-line',
+  PRICE_SPLITTER: 'filters__price-splitter',
+  PRICE_INPUT: 'price',
 };
 
 const PLACEHOLDER = {
   SEARCH_INPUT: '',
+  PRICE_INPUT: '',
 };
 
 const INITIAL_VALUE = {
   INPUT: '',
+  PRICE_MIN_INPUT: '',
+  PRICE_MAX_INPUT: '',
 };
 
 const INPUT_LABEL = {
   SEARCH_INPUT: 'Search...',
+  PRICE_MIN_INPUT: 'from',
+  PRICE_MAX_INPUT: 'to',
 };
 
 const INPUT_TYPE = {
   SEARCH_INPUT: 'text',
+  PRICE_INPUT: 'number',
+};
+
+const TEXT = {
+  PRICE_HEADER: 'Price(USD)',
 };
 
 const SORT_OPTIONS = [
@@ -55,16 +70,23 @@ export class FiltersView extends View {
 
   private sortBar: HTMLSelectElement | null;
 
+  private minPriceInput: HTMLInputElement | null;
+
+  private maxPriceInput: HTMLInputElement | null;
+
   constructor() {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
     this.sortBar = null;
+    this.minPriceInput = null;
+    this.maxPriceInput = null;
     this.configureView();
   }
 
   private configureView(): void {
     this.addSearchBar();
     this.addSortBar();
+    this.addPriceBlock();
   }
 
   private addSearchBar(): void {
@@ -108,7 +130,68 @@ export class FiltersView extends View {
     await this.getFilteredProducts();
   }
 
+  private addPriceBlock(): void {
+    const priceFilterBlock = new ElementCreator('div', CssClasses.PRICE_BLOCK);
+    const priceBlockHeader = new ElementCreator('header', CssClasses.PRICE_HEADER, TEXT.PRICE_HEADER);
+    const priceLine = new ElementCreator('div', CssClasses.PRICE_LINE);
+    this.addPriceLine(priceLine);
+    priceFilterBlock.addInnerElement(priceBlockHeader.getElement());
+    priceFilterBlock.addInnerElement(priceLine.getElement());
+    this.viewElementCreator.addInnerElement(priceFilterBlock.getElement());
+  }
+
+  private addPriceLine(priceLine: ElementCreator): void {
+    const minPriceInputCreator = new InputFieldsCreator(
+      CssClasses.FILTERS,
+      CssClasses.PRICE_INPUT,
+      INPUT_LABEL.PRICE_MIN_INPUT,
+      INITIAL_VALUE.PRICE_MIN_INPUT,
+      INPUT_TYPE.PRICE_INPUT,
+      PLACEHOLDER.PRICE_INPUT
+    );
+    this.minPriceInput = minPriceInputCreator.getInputElement();
+    minPriceInputCreator.getInputElement().addEventListener('keydown', this.priceKeyDownCallback.bind(this));
+    minPriceInputCreator.getInputElement().addEventListener('input', this.priceInputCallback.bind(this));
+    const priceSplitter = new ElementCreator('div', CssClasses.PRICE_SPLITTER);
+    const maxPriceInputCreator = new InputFieldsCreator(
+      CssClasses.FILTERS,
+      CssClasses.PRICE_INPUT,
+      INPUT_LABEL.PRICE_MAX_INPUT,
+      INITIAL_VALUE.PRICE_MAX_INPUT,
+      INPUT_TYPE.PRICE_INPUT,
+      PLACEHOLDER.PRICE_INPUT
+    );
+    this.maxPriceInput = maxPriceInputCreator.getInputElement();
+    maxPriceInputCreator.getInputElement().addEventListener('keydown', this.priceKeyDownCallback.bind(this));
+    maxPriceInputCreator.getInputElement().addEventListener('input', this.priceInputCallback.bind(this));
+    priceLine.addInnerElement(minPriceInputCreator.getElement());
+    priceLine.addInnerElement(priceSplitter.getElement());
+    priceLine.addInnerElement(maxPriceInputCreator.getElement());
+  }
+
+  private priceKeyDownCallback(e: KeyboardEvent): void {
+    if (e.code === 'KeyE' || e.key === 'e') e.preventDefault();
+  }
+
+  private async priceInputCallback(): Promise<void> {
+    await this.getFilteredProducts.call(this);
+  }
+
   private async getFilteredProducts(): Promise<void> {
-    await ProductAPI.getFilteredProducts({ search: this.searchInput?.value, sort: this.sortBar?.value });
+    const searchValue = this.searchInput?.value;
+    const sortValue = this.sortBar?.value;
+    if (!this.minPriceInput || !this.maxPriceInput) {
+      throw new Error();
+    }
+    const minPrice = Number(this.minPriceInput.value || '0');
+    const maxPrice = Number(this.maxPriceInput.value || '*');
+    const minValueUsd = String(minPrice * 100 || '0');
+    const maxValueUsd = String(maxPrice * 100 || '*');
+    await ProductAPI.getFilteredProducts({
+      search: searchValue,
+      sort: sortValue,
+      minPriceValue: minValueUsd,
+      maxPriceValue: maxValueUsd,
+    });
   }
 }
