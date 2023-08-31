@@ -114,11 +114,6 @@ class HeaderView extends View {
       if (currentIndexes.includes(index)) elem.classList.add('hide');
     });
   }
-
-  // Эта ебанина тригерится из другой вьюшки.
-  public customerLogin(state: State): void {
-    this.userIsLoggedIn(state);
-  }
 }
 
 export default HeaderView;
