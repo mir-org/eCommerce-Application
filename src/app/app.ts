@@ -63,6 +63,13 @@ class App {
         },
       },
       {
+        path: `${Pages.USER_PROFILE}`,
+        callback: async () => {
+          const { default: UserProfileView } = await import('./view/main/user-profile/user-profile');
+          this.setContent(Pages.USER_PROFILE, new UserProfileView());
+        },
+      },
+      {
         path: `${Pages.REGISTRATION}`,
         callback: async () => {
           const { default: RegistrationView } = await import('./view/main/registration/registration-view');

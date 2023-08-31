@@ -6,6 +6,7 @@ const Pages: IPages = {
   INDEX: 'main',
   LOGIN: 'login',
   REGISTRATION: 'registration',
+  USER_PROFILE: 'profile',
   CATALOG: 'catalog',
   NOT_FOUND: 'not-found',
 };
