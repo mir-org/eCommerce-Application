@@ -34,14 +34,16 @@ export class ProductAPI {
   }
 
   public static async getFilteredProducts(filterProductsQuery: FilterProductsQuery): Promise<void> {
-    const { sort, search, minPriceValue, maxPriceValue } = filterProductsQuery;
+    const { sort, search, minPriceValue, maxPriceValue, brands } = filterProductsQuery;
     const searchQuery = search ? `text.en=${search}` : '';
     const sortQuery = sort ? `sort=${sort}` : '';
     const priceQuery =
       minPriceValue || maxPriceValue
         ? `filter=variants.price.centAmount:range (${minPriceValue} to ${maxPriceValue})`
         : '';
-    const queryParams = `${priceQuery}&${sortQuery}&${searchQuery}`;
+    const brandsFilterQuery = brands ? `filter.query=variants.attributes.manufacturer:${brands}` : '';
+    const brandsFacetQuery = brands ? `facet=variants.attributes.manufacturer:${brands}` : '';
+    const queryParams = `${brandsFilterQuery}&${brandsFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}`;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
     const response = await fetch(url, {
       method: 'GET',

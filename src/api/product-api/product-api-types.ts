@@ -121,4 +121,5 @@ export interface FilterProductsQuery {
   sort?: string;
   minPriceValue?: string;
   maxPriceValue?: string;
+  brands?: string;
 }

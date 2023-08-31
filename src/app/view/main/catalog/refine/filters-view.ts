@@ -13,11 +13,15 @@ const CssClasses = {
   PRICE_LINE: 'filters__price-line',
   PRICE_SPLITTER: 'filters__price-splitter',
   PRICE_INPUT: 'price',
+  BRANDS_LIST: 'filters__brands-list',
+  BRANDS_LINE: 'filters__brands-line',
+  BRANDS_INPUT: 'brands',
 };
 
 const PLACEHOLDER = {
   SEARCH_INPUT: '',
   PRICE_INPUT: '',
+  BRANDS_INPUT: '',
 };
 
 const INITIAL_VALUE = {
@@ -35,6 +39,7 @@ const INPUT_LABEL = {
 const INPUT_TYPE = {
   SEARCH_INPUT: 'text',
   PRICE_INPUT: 'number',
+  BRANDS_INPUT: 'checkbox',
 };
 
 const TEXT = {
@@ -74,6 +79,8 @@ export class FiltersView extends View {
 
   private maxPriceInput: HTMLInputElement | null;
 
+  private brands: Set<string> = new Set();
+
   constructor() {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
@@ -87,6 +94,7 @@ export class FiltersView extends View {
     this.addSearchBar();
     this.addSortBar();
     this.addPriceBlock();
+    this.addBrandsList();
   }
 
   private addSearchBar(): void {
@@ -177,6 +185,50 @@ export class FiltersView extends View {
     await this.getFilteredProducts.call(this);
   }
 
+  private async addBrandsList(): Promise<void> {
+    const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
+    try {
+      const products = (await ProductAPI.getAllProducts()).results;
+      const brands = products.map((productInfo) => {
+        const brandName = productInfo.masterData.current.masterVariant.attributes.find(
+          (elem) => elem.name === 'manufacturer'
+        )?.value;
+        return brandName;
+      });
+      const uniqueBrands = [...new Set(brands)];
+      uniqueBrands.forEach((brandName) => {
+        const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
+        const inputElementCreator = new InputFieldsCreator(
+          CssClasses.FILTERS,
+          CssClasses.BRANDS_INPUT,
+          `${brandName}`,
+          `${brandName}`,
+          INPUT_TYPE.BRANDS_INPUT,
+          PLACEHOLDER.BRANDS_INPUT
+        );
+        lineElementCreator.addInnerElement(inputElementCreator.getElement());
+        listElementCreator.addInnerElement(lineElementCreator);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    listElementCreator.getElement().addEventListener('change', this.brandsListCallback.bind(this));
+    this.viewElementCreator.addInnerElement(listElementCreator.getElement());
+  }
+
+  private async brandsListCallback(e: Event): Promise<void> {
+    if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
+      if (e.target.checked === true) {
+        this.brands.add(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+      if (e.target.checked === false) {
+        this.brands.delete(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+    }
+  }
+
   private async getFilteredProducts(): Promise<void> {
     const searchValue = this.searchInput?.value;
     const sortValue = this.sortBar?.value;
@@ -187,11 +239,13 @@ export class FiltersView extends View {
     const maxPrice = Number(this.maxPriceInput.value || '*');
     const minValueUsd = String(minPrice * 100 || '0');
     const maxValueUsd = String(maxPrice * 100 || '*');
+    const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
     await ProductAPI.getFilteredProducts({
       search: searchValue,
       sort: sortValue,
       minPriceValue: minValueUsd,
       maxPriceValue: maxValueUsd,
+      brands: brandsString,
     });
   }
 }
