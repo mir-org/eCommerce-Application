@@ -5,6 +5,7 @@ import { CATALOG_CLASSES, CATALOG_TEXT } from './catalog-view-types';
 import { ProductAPI } from '../../../../api/product-api/product-api';
 import { ProductCard, ProductCards } from '../../../../api/product-api/product-api-types';
 import { clearElement } from '../../../utils/clear-element';
+import { FiltersView } from './filters/filters-view';
 
 class CatalogView extends View {
   private content: ElementCreator | null;
@@ -41,6 +42,8 @@ class CatalogView extends View {
 
   private addAside(): void {
     const aside = new ElementCreator('aside', CATALOG_CLASSES.ASIDE, CATALOG_TEXT.ASIDE);
+    const filtersView = new FiltersView();
+    aside.addInnerElement(filtersView.getHTMLElement());
     this.content?.addInnerElement(aside);
   }
 
