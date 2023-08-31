@@ -99,7 +99,7 @@ class HeaderView extends View {
     this.userIsLoggedIn(state);
   }
 
-  private userIsLoggedIn(state: State): void {
+  public userIsLoggedIn(state: State): void {
     const headerLinks: HTMLElement[] = [
       this.headerLinkElements.get('REGISTRATION')!.getHTMLElement(),
       this.headerLinkElements.get('LOGIN')!.getHTMLElement(),

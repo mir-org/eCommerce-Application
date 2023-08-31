@@ -7,6 +7,7 @@ import { Pages } from './router/pages';
 import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/authAPI/authAPI';
+import Observer from './observer/observer';
 
 class App {
   private router: Router;
@@ -15,6 +16,8 @@ class App {
 
   private main: MainView | null;
 
+  private observer: Observer;
+
   constructor() {
     AuthAPI.setAccessToken();
     this.header = null;
@@ -22,12 +25,14 @@ class App {
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes, state);
+    this.observer = new Observer();
     this.createView(state);
   }
 
   private createView(state: State): void {
     const wrapperView = new WrapperView();
     this.header = new HeaderView(this.router, state);
+    this.observer.setHeader(this.header);
     this.main = new MainView();
     const footer = new FooterView();
 
