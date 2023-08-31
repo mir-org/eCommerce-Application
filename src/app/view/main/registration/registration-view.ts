@@ -6,9 +6,9 @@ import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
-import HeaderView from '../../header/header-view';
 import { View } from '../../view';
 import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE, KEY_FOR_SAVE } from './registration-view-types';
+import Observer from '../../../observer/observer';
 
 class RegistrationView extends View {
   private form: ElementCreator | null;
@@ -55,7 +55,7 @@ class RegistrationView extends View {
 
   constructor(
     private router: Router,
-    private header: HeaderView | null,
+    private observer: Observer,
     private state: State
   ) {
     super('section', SIGN_UP_CLASSES.REGISTRATION);
@@ -450,9 +450,9 @@ class RegistrationView extends View {
         try {
           const response = await CustomerAPI.registerCustomer(formData);
           if (response === 201) {
-            this.router.navigate(Pages.INDEX);
             this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
-            this.header?.customerLogin(this.state);
+            this.observer.userIsLoggedIn(this.state);
+            this.router.navigate(Pages.INDEX);
             await CustomerAPI.getCustomerInfo();
             this.createPopupWithText('Registration successful, automatically logged in!');
           } else if (response === 400) {
