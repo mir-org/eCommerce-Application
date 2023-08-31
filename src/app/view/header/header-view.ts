@@ -11,7 +11,6 @@ const CssClasses = {
   NAV: ['header__nav', 'nav'],
   USER_MENU: ['header__user-menu', 'user-menu'],
   LOGOUT_BUTTON: ['user-menu__logout-button'],
-  HIDE_LINK_ELEMENT: 'hide',
 };
 
 const NamePages: IPages = {
@@ -108,12 +107,11 @@ class HeaderView extends View {
       this.logoutButton.getElement(),
     ];
     const isLoggedIn = state.getValue(KEY_FOR_SAVE.LOGIN_STATUS);
-    const indices: number[] = isLoggedIn === 'true' ? [0, 1] : [2, 3];
-    console.log(isLoggedIn, indices);
+    const currentIndexes: number[] = isLoggedIn === 'true' ? [0, 1] : [2, 3];
 
     headerLinks.forEach((elem, index) => {
       elem.classList.remove('hide');
-      if (indices.includes(index)) elem.classList.add('hide');
+      if (currentIndexes.includes(index)) elem.classList.add('hide');
     });
   }
 
