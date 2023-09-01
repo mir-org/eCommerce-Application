@@ -24,6 +24,7 @@
 @import "pages/_registration";
 @import "pages/login";
 @import "pages/not-found";
+@import "pages/catalog";
 
 @import "themes/theme";
 @import "themes/admin";
@@ -41,26 +42,24 @@ body {
 .wrapper {
   min-height: 100%;
   overflow: hidden;
-
   display: flex;
+  gap: 10px;
   flex-direction: column;
 }
 
 .header {
-  border: 1px solid black;
+  border-bottom: 1px solid $black-color;
 }
 
 .main {
-  flex: 1 1 auto;
-  border: 1px solid black;
   display: flex;
-  align-items: center;
+  flex: 1 1 auto;
+  align-items: stretch;
   justify-content: center;
-  padding: 10px;
 }
 
 .footer {
-  border: 1px solid black;
+  border-top: 1px solid $black-color;
 }
 
 .hide {
