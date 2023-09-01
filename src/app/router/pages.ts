@@ -6,8 +6,11 @@ const Pages: IPages = {
   INDEX: 'main',
   LOGIN: 'login',
   REGISTRATION: 'registration',
+  USER_PROFILE: 'profile',
   CATALOG: 'catalog',
   NOT_FOUND: 'not-found',
 };
 
-export { IPages, Pages };
+const ID = '{id}';
+
+export { IPages, Pages, ID };
