@@ -6,6 +6,8 @@ export const PROFILE_CLASSES = {
   EMAIL: 'email',
   DATE_OF_BIRTH: 'date-of-birth',
   CITY: 'city',
+  STREET: 'street',
+  POSTAL_CODE: 'postal-code',
 };
 
 export const PROFILE_TEXT = {
@@ -15,4 +17,6 @@ export const PROFILE_TEXT = {
   EMAIL: 'Email',
   DATE_OF_BIRTH: 'Date of Birth',
   CITY: 'City',
+  STREET: 'Street',
+  POSTAL_CODE: 'Postal Code',
 };

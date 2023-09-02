@@ -116,7 +116,6 @@ class CatalogView extends View {
   private async getProductCardsInfo(page: number): Promise<ProductCards> {
     try {
       const products = (await ProductAPI.getAllProducts(page)).results;
-
       const productCards = products.map((product) => {
         const name = product.masterData.current.name.en;
         let description = '';

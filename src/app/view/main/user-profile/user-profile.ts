@@ -10,10 +10,31 @@ class UserProfileView extends View {
 
   private data: CustomerInfo | null;
 
+  private shippingAddressFieldSet: ElementCreator | null;
+
+  private cityShippingAddressInput: HTMLInputElement | null;
+
+  private cityBillingAddressInput: HTMLInputElement | null;
+
+  private streetShippingAddressInput: HTMLInputElement | null;
+
+  private streetBillingAddressInput: HTMLInputElement | null;
+
+  private postalCodeShippingAddressInput: HTMLInputElement | null;
+
+  private postalCodeBillingAddressInput: HTMLInputElement | null;
+
   constructor() {
     super('section', PROFILE_CLASSES.PROFILE);
     this.form = null;
     this.data = null;
+    this.shippingAddressFieldSet = null;
+    this.cityShippingAddressInput = null;
+    this.cityBillingAddressInput = null;
+    this.streetShippingAddressInput = null;
+    this.streetBillingAddressInput = null;
+    this.postalCodeShippingAddressInput = null;
+    this.postalCodeBillingAddressInput = null;
     this.configView();
   }
 
@@ -37,6 +58,7 @@ class UserProfileView extends View {
     this.addDateOfBirthInput();
     this.addEmailInput();
     this.addShippingFieldSet();
+    this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
     this.addBillingFieldSet();
   }
 
@@ -127,7 +149,7 @@ class UserProfileView extends View {
 
   private addShippingFieldSet(): void {
     const fieldSet = new ElementCreator('fieldset', 'fieldset');
-    // this.shippingAddressFieldSet = fieldSet;
+    this.shippingAddressFieldSet = fieldSet;
     const legendFieldSet = new ElementCreator('legend', 'legend');
     legendFieldSet.getElement().textContent = 'Shipping Addresses';
     fieldSet.addInnerElement(legendFieldSet);
@@ -143,37 +165,92 @@ class UserProfileView extends View {
     this.form?.addInnerElement(fieldSet);
   }
 
-  // private addAddressInput(wrapper: ElementCreator | null, type: string): void {
-  //   if (wrapper) {
-  //     this.addCityAddressInput(wrapper, type);
-  //     // this.addStreetAddressInput(wrapper, type);
-  //     // this.addPostalCodeAddressInput(wrapper, type);
-  //     // this.addCountryAddressInput(wrapper, type);
-  //     // this.addDefaultCheckbox(wrapper, type);
-  //   }
-  // }
+  private addAddressInput(wrapper: ElementCreator | null, type: string): void {
+    if (wrapper) {
+      this.addCityAddressInput(wrapper, type);
+      this.addStreetAddressInput(wrapper, type);
+      this.addPostalCodeAddressInput(wrapper, type);
+      // this.addCountryAddressInput(wrapper, type);
+      // this.addDefaultCheckbox(wrapper, type);
+    }
+  }
 
-  // private addCityAddressInput(wrapper: ElementCreator, type: string): void {
-  //   const cityAddressInputCreator = new InputFieldsCreator(
-  //     PROFILE_CLASSES.PROFILE,
-  //     PROFILE_CLASSES.CITY,
-  //     PROFILE_TEXT.CITY,
-  //     '',
-  //     'text',
-  //     ''
-  //   );
-  //   const cityAddressInputElement = cityAddressInputCreator.getInputElement();
-  //   if (type === 'shipping') {
-  //     this.cityShippingAddressInput = cityAddressInputElement;
-  //   } else if (type === 'billing') {
-  //     this.cityBillingAddressInput = cityAddressInputElement;
-  //   }
-  //   cityAddressInputElement.addEventListener('input', () => {
-  //     this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
-  //     this.inputKeydownFn();
-  //   });
-  //   wrapper?.addInnerElement(cityAddressInputCreator.getElement());
-  // }
+  private addCityAddressInput(wrapper: ElementCreator, type: string): void {
+    const cityAddressInputCreator = new InputFieldsCreator(
+      PROFILE_CLASSES.PROFILE,
+      PROFILE_CLASSES.CITY,
+      PROFILE_TEXT.CITY,
+      this.data?.addresses[0].city ?? '',
+      'text',
+      ''
+    );
+    const cityAddressInputElement = cityAddressInputCreator.getInputElement();
+    cityAddressInputElement.setAttribute('disabled', '');
+    if (type === 'shipping') {
+      this.cityShippingAddressInput = cityAddressInputElement;
+    } else if (type === 'billing') {
+      this.cityBillingAddressInput = cityAddressInputElement;
+    }
+    // cityAddressInputElement.addEventListener('input', () => {
+    //   this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
+    //   this.inputKeydownFn();
+    // });
+    wrapper?.addInnerElement(cityAddressInputCreator.getElement());
+  }
+
+  private addStreetAddressInput(wrapper: ElementCreator, type: string): void {
+    const streetAddressInputCreator = new InputFieldsCreator(
+      PROFILE_CLASSES.PROFILE,
+      PROFILE_CLASSES.STREET,
+      PROFILE_TEXT.STREET,
+      this.data?.addresses[0].streetName ?? '',
+      'text',
+      ''
+    );
+    const streetAddressInputElement = streetAddressInputCreator.getInputElement();
+    streetAddressInputElement.setAttribute('disabled', '');
+    if (type === 'shipping') {
+      this.streetShippingAddressInput = streetAddressInputElement;
+    } else if (type === 'billing') {
+      this.streetBillingAddressInput = streetAddressInputElement;
+    }
+    // streetAddressInputElement.addEventListener('input', () => {
+    //   this.inputValidation(streetAddressInputCreator, () => Validator.streetField(streetAddressInputElement.value));
+    //   this.inputKeydownFn();
+    // });
+    wrapper?.addInnerElement(streetAddressInputCreator.getElement());
+  }
+
+  private addPostalCodeAddressInput(wrapper: ElementCreator, type: string): void {
+    const postalCodeAddressInputCreator = new InputFieldsCreator(
+      PROFILE_CLASSES.PROFILE,
+      PROFILE_CLASSES.POSTAL_CODE,
+      PROFILE_TEXT.POSTAL_CODE,
+      this.data?.addresses[0].postalCode ?? '',
+      'text',
+      ''
+    );
+    const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
+    postalCodeAddressInputElement.setAttribute('disabled', '');
+    if (type === 'shipping') {
+      this.postalCodeShippingAddressInput = postalCodeAddressInputElement;
+    } else if (type === 'billing') {
+      this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
+    }
+    // postalCodeAddressInputElement.addEventListener('input', () => {
+    //   let country = '';
+    //   this.inputValidation(postalCodeAddressInputCreator, () => {
+    //     if (type === 'shipping') {
+    //       country = this.countryShippingAddressInput?.value ?? '';
+    //     } else if (type === 'billing') {
+    //       country = this.countryBillingAddressInput?.value ?? '';
+    //     }
+    //     return Validator.postalCodeField(postalCodeAddressInputElement.value, country);
+    //   });
+    //   this.inputKeydownFn();
+    // });
+    wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
+  }
 }
 
 export default UserProfileView;
