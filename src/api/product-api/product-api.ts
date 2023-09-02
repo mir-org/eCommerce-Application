@@ -2,7 +2,7 @@ import { CTP_PROJECT_KEY, CTP_API_URL, TOKEN_STORAGE_KEY } from '../api-data';
 import { AllProducts, FilterProductsQuery, Product } from './product-api-types';
 
 export class ProductAPI {
-  public static async getAllProducts(pageNumber: number = 0, limit: number = 20): Promise<AllProducts> {
+  public static async getAllProducts(pageNumber: number = 0, limit: number = 4): Promise<AllProducts> {
     const offset = limit * pageNumber;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/products?limit=${limit}&offset=${offset}`;
     const response = await fetch(url, {

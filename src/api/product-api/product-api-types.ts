@@ -30,6 +30,7 @@ export type ProductCard = {
   name: string;
   price: number;
   discount?: number;
+  id: string;
 };
 
 type CreatedAndModified = {
