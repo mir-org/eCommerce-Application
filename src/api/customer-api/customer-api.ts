@@ -1,6 +1,6 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
 import { AuthAPI, AuthStatusCodes } from '../auth-api/auth-api';
-import { MyCustomerDraft, StatusCodes } from './customer-api-types';
+import { CustomerInfo, MyCustomerDraft, StatusCodes } from './customer-api-types';
 
 export class CustomerAPI {
   public static async loginCustomer(email: string, password: string): Promise<number> {
@@ -50,7 +50,7 @@ export class CustomerAPI {
     return response.status;
   }
 
-  public static async getCustomerInfo(): Promise<void> {
+  public static async getCustomerInfo(): Promise<CustomerInfo> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me`;
     const response = await fetch(url, {
       method: 'GET',
@@ -59,6 +59,6 @@ export class CustomerAPI {
       },
     });
     const data = await response.json();
-    console.log('getInfo', data);
+    return data;
   }
 }
