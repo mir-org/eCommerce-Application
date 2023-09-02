@@ -6,9 +6,8 @@ import WrapperView from './view/wrapper';
 import { Pages } from './router/pages';
 import { View } from './view/view';
 import State from './state/state';
-import { AuthAPI } from '../api/authAPI/authAPI';
+import { AuthAPI } from '../api/auth-api/auth-api';
 import Observer from './observer/observer';
-
 
 class App {
   private router: Router;
