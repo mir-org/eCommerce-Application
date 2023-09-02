@@ -9,8 +9,7 @@ class ProductView extends View {
   }
 
   private configView(id: string, router: Router): void {
-    console.log(router);
-    const title = new ElementCreator('h1', 'card', id);
+    const title = new ElementCreator('h1', 'card', `${id} ${router.toString()}`);
     this.viewElementCreator.addInnerElement(title);
   }
 }
