@@ -96,6 +96,7 @@ class CatalogView extends View {
     const { price } = product;
     const { image } = product;
     const { discount } = product;
+    const { id } = product;
     const card = new ElementCreator('div', 'product-card', '');
     const cardTitle = new ElementCreator('h2', 'product-card-name', `${name}`);
     const cardImg = new ElementCreator('img', 'product-card-image', '');
@@ -108,12 +109,14 @@ class CatalogView extends View {
     card.addInnerElement(cardPrice);
     card.addInnerElement(cardDiscount);
     card.addInnerElement(cardDescription);
+    card.getElement().dataset.id = id;
     return card;
   }
 
   private async getProductCardsInfo(page: number): Promise<ProductCards> {
     try {
       const products = (await ProductAPI.getAllProducts(page)).results;
+
       const productCards = products.map((product) => {
         const name = product.masterData.current.name.en;
         let description = '';
@@ -127,7 +130,8 @@ class CatalogView extends View {
           discount = discountValue / 100;
         }
         const image = product.masterData.current.masterVariant.images[0].url;
-        return { name, description, price, image, discount };
+        const { id } = product;
+        return { name, description, price, image, discount, id };
       });
       return productCards;
     } catch (error) {

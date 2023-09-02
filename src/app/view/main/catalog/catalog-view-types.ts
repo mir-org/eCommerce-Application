@@ -8,6 +8,6 @@ export const CATALOG_CLASSES = {
 export const CATALOG_TEXT = {
   TITLE: 'Catalog',
   CONTENT: '',
-  ASIDE: 'Aside',
-  PRODUCTS: 'Products',
+  ASIDE: '',
+  PRODUCTS: '',
 };
