@@ -27,6 +27,7 @@ class CatalogView extends View {
     this.addContent();
     this.addAside();
     this.addProductsWrapper();
+    this.cardsWrapper?.getElement().addEventListener('click', this.cardWrapperClickHandler.bind(this));
   }
 
   private addTitle(): void {
@@ -137,6 +138,18 @@ class CatalogView extends View {
     } catch (error) {
       console.error('Error:', error);
       return [];
+    }
+  }
+
+  private cardWrapperClickHandler(event: MouseEvent): void {
+    const сtarget = event.target;
+    if (сtarget instanceof HTMLElement) {
+      const card = сtarget.closest('.product-card');
+      if (card) {
+        const ID = card.getAttribute('data-id');
+        console.log(ID);
+        // this.router.navigate(`catalog/${ID}`);
+      }
     }
   }
 }
