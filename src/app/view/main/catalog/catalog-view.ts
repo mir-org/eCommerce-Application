@@ -148,7 +148,7 @@ class CatalogView extends View {
       if (card) {
         const ID = card.getAttribute('data-id');
         console.log(ID);
-        // this.router.navigate(`catalog/${ID}`);
+        this.router.navigate(`catalog/${ID}`);
       }
     }
   }

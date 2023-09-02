@@ -3,7 +3,7 @@ import FooterView from './view/footer/footer-view';
 import HeaderView from './view/header/header-view';
 import MainView from './view/main/main-view';
 import WrapperView from './view/wrapper';
-import { Pages } from './router/pages';
+import { Pages, ID } from './router/pages';
 import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
@@ -86,6 +86,15 @@ class App {
         callback: async () => {
           const { default: CatalogView } = await import('./view/main/catalog/catalog-view');
           this.setContent(Pages.CATALOG, new CatalogView(this.router));
+        },
+      },
+      {
+        path: `${Pages.CATALOG}/${ID}`,
+        callback: async (id) => {
+          const { default: ProductView } = await import('./view/main/product/product-view');
+          if (id !== undefined) {
+            this.setContent(Pages.CATALOG, new ProductView(id, this.router));
+          }
         },
       },
       {
