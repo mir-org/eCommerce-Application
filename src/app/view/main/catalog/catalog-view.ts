@@ -91,7 +91,7 @@ class CatalogView extends View {
 
   private createPaginator(): void {
     const paginator = new ElementCreator('div', 'paginator', '');
-    const prevButton = new ElementCreator('button', 'paginator__btn', 'Prev');
+    const prevButton = new ElementCreator('button', 'paginator__btn', '<');
     if (this.currentPage === 0) prevButton.getElement().setAttribute('disabled', '');
     prevButton.getElement().addEventListener('click', () => {
       if (this.currentPage > 0) {
@@ -109,7 +109,7 @@ class CatalogView extends View {
       });
       paginator.addInnerElement(pageButton);
     }
-    const nextButton = new ElementCreator('button', 'paginator__btn', 'Next');
+    const nextButton = new ElementCreator('button', 'paginator__btn', '>');
     if (this.currentPage === this.totalPages - 1) nextButton.getElement().setAttribute('disabled', '');
     nextButton.getElement().addEventListener('click', () => {
       if (this.currentPage < this.totalPages - 1) {
