@@ -52,6 +52,9 @@ export class ProductAPI {
       },
     });
     const data = await response.json();
-    console.log('Filtered products', data);
+    const customEvent: CustomEvent = new CustomEvent('myCustomEvent', {
+      detail: { message: 'Custom event dispatched', data: data.results },
+    });
+    document.dispatchEvent(customEvent);
   }
 }

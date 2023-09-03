@@ -3,7 +3,7 @@ import { Router } from '../../../router/router';
 import { ElementCreator } from '../../../utils/element-creator';
 import { CATALOG_CLASSES, CATALOG_TEXT } from './catalog-view-types';
 import { ProductAPI } from '../../../../api/product-api/product-api';
-import { ProductCard, ProductCards } from '../../../../api/product-api/product-api-types';
+import { ProductCard, ProductCards, MyCustomEvent } from '../../../../api/product-api/product-api-types';
 import { clearElement } from '../../../utils/clear-element';
 import { FiltersView } from './filters/filters-view';
 
@@ -14,11 +14,15 @@ class CatalogView extends View {
 
   private cardsWrapper: ElementCreator | null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private filter: FiltersView | null
+  ) {
     super('section', CATALOG_CLASSES.CATALOG);
     this.content = null;
     this.contentProducts = null;
     this.cardsWrapper = null;
+    this.filter = filter;
     this.configView();
   }
 
@@ -45,28 +49,46 @@ class CatalogView extends View {
     const filtersView = new FiltersView();
     aside.addInnerElement(filtersView.getHTMLElement());
     this.content?.addInnerElement(aside);
+    document.addEventListener('myCustomEvent', ((event: CustomEvent<MyCustomEvent>) => {
+      clearElement(this.cardsWrapper?.getElement());
+      console.log(event.detail.data);
+      const productsData = event.detail.data;
+      const productCards = productsData.map((product) => {
+        const name = product.name.en;
+        let description = '';
+        if (product.metaDescription) {
+          description = product.metaDescription.en;
+        }
+        const price = product.masterVariant.prices[0].value.centAmount / 100;
+        const discountValue = product.masterVariant.prices[0]?.discounted?.value?.centAmount;
+        let discount;
+        if (discountValue) {
+          discount = discountValue / 100;
+        }
+        const image = product.masterVariant.images[0].url;
+        const { id } = product;
+        return { name, description, price, image, discount, id };
+      });
+      this.createAllProductCards(productCards);
+    }) as EventListener);
   }
 
-  private addProductsWrapper(): void {
+  private async addProductsWrapper(): Promise<void> {
     const products = new ElementCreator('div', CATALOG_CLASSES.PRODUCTS, '');
     this.contentProducts = products;
     this.content?.addInnerElement(products);
-    this.createAllProductCards();
+    const productsData = await this.getProductCardsInfo(0);
+    this.createAllProductCards(productsData);
     this.createPaginator();
   }
 
-  private async createAllProductCards(): Promise<void> {
+  private async createAllProductCards(products: ProductCards): Promise<void> {
     const cardsWrapper = new ElementCreator('div', 'cards-wrapper', '');
     this.cardsWrapper = cardsWrapper;
     this.contentProducts?.addInnerElement(cardsWrapper);
-    try {
-      const products = await this.getProductCardsInfo(0);
-      products.forEach((product: ProductCard) => {
-        cardsWrapper.addInnerElement(this.createProductCard(product));
-      });
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    products.forEach((product: ProductCard) => {
+      cardsWrapper.addInnerElement(this.createProductCard(product));
+    });
   }
 
   private async createPaginator(): Promise<void> {
@@ -116,7 +138,6 @@ class CatalogView extends View {
   private async getProductCardsInfo(page: number): Promise<ProductCards> {
     try {
       const products = (await ProductAPI.getAllProducts(page)).results;
-
       const productCards = products.map((product) => {
         const name = product.masterData.current.name.en;
         let description = '';
