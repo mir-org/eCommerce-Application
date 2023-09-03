@@ -84,6 +84,7 @@
         align-items: center;
         justify-content: center;
         &__btn {
+          user-select: none;
           position: relative;
           display: block;
           background-color: $catalog-pagination-button-background-color;
