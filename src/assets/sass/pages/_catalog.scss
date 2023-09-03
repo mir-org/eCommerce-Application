@@ -46,25 +46,25 @@
           transform: scale(1.01);
           cursor: pointer;
         }
-        &-name {
+        &__name {
           font-size: 1.2rem;
         }
-        &-image {
+        &__image {
           width: auto;
           height: 50%;
           display: block;
           max-width: 100%;
           object-fit: contain;
         }
-        &-price {
+        &__price {
           font-size: 1.15rem;
           text-decoration: line-through;
           color: $catalog-card-old-price;
         }
-        &-discount {
+        &__discount {
           font-size: 1.15rem;
         }
-        &-description {
+        &__description {
           overflow: scroll;
         }
       }
@@ -83,19 +83,27 @@
         margin: 10px 0;
         align-items: center;
         justify-content: center;
-        &-btn {
+        &__btn {
           position: relative;
           display: block;
           background-color: $catalog-pagination-button-background-color;
           border-radius: 8px;
           color: $catalog-pagination-button-text-color;
           cursor: pointer;
-          width: 30px;
-          height: 30px;
+          width: 40px;
+          height: 40px;
           transition: ease-in-out 0.3s;
           &:hover {
             transition: ease-in-out 0.3s;
             background-color: darken($catalog-pagination-button-background-color, 10%);
+          }
+          &.active {
+            background-color: darken($catalog-pagination-button-background-color, 25%);
+            cursor: auto;
+          }
+          &:disabled {
+            background-color: $catalog-pagination-button-disabled-background-color;
+            cursor: auto;
           }
         }
       }

@@ -36,6 +36,9 @@ export type ProductCard = {
 export interface MyCustomEvent {
   detail: string;
   data: EventData[];
+  currentPage: number;
+  totalPages: number;
+  query: FilterProductsQuery;
 }
 
 type EventData = {
