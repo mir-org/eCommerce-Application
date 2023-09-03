@@ -3,7 +3,12 @@ import { Router } from '../../../router/router';
 import { ElementCreator } from '../../../utils/element-creator';
 import { CATALOG_CLASSES, CATALOG_TEXT } from './catalog-view-types';
 import { ProductAPI } from '../../../../api/product-api/product-api';
-import { ProductCard, ProductCards } from '../../../../api/product-api/product-api-types';
+import {
+  ProductCard,
+  ProductCards,
+  MyCustomEvent,
+  FilterProductsQuery,
+} from '../../../../api/product-api/product-api-types';
 import { clearElement } from '../../../utils/clear-element';
 import { FiltersView } from './filters/filters-view';
 
@@ -14,11 +19,22 @@ class CatalogView extends View {
 
   private cardsWrapper: ElementCreator | null;
 
-  constructor(private router: Router) {
+  private currentPage: number = 0;
+
+  private totalPages: number = 0;
+
+  private query: FilterProductsQuery;
+
+  constructor(
+    private router: Router,
+    private filter: FiltersView | null
+  ) {
     super('section', CATALOG_CLASSES.CATALOG);
     this.content = null;
     this.contentProducts = null;
     this.cardsWrapper = null;
+    this.filter = filter;
+    this.query = { search: '', sort: 'price desc', minPriceValue: '0', maxPriceValue: '*', brands: '' };
     this.configView();
   }
 
@@ -45,49 +61,90 @@ class CatalogView extends View {
     const filtersView = new FiltersView();
     aside.addInnerElement(filtersView.getHTMLElement());
     this.content?.addInnerElement(aside);
+    document.addEventListener('myCustomEvent', ((event: CustomEvent<MyCustomEvent>) => {
+      clearElement(this.contentProducts?.getElement());
+      const productsData = event.detail.data;
+      this.currentPage = event.detail.currentPage;
+      this.totalPages = event.detail.totalPages;
+      this.query = event.detail.query;
+      const productCards = productsData.map((product) => {
+        const name = product.name.en;
+        let description = '';
+        if (product.metaDescription) {
+          description = product.metaDescription.en;
+        }
+        const price = product.masterVariant.prices[0].value.centAmount / 100;
+        const discountValue = product.masterVariant.prices[0]?.discounted?.value?.centAmount;
+        let discount;
+        if (discountValue) {
+          discount = discountValue / 100;
+        }
+        const image = product.masterVariant.images[0].url;
+        const { id } = product;
+        return { name, description, price, image, discount, id };
+      });
+      this.createProductsWrapper();
+      this.createAllProductCards(productCards);
+      this.createPaginator();
+    }) as EventListener);
   }
 
-  private addProductsWrapper(): void {
+  private createPaginator(): void {
+    const paginator = new ElementCreator('div', 'paginator', '');
+    const prevButton = new ElementCreator('button', 'paginator__btn', '<');
+    if (this.currentPage === 0) prevButton.getElement().setAttribute('disabled', '');
+    prevButton.getElement().addEventListener('click', () => {
+      if (this.currentPage > 0) {
+        this.currentPage -= 1;
+        this.fetchFilteredProducts();
+      }
+    });
+    paginator.addInnerElement(prevButton);
+    for (let i = 0; i < this.totalPages; i += 1) {
+      const pageButton = new ElementCreator('button', 'paginator__btn', `${i + 1}`);
+      if (this.currentPage === i) pageButton.getElement().classList.add('active');
+      pageButton.getElement().addEventListener('click', () => {
+        this.currentPage = i;
+        this.fetchFilteredProducts();
+      });
+      paginator.addInnerElement(pageButton);
+    }
+    const nextButton = new ElementCreator('button', 'paginator__btn', '>');
+    if (this.currentPage === this.totalPages - 1) nextButton.getElement().setAttribute('disabled', '');
+    nextButton.getElement().addEventListener('click', () => {
+      if (this.currentPage < this.totalPages - 1) {
+        this.currentPage += 1;
+        this.fetchFilteredProducts();
+      }
+    });
+    paginator.addInnerElement(nextButton);
+    this.contentProducts?.addInnerElement(paginator);
+  }
+
+  private async fetchFilteredProducts(): Promise<void> {
+    const filterProductsQuery: FilterProductsQuery = this.query;
+    await ProductAPI.getFilteredProducts(filterProductsQuery, this.currentPage);
+  }
+
+  private async addProductsWrapper(): Promise<void> {
     const products = new ElementCreator('div', CATALOG_CLASSES.PRODUCTS, '');
     this.contentProducts = products;
     this.content?.addInnerElement(products);
-    this.createAllProductCards();
+    this.createProductsWrapper();
+    this.fetchFilteredProducts();
     this.createPaginator();
   }
 
-  private async createAllProductCards(): Promise<void> {
+  private createProductsWrapper(): void {
     const cardsWrapper = new ElementCreator('div', 'cards-wrapper', '');
     this.cardsWrapper = cardsWrapper;
     this.contentProducts?.addInnerElement(cardsWrapper);
-    try {
-      const products = await this.getProductCardsInfo(0);
-      products.forEach((product: ProductCard) => {
-        cardsWrapper.addInnerElement(this.createProductCard(product));
-      });
-    } catch (error) {
-      console.error('Error:', error);
-    }
   }
 
-  private async createPaginator(): Promise<void> {
-    const pages = await ProductAPI.getNumberOfPages();
-    const btnsWrapper = new ElementCreator('div', 'paginator', '');
-    this.contentProducts?.addInnerElement(btnsWrapper);
-    for (let i = 0; i < pages; i += 1) {
-      const button = new ElementCreator('button', 'paginator-btn', `${i + 1}`);
-      button.getElement().addEventListener('click', async () => {
-        try {
-          const products = await this.getProductCardsInfo(i);
-          clearElement(this.cardsWrapper?.getElement());
-          products.forEach((product: ProductCard) => {
-            this.cardsWrapper?.addInnerElement(this.createProductCard(product));
-          });
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      });
-      btnsWrapper.addInnerElement(button);
-    }
+  private async createAllProductCards(products: ProductCards): Promise<void> {
+    products.forEach((product: ProductCard) => {
+      this.cardsWrapper?.addInnerElement(this.createProductCard(product));
+    });
   }
 
   private createProductCard(product: ProductCard): ElementCreator {
@@ -98,11 +155,11 @@ class CatalogView extends View {
     const { discount } = product;
     const { id } = product;
     const card = new ElementCreator('div', 'product-card', '');
-    const cardTitle = new ElementCreator('h2', 'product-card-name', `${name}`);
-    const cardImg = new ElementCreator('img', 'product-card-image', '');
-    const cardPrice = new ElementCreator('div', 'product-card-price', `$${price}`);
-    const cardDiscount = new ElementCreator('div', 'product-card-discount', `$${discount}`);
-    const cardDescription = new ElementCreator('div', 'product-card-description', `${description}`);
+    const cardTitle = new ElementCreator('h2', 'product-card__name', `${name}`);
+    const cardImg = new ElementCreator('img', 'product-card__image', '');
+    const cardPrice = new ElementCreator('div', 'product-card__price', `$${price}`);
+    const cardDiscount = new ElementCreator('div', 'product-card__discount', `$${discount}`);
+    const cardDescription = new ElementCreator('div', 'product-card__description', `${description}`);
     cardImg.getElement().setAttribute('src', `${image}`);
     card.addInnerElement(cardTitle);
     card.addInnerElement(cardImg);
@@ -111,33 +168,6 @@ class CatalogView extends View {
     card.addInnerElement(cardDescription);
     card.getElement().dataset.id = id;
     return card;
-  }
-
-  private async getProductCardsInfo(page: number): Promise<ProductCards> {
-    try {
-      const products = (await ProductAPI.getAllProducts(page)).results;
-
-      const productCards = products.map((product) => {
-        const name = product.masterData.current.name.en;
-        let description = '';
-        if (product.masterData.current.metaDescription) {
-          description = product.masterData.current.metaDescription.en;
-        }
-        const price = product.masterData.current.masterVariant.prices[0].value.centAmount / 100;
-        const discountValue = product.masterData?.current?.masterVariant?.prices[0]?.discounted?.value?.centAmount;
-        let discount;
-        if (discountValue) {
-          discount = discountValue / 100;
-        }
-        const image = product.masterData.current.masterVariant.images[0].url;
-        const { id } = product;
-        return { name, description, price, image, discount, id };
-      });
-      return productCards;
-    } catch (error) {
-      console.error('Error:', error);
-      return [];
-    }
   }
 }
 
