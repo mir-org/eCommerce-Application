@@ -32,6 +32,8 @@ class UserProfileView extends View {
 
   private cityBillingAddressInput: HTMLInputElement | null;
 
+  private passwordWrapper: InputFieldsCreator | null;
+
   private streetShippingAddressInput: HTMLInputElement | null;
 
   private streetBillingAddressInput: HTMLInputElement | null;
@@ -56,6 +58,7 @@ class UserProfileView extends View {
     this.dateOfBirthInput = null;
     this.passwordInput = null;
     this.confirmPasswordInput = null;
+    this.passwordWrapper = null;
     this.shippingAddressFieldSet = null;
     this.billingAddressFieldSet = null;
     this.cityShippingAddressInput = null;
@@ -89,7 +92,6 @@ class UserProfileView extends View {
     this.addDateOfBirthInput();
     this.addEmailInput();
     this.addPasswordInput();
-    this.addConfirmPasswordInput();
     this.addShippingFieldSet();
     this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
     this.addBillingFieldSet();
@@ -114,10 +116,12 @@ class UserProfileView extends View {
     firstNameInputCreator.getInputElement().setAttribute('required', '');
     firstNameInputCreator.getInputElement().setAttribute('disabled', '');
     this.firstNameInput = firstNameInputElement;
-    firstNameInputElement.addEventListener('input', () => {
+    const handleFirstNameInputChange = (): void => {
       this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    firstNameInputElement.addEventListener('input', handleFirstNameInputChange);
+    firstNameInputElement.addEventListener('focusin', handleFirstNameInputChange);
     firstNameInputCreator.addInnerElement(this.addControlButtons('firstName'));
     this.form?.addInnerElement(firstNameInputCreator.getElement());
   }
@@ -142,10 +146,12 @@ class UserProfileView extends View {
     lastNameInputCreator.getInputElement().setAttribute('required', '');
     lastNameInputCreator.getInputElement().setAttribute('disabled', '');
     this.lastNameInput = lastNameInputElement;
-    lastNameInputElement.addEventListener('input', () => {
+    const handleLastNameInputChange = (): void => {
       this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    lastNameInputElement.addEventListener('input', handleLastNameInputChange);
+    lastNameInputElement.addEventListener('focusin', handleLastNameInputChange);
     lastNameInputCreator.addInnerElement(this.addControlButtons('lastName'));
     this.form?.addInnerElement(lastNameInputCreator.getElement());
   }
@@ -163,10 +169,12 @@ class UserProfileView extends View {
     dateOfBirthInputCreator.getInputElement().setAttribute('required', '');
     dateOfBirthInputCreator.getInputElement().setAttribute('disabled', '');
     this.dateOfBirthInput = dateOfBirthInputElement;
-    dateOfBirthInputElement.addEventListener('input', () => {
+    const handleDateOfBirthInputChange = (): void => {
       this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    dateOfBirthInputElement.addEventListener('input', handleDateOfBirthInputChange);
+    dateOfBirthInputElement.addEventListener('focusin', handleDateOfBirthInputChange);
     dateOfBirthInputCreator.addInnerElement(this.addControlButtons('birthDay'));
     this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
   }
@@ -184,10 +192,12 @@ class UserProfileView extends View {
     emailInputCreator.getInputElement().setAttribute('required', '');
     emailInputCreator.getInputElement().setAttribute('disabled', '');
     this.emailInput = emailInputElement;
-    emailInputElement.addEventListener('input', () => {
+    const handleEmailInputChange = (): void => {
       this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    emailInputElement.addEventListener('input', handleEmailInputChange);
+    emailInputElement.addEventListener('focusin', handleEmailInputChange);
     emailInputCreator.addInnerElement(this.addControlButtons('email'));
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
@@ -201,15 +211,19 @@ class UserProfileView extends View {
       'password',
       ''
     );
+    this.passwordWrapper = passwordInputCreator;
     const passwordInputElement = passwordInputCreator.getInputElement();
     passwordInputCreator.getInputElement().setAttribute('required', '');
     passwordInputElement.setAttribute('disabled', '');
     this.passwordInput = passwordInputElement;
     this.addShowHidePasswordIcon(this.passwordInput, passwordInputCreator);
-    passwordInputElement.addEventListener('input', () => {
+    const handlePasswordInputChange = (): void => {
       this.inputValidation(passwordInputCreator, () => Validator.passwordField(passwordInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    passwordInputElement.addEventListener('input', handlePasswordInputChange);
+    passwordInputElement.addEventListener('focusin', handlePasswordInputChange);
+    this.addConfirmPasswordInput();
     passwordInputCreator.addInnerElement(this.addControlButtons('password').getElement());
     this.form?.addInnerElement(passwordInputCreator.getElement());
   }
@@ -228,7 +242,7 @@ class UserProfileView extends View {
     confirmPasswordInputElement.setAttribute('disabled', '');
     this.confirmPasswordInput = confirmPasswordInputElement;
     this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
-    confirmPasswordInputElement.addEventListener('input', () => {
+    const handleConfirmPasswordInputChange = (): void => {
       const passwordValue = this.passwordInput?.value;
       if (passwordValue !== undefined) {
         this.inputValidation(confirmPasswordInputCreator, () =>
@@ -236,8 +250,10 @@ class UserProfileView extends View {
         );
         this.inputKeydownFn();
       }
-    });
-    this.form?.addInnerElement(confirmPasswordInputCreator.getElement());
+    };
+    confirmPasswordInputElement.addEventListener('input', handleConfirmPasswordInputChange);
+    confirmPasswordInputElement.addEventListener('focusin', handleConfirmPasswordInputChange);
+    this.passwordWrapper?.addInnerElement(confirmPasswordInputCreator.getElement());
   }
 
   private addShowHidePasswordIcon(passwordInput: HTMLInputElement, passwordInputCreator: InputFieldsCreator): void {
@@ -307,10 +323,12 @@ class UserProfileView extends View {
     } else if (type === 'billing') {
       this.cityBillingAddressInput = cityAddressInputElement;
     }
-    cityAddressInputElement.addEventListener('input', () => {
+    const handleCityAddressInputChange = (): void => {
       this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    cityAddressInputElement.addEventListener('input', handleCityAddressInputChange);
+    cityAddressInputElement.addEventListener('focusin', handleCityAddressInputChange);
     wrapper?.addInnerElement(cityAddressInputCreator.getElement());
   }
 
@@ -330,10 +348,12 @@ class UserProfileView extends View {
     } else if (type === 'billing') {
       this.streetBillingAddressInput = streetAddressInputElement;
     }
-    streetAddressInputElement.addEventListener('input', () => {
+    const handleStreetAddressInputChange = (): void => {
       this.inputValidation(streetAddressInputCreator, () => Validator.streetField(streetAddressInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    streetAddressInputElement.addEventListener('input', handleStreetAddressInputChange);
+    streetAddressInputElement.addEventListener('focusin', handleStreetAddressInputChange);
     wrapper?.addInnerElement(streetAddressInputCreator.getElement());
   }
 
@@ -353,7 +373,7 @@ class UserProfileView extends View {
     } else if (type === 'billing') {
       this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
     }
-    postalCodeAddressInputElement.addEventListener('input', () => {
+    const handlePostalCodeInputChange = (): void => {
       let country = '';
       this.inputValidation(postalCodeAddressInputCreator, () => {
         if (type === 'shipping') {
@@ -364,7 +384,9 @@ class UserProfileView extends View {
         return Validator.postalCodeField(postalCodeAddressInputElement.value, country);
       });
       this.inputKeydownFn();
-    });
+    };
+    postalCodeAddressInputElement.addEventListener('input', () => handlePostalCodeInputChange());
+    postalCodeAddressInputElement.addEventListener('focusin', () => handlePostalCodeInputChange());
     wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
   }
 
@@ -450,6 +472,9 @@ class UserProfileView extends View {
         case 'email':
           CustomerAPI.updateCustomerEmail(newInfo);
           break;
+        case 'password':
+          CustomerAPI.updateCustomerPassword(newInfo);
+          break;
         default:
           break;
       }
@@ -469,6 +494,9 @@ class UserProfileView extends View {
           break;
         case 'email':
           createPopupWithText('Wrong format of email.');
+          break;
+        case 'password':
+          createPopupWithText('Wrong format of password.');
           break;
         default:
           break;

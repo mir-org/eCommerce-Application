@@ -129,10 +129,12 @@ class RegistrationView extends View {
     const firstNameInputElement = firstNameInputCreator.getInputElement();
     firstNameInputCreator.getInputElement().setAttribute('required', '');
     this.firstNameInput = firstNameInputElement;
-    firstNameInputElement.addEventListener('input', () => {
+    const handleFirstNameInputChange = (): void => {
       this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    firstNameInputElement.addEventListener('input', handleFirstNameInputChange);
+    firstNameInputElement.addEventListener('focusin', handleFirstNameInputChange);
     this.form?.addInnerElement(firstNameInputCreator.getElement());
   }
 
@@ -148,10 +150,12 @@ class RegistrationView extends View {
     const lastNameInputElement = lastNameInputCreator.getInputElement();
     lastNameInputCreator.getInputElement().setAttribute('required', '');
     this.lastNameInput = lastNameInputElement;
-    lastNameInputElement.addEventListener('input', () => {
+    const handleLastNameInputChange = (): void => {
       this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    lastNameInputElement.addEventListener('input', handleLastNameInputChange);
+    lastNameInputElement.addEventListener('focusin', handleLastNameInputChange);
     this.form?.addInnerElement(lastNameInputCreator.getElement());
   }
 
@@ -167,10 +171,12 @@ class RegistrationView extends View {
     const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
     dateOfBirthInputCreator.getInputElement().setAttribute('required', '');
     this.dateOfBirthInput = dateOfBirthInputElement;
-    dateOfBirthInputElement.addEventListener('input', () => {
+    const handleDateOfBirthInputChange = (): void => {
       this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    dateOfBirthInputElement.addEventListener('input', handleDateOfBirthInputChange);
+    dateOfBirthInputElement.addEventListener('focusin', handleDateOfBirthInputChange);
     this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
   }
 
@@ -186,10 +192,12 @@ class RegistrationView extends View {
     const emailInputElement = emailInputCreator.getInputElement();
     emailInputCreator.getInputElement().setAttribute('required', '');
     this.emailInput = emailInputElement;
-    emailInputElement.addEventListener('input', () => {
+    const handleEmailInputChange = (): void => {
       this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    emailInputElement.addEventListener('input', handleEmailInputChange);
+    emailInputElement.addEventListener('focusin', handleEmailInputChange);
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
 
@@ -206,10 +214,13 @@ class RegistrationView extends View {
     passwordInputCreator.getInputElement().setAttribute('required', '');
     this.passwordInput = passwordInputElement;
     this.addShowHidePasswordIcon(this.passwordInput, passwordInputCreator);
-    passwordInputElement.addEventListener('input', () => {
+    const handlePasswordInputChange = (): void => {
       this.inputValidation(passwordInputCreator, () => Validator.passwordField(passwordInputElement.value));
       this.inputKeydownFn();
-    });
+      this.confirmPasswordInput?.dispatchEvent(new Event('input'));
+    };
+    passwordInputElement.addEventListener('input', handlePasswordInputChange);
+    passwordInputElement.addEventListener('focusin', handlePasswordInputChange);
     this.form?.addInnerElement(passwordInputCreator.getElement());
   }
 
@@ -226,7 +237,7 @@ class RegistrationView extends View {
     confirmPasswordInputCreator.getInputElement().setAttribute('required', '');
     this.confirmPasswordInput = confirmPasswordInputElement;
     this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
-    confirmPasswordInputElement.addEventListener('input', () => {
+    const handleConfirmPasswordInputChange = (): void => {
       const passwordValue = this.passwordInput?.value;
       if (passwordValue !== undefined) {
         this.inputValidation(confirmPasswordInputCreator, () =>
@@ -234,7 +245,9 @@ class RegistrationView extends View {
         );
         this.inputKeydownFn();
       }
-    });
+    };
+    confirmPasswordInputElement.addEventListener('input', handleConfirmPasswordInputChange);
+    confirmPasswordInputElement.addEventListener('focusin', handleConfirmPasswordInputChange);
     this.form?.addInnerElement(confirmPasswordInputCreator.getElement());
   }
 
@@ -293,10 +306,12 @@ class RegistrationView extends View {
     } else if (type === 'billing') {
       this.cityBillingAddressInput = cityAddressInputElement;
     }
-    cityAddressInputElement.addEventListener('input', () => {
+    const handleCityAddressInputChange = (): void => {
       this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    cityAddressInputElement.addEventListener('input', handleCityAddressInputChange);
+    cityAddressInputElement.addEventListener('focusin', handleCityAddressInputChange);
     wrapper?.addInnerElement(cityAddressInputCreator.getElement());
   }
 
@@ -315,10 +330,12 @@ class RegistrationView extends View {
     } else if (type === 'billing') {
       this.streetBillingAddressInput = streetAddressInputElement;
     }
-    streetAddressInputElement.addEventListener('input', () => {
+    const handleStreetAddressInputChange = (): void => {
       this.inputValidation(streetAddressInputCreator, () => Validator.streetField(streetAddressInputElement.value));
       this.inputKeydownFn();
-    });
+    };
+    streetAddressInputElement.addEventListener('input', handleStreetAddressInputChange);
+    streetAddressInputElement.addEventListener('focusin', handleStreetAddressInputChange);
     wrapper?.addInnerElement(streetAddressInputCreator.getElement());
   }
 
@@ -337,7 +354,7 @@ class RegistrationView extends View {
     } else if (type === 'billing') {
       this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
     }
-    postalCodeAddressInputElement.addEventListener('input', () => {
+    const handlePostalCodeInputChange = (): void => {
       let country = '';
       this.inputValidation(postalCodeAddressInputCreator, () => {
         if (type === 'shipping') {
@@ -348,7 +365,9 @@ class RegistrationView extends View {
         return Validator.postalCodeField(postalCodeAddressInputElement.value, country);
       });
       this.inputKeydownFn();
-    });
+    };
+    postalCodeAddressInputElement.addEventListener('input', () => handlePostalCodeInputChange());
+    postalCodeAddressInputElement.addEventListener('focusin', () => handlePostalCodeInputChange());
     wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
   }
 
@@ -374,8 +393,16 @@ class RegistrationView extends View {
     const countryAddressInputElement = countryAddressInputCreator.getElement() as HTMLSelectElement;
     if (type === 'shipping') {
       this.countryShippingAddressInput = countryAddressInputElement;
+      this.countryShippingAddressInput.addEventListener(
+        'change',
+        () => this.postalCodeShippingAddressInput?.dispatchEvent(new Event('input'))
+      );
     } else if (type === 'billing') {
       this.countryBillingAddressInput = countryAddressInputElement;
+      this.countryBillingAddressInput.addEventListener(
+        'change',
+        () => this.postalCodeBillingAddressInput?.dispatchEvent(new Event('input'))
+      );
     }
     wrapper?.addInnerElement(countryAddressInputWrapper.getElement());
   }

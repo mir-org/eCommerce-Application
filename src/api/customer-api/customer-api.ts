@@ -4,6 +4,8 @@ import { CustomerInfo, MyCustomerDraft, StatusCodes, HeadersInfo } from './custo
 import { createPopupWithText } from '../../app/utils/create-popup-with-text';
 
 export class CustomerAPI {
+  private static password = '';
+
   private static headers: HeadersInfo = {
     Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
     'Content-Type': 'application/json',
@@ -23,6 +25,7 @@ export class CustomerAPI {
         password,
       }),
     });
+    CustomerAPI.password = password;
     return response.status;
   }
 
@@ -84,7 +87,7 @@ export class CustomerAPI {
       headers: this.headers,
       body: JSON.stringify(requestBody),
     });
-    createPopupWithText('First Name updated');
+    createPopupWithText('First Name updated.');
   }
 
   public static async updateCustomerLastName(info: string): Promise<void> {
@@ -108,7 +111,7 @@ export class CustomerAPI {
       headers: this.headers,
       body: JSON.stringify(requestBody),
     });
-    createPopupWithText('Last Name updated');
+    createPopupWithText('Last Name updated.');
   }
 
   public static async updateCustomerEmail(info: string): Promise<void> {
@@ -132,30 +135,67 @@ export class CustomerAPI {
       headers: this.headers,
       body: JSON.stringify(requestBody),
     });
-    createPopupWithText('Email updated');
+    createPopupWithText('Email updated.');
   }
 
   public static async updateCustomerBirthDay(info: string): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
-    const response = await fetch(url, {
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.headers,
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch data.');
+      }
+      const customerData = await response.json();
+      const requestBody = {
+        version: customerData.version,
+        actions: [
+          {
+            action: 'setDateOfBirth',
+            dateOfBirth: info,
+          },
+        ],
+      };
+      try {
+        const request = await fetch(url, {
+          method: 'POST',
+          headers: this.headers,
+          body: JSON.stringify(requestBody),
+        });
+        if (!request.ok) {
+          throw new Error('Failed to update birthday.');
+        }
+        createPopupWithText('Birthday updated.');
+      } catch (error) {
+        console.error('Error updating birthday:', error);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  public static async updateCustomerPassword(info: string): Promise<void> {
+    console.log(CustomerAPI.password);
+    console.log(info);
+    const getUrl = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
+    const postUrl = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/password/`;
+    const response = await fetch(getUrl, {
       method: 'GET',
       headers: this.headers,
     });
     const customerData = await response.json();
     const requestBody = {
       version: customerData.version,
-      actions: [
-        {
-          action: 'setDateOfBirth',
-          dateOfBirth: info,
-        },
-      ],
+      currentPassword: CustomerAPI.password,
+      newPassword: info,
     };
-    await fetch(url, {
+    await fetch(postUrl, {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify(requestBody),
     });
-    createPopupWithText('Birthday updated');
+    createPopupWithText('Password updated.');
   }
 }

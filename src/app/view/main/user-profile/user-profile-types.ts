@@ -23,7 +23,7 @@ export const PROFILE_CLASSES = {
 export const PROFILE_TEXT = {
   EMAIL: 'Email',
   PASSWORD: 'Password',
-  CONFIRM_PASSWORD: 'Confirm Password',
+  CONFIRM_PASSWORD: 'Current Password',
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
   DATE_OF_BIRTH: 'Date of Birth',

@@ -4,8 +4,7 @@ class Validator {
     const nameRegex = /^[a-zA-Z-\s]+$/;
     if (!name) {
       error = 'Name is empty.';
-    }
-    if (!nameRegex.test(name)) {
+    } else if (!nameRegex.test(name)) {
       error = 'Name must contain only letters and spaces.';
     }
     return error;
