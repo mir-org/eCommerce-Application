@@ -2,6 +2,16 @@ import { Router } from '../../../router/router';
 import { ElementCreator } from '../../../utils/element-creator';
 import { View } from '../../view';
 import { ProductAPI } from '../../../../api/product-api/product-api';
+import { Image, Attributes } from '../../../../api/product-api/product-api-types';
+
+type PageInfo = {
+  name: string;
+  descriptions: string;
+  price: number;
+  discount: number | undefined;
+  imageArr: Image[];
+  atributesArr: Attributes[];
+};
 
 class ProductView extends View {
   constructor(id: string, router: Router) {
@@ -15,7 +25,7 @@ class ProductView extends View {
     this.getData(id);
   }
 
-  private async getData(id: string): Promise<number[]> {
+  private async getData(id: string): Promise<PageInfo> {
     const data = await ProductAPI.getProduct(id);
     const name = data.masterData.current.name.en;
     const descriptions = data.masterData.current.description.en;
@@ -27,17 +37,18 @@ class ProductView extends View {
     }
     const imageArr = data.masterData.current.masterVariant.images;
 
+    const atributesArr = data.masterData.current.masterVariant.attributes;
+
     const info = {
       name,
       descriptions,
       price,
       discount,
       imageArr,
+      atributesArr,
     };
 
-    // console.log(data);
-    console.log(info);
-    return [1, 2, 3];
+    return info;
   }
 }
 
