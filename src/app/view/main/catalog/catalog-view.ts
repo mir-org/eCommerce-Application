@@ -31,7 +31,7 @@ export default class CatalogView extends View {
     const graphicCardsLinkElement = this.getProcessorsLink({
       src: '../../../../assets/images/graphic-card.svg',
       text: CATALOG_TEXT.GRAPHIC_CARDS_LINK,
-      callback: () => this.router.navigate(Pages.INDEX),
+      callback: () => this.router.navigate(Pages.GRAPHIC_CARDS),
     });
     linksBlockCreator.addInnerElement(processorsLinkElement);
     linksBlockCreator.addInnerElement(graphicCardsLinkElement);

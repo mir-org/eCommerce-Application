@@ -100,6 +100,15 @@ class App {
         },
       },
       {
+        path: `${Pages.GRAPHIC_CARDS}`,
+        callback: async () => {
+          const { default: GraphicCardsView } = await import(
+            './view/main/catalog/categories/graphic-cards/graphic-cards-view'
+          );
+          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router));
+        },
+      },
+      {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
