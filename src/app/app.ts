@@ -8,14 +8,14 @@ import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
 import Observer from './observer/observer';
-import { FiltersView } from './view/main/catalog/filters/filters-view';
+// import { FiltersView } from './view/main/catalog/filters/filters-view';
 
 class App {
   private router: Router;
 
   private header: HeaderView | null;
 
-  private filter: FiltersView | null;
+  // private filter: FiltersView | null;
 
   private main: MainView | null;
 
@@ -24,7 +24,7 @@ class App {
   constructor() {
     AuthAPI.setAccessToken();
     this.header = null;
-    this.filter = null;
+    // this.filter = null;
     this.main = null;
     const state = new State();
     const routes = this.createRoutes(state);
@@ -89,7 +89,7 @@ class App {
         path: `${Pages.CATALOG}`,
         callback: async () => {
           const { default: CatalogView } = await import('./view/main/catalog/catalog-view');
-          this.setContent(Pages.CATALOG, new CatalogView(this.router, this.filter));
+          this.setContent(Pages.CATALOG, new CatalogView(this.router));
         },
       },
       {

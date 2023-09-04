@@ -1,7 +1,7 @@
-import { ProductAPI } from '../../../../../api/product-api/product-api';
-import { ElementCreator } from '../../../../utils/element-creator';
-import InputFieldsCreator from '../../../../utils/input-fields-creator';
-import { View } from '../../../view';
+import { ProductAPI } from '../../../../../../api/product-api/product-api';
+import { ElementCreator } from '../../../../../utils/element-creator';
+import InputFieldsCreator from '../../../../../utils/input-fields-creator';
+import { View } from '../../../../view';
 import {
   CssClasses,
   PLACEHOLDER,

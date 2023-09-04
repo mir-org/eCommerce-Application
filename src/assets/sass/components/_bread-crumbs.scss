@@ -1,0 +1,31 @@
+.bread-crumbs {
+  display: flex;
+  &__element {
+    position: relative;
+    margin: 0 10px;
+
+    &:not(:last-child) {
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: -10px;
+        width: 7px;
+        height: 7px;
+        border: 2px solid gray;
+        border-top: none;
+        border-left: none;
+        transform: translateY(-50%) rotate(-45deg);
+      }
+    }
+  }
+  &__link {
+    cursor: pointer;
+    user-select: none;
+
+    &--active {
+      cursor: default;
+      color: gray;
+    }
+  }
+}
