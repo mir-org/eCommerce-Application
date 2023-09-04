@@ -36,17 +36,8 @@ class ProductView extends View {
       discount = discountValue / 100;
     }
     const imageArr = data.masterData.current.masterVariant.images;
-
     const atributesArr = data.masterData.current.masterVariant.attributes;
-
-    const info = {
-      name,
-      descriptions,
-      price,
-      discount,
-      imageArr,
-      atributesArr,
-    };
+    const info = { name, descriptions, price, discount, imageArr, atributesArr };
 
     return info;
   }
