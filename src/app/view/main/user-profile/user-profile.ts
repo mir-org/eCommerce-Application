@@ -337,6 +337,9 @@ class UserProfileView extends View {
     saveButton.disabled = true;
     const input = saveButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
     input.disabled = true;
+    const newName = input.value ?? '';
+    CustomerAPI.updateCustomerFirstName(newName);
+    // CustomerAPI.updateCustomerLastName();
   }
 }
 
