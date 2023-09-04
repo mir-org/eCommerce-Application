@@ -5,7 +5,7 @@ import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
-import { INITIAL_VALUE, PROFILE_CLASSES, PROFILE_TEXT } from './user-profile-types';
+import { INITIAL_VALUE, PROFILE_CLASSES, PROFILE_TEXT, TYPE } from './user-profile-types';
 
 class UserProfileView extends View {
   private form: ElementCreator | null;
@@ -19,6 +19,10 @@ class UserProfileView extends View {
   private emailInput: HTMLInputElement | null;
 
   private dateOfBirthInput: HTMLInputElement | null;
+
+  private passwordInput: HTMLInputElement | null;
+
+  private confirmPasswordInput: HTMLInputElement | null;
 
   private shippingAddressFieldSet: ElementCreator | null;
 
@@ -50,6 +54,8 @@ class UserProfileView extends View {
     this.lastNameInput = null;
     this.emailInput = null;
     this.dateOfBirthInput = null;
+    this.passwordInput = null;
+    this.confirmPasswordInput = null;
     this.shippingAddressFieldSet = null;
     this.billingAddressFieldSet = null;
     this.cityShippingAddressInput = null;
@@ -68,7 +74,6 @@ class UserProfileView extends View {
     await this.getCustomerData();
     this.addTitle();
     this.addForm();
-    console.log(this.data);
   }
 
   private addTitle(): void {
@@ -83,6 +88,8 @@ class UserProfileView extends View {
     this.addLastNameInput();
     this.addDateOfBirthInput();
     this.addEmailInput();
+    this.addPasswordInput();
+    this.addConfirmPasswordInput();
     this.addShippingFieldSet();
     this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
     this.addBillingFieldSet();
@@ -185,6 +192,77 @@ class UserProfileView extends View {
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
 
+  private addPasswordInput(): void {
+    const passwordInputCreator = new InputFieldsCreator(
+      PROFILE_CLASSES.PROFILE,
+      PROFILE_CLASSES.PASSWORD,
+      PROFILE_TEXT.PASSWORD,
+      '',
+      'password',
+      ''
+    );
+    const passwordInputElement = passwordInputCreator.getInputElement();
+    passwordInputCreator.getInputElement().setAttribute('required', '');
+    passwordInputElement.setAttribute('disabled', '');
+    this.passwordInput = passwordInputElement;
+    this.addShowHidePasswordIcon(this.passwordInput, passwordInputCreator);
+    passwordInputElement.addEventListener('input', () => {
+      this.inputValidation(passwordInputCreator, () => Validator.passwordField(passwordInputElement.value));
+      this.inputKeydownFn();
+    });
+    passwordInputCreator.addInnerElement(this.addControlButtons('password').getElement());
+    this.form?.addInnerElement(passwordInputCreator.getElement());
+  }
+
+  private addConfirmPasswordInput(): void {
+    const confirmPasswordInputCreator = new InputFieldsCreator(
+      PROFILE_CLASSES.PROFILE,
+      PROFILE_CLASSES.CONFIRM_PASSWORD,
+      PROFILE_TEXT.CONFIRM_PASSWORD,
+      '',
+      'password',
+      ''
+    );
+    const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
+    confirmPasswordInputCreator.getInputElement().setAttribute('required', '');
+    confirmPasswordInputElement.setAttribute('disabled', '');
+    this.confirmPasswordInput = confirmPasswordInputElement;
+    this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
+    confirmPasswordInputElement.addEventListener('input', () => {
+      const passwordValue = this.passwordInput?.value;
+      if (passwordValue !== undefined) {
+        this.inputValidation(confirmPasswordInputCreator, () =>
+          Validator.confirmPasswordField(confirmPasswordInputElement.value, passwordValue)
+        );
+        this.inputKeydownFn();
+      }
+    });
+    this.form?.addInnerElement(confirmPasswordInputCreator.getElement());
+  }
+
+  private addShowHidePasswordIcon(passwordInput: HTMLInputElement, passwordInputCreator: InputFieldsCreator): void {
+    const showHideIconCreator = new ElementCreator(
+      'span',
+      PROFILE_CLASSES.SHOW_HIDE_ICON,
+      PROFILE_TEXT.SHOW_HIDE_ICON.VISIBLE
+    );
+    showHideIconCreator
+      .getElement()
+      .addEventListener('click', this.showHidePasswordFn.bind(this, passwordInput, showHideIconCreator));
+    passwordInputCreator.addInnerElement(showHideIconCreator);
+  }
+
+  private showHidePasswordFn(passwordInput: HTMLInputElement, showHideIconCreator: ElementCreator): void {
+    const showHideIconElement = showHideIconCreator.getElement();
+    if (passwordInput.getAttribute('type') === TYPE.INPUT_TYPE.PASSWORD) {
+      passwordInput.setAttribute('type', TYPE.INPUT_TYPE.TEXT);
+      showHideIconElement.textContent = PROFILE_TEXT.SHOW_HIDE_ICON.VISIBLE_OFF;
+    } else {
+      passwordInput.setAttribute('type', TYPE.INPUT_TYPE.PASSWORD);
+      showHideIconElement.textContent = PROFILE_TEXT.SHOW_HIDE_ICON.VISIBLE;
+    }
+  }
+
   private addShippingFieldSet(): void {
     const fieldSet = new ElementCreator('fieldset', 'fieldset');
     this.shippingAddressFieldSet = fieldSet;
@@ -229,10 +307,10 @@ class UserProfileView extends View {
     } else if (type === 'billing') {
       this.cityBillingAddressInput = cityAddressInputElement;
     }
-    // cityAddressInputElement.addEventListener('input', () => {
-    //   this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
-    //   this.inputKeydownFn();
-    // });
+    cityAddressInputElement.addEventListener('input', () => {
+      this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
+      this.inputKeydownFn();
+    });
     wrapper?.addInnerElement(cityAddressInputCreator.getElement());
   }
 
@@ -252,10 +330,10 @@ class UserProfileView extends View {
     } else if (type === 'billing') {
       this.streetBillingAddressInput = streetAddressInputElement;
     }
-    // streetAddressInputElement.addEventListener('input', () => {
-    //   this.inputValidation(streetAddressInputCreator, () => Validator.streetField(streetAddressInputElement.value));
-    //   this.inputKeydownFn();
-    // });
+    streetAddressInputElement.addEventListener('input', () => {
+      this.inputValidation(streetAddressInputCreator, () => Validator.streetField(streetAddressInputElement.value));
+      this.inputKeydownFn();
+    });
     wrapper?.addInnerElement(streetAddressInputCreator.getElement());
   }
 
@@ -275,18 +353,18 @@ class UserProfileView extends View {
     } else if (type === 'billing') {
       this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
     }
-    // postalCodeAddressInputElement.addEventListener('input', () => {
-    //   let country = '';
-    //   this.inputValidation(postalCodeAddressInputCreator, () => {
-    //     if (type === 'shipping') {
-    //       country = this.countryShippingAddressInput?.value ?? '';
-    //     } else if (type === 'billing') {
-    //       country = this.countryBillingAddressInput?.value ?? '';
-    //     }
-    //     return Validator.postalCodeField(postalCodeAddressInputElement.value, country);
-    //   });
-    //   this.inputKeydownFn();
-    // });
+    postalCodeAddressInputElement.addEventListener('input', () => {
+      let country = '';
+      this.inputValidation(postalCodeAddressInputCreator, () => {
+        if (type === 'shipping') {
+          country = this.countryShippingAddressInput?.value ?? '';
+        } else if (type === 'billing') {
+          country = this.countryBillingAddressInput?.value ?? '';
+        }
+        return Validator.postalCodeField(postalCodeAddressInputElement.value, country);
+      });
+      this.inputKeydownFn();
+    });
     wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
   }
 
@@ -348,16 +426,14 @@ class UserProfileView extends View {
     input.disabled = false;
   }
 
+  // TODO REFACTOR THIS
   // eslint-disable-next-line max-lines-per-function
   private saveButtonCallback(event: Event): void {
     console.log(event.target);
     const saveButton = event.target as HTMLButtonElement;
     const field = saveButton?.dataset?.btnType;
     const editButton = saveButton.previousSibling as HTMLButtonElement;
-    editButton.disabled = false;
-    saveButton.disabled = true;
     const input = saveButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
-    input.disabled = true;
     const newInfo = input.value ?? '';
     const valid = !input.classList.contains('invalid');
     if (valid) {
@@ -368,28 +444,31 @@ class UserProfileView extends View {
         case 'lastName':
           CustomerAPI.updateCustomerLastName(newInfo);
           break;
-        case 'email':
-          CustomerAPI.updateCustomerEmail(newInfo);
-          break;
         case 'birthDay':
           CustomerAPI.updateCustomerBirthDay(newInfo);
+          break;
+        case 'email':
+          CustomerAPI.updateCustomerEmail(newInfo);
           break;
         default:
           break;
       }
+      input.disabled = true;
+      editButton.disabled = false;
+      saveButton.disabled = true;
     } else {
       switch (field) {
         case 'firstName':
-          createPopupWithText('Wrong format of first name');
+          createPopupWithText('Wrong format of first name.');
           break;
         case 'lastName':
-          createPopupWithText('Wrong format of last name');
-          break;
-        case 'email':
-          createPopupWithText('Wrong format of email');
+          createPopupWithText('Wrong format of last name.');
           break;
         case 'birthDay':
-          createPopupWithText('Wrong format of birthday');
+          createPopupWithText('Wrong format of birthday.');
+          break;
+        case 'email':
+          createPopupWithText('Wrong format of email.');
           break;
         default:
           break;
