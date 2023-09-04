@@ -41,6 +41,7 @@ export const TEXT = {
   PRICE_HEADER: 'Price(USD)',
   BRANDS_HEADER: 'Brands',
   SOCKETS_HEADER: 'Socket',
+  CORES_AMOUNT_HEADER: 'Cores amount',
 };
 
 export const SORT_OPTIONS = [

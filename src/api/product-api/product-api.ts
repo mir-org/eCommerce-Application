@@ -38,7 +38,31 @@ export class ProductAPI {
     page: number = 0,
     limit: number = 4
   ): Promise<void> {
-    const { categoryId, sort, search, minPriceValue, maxPriceValue, brands, sockets } = filterProductsQuery;
+    const queryParams = this.getQueryParamsForFiltering(filterProductsQuery);
+    const offset = limit * page;
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}&limit=${limit}&offset=${offset}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
+    });
+    const data = await response.json();
+    const customEvent: CustomEvent = new CustomEvent('myCustomEvent', {
+      detail: {
+        message: 'Custom event dispatched',
+        data: data.results,
+        currentPage: page,
+        totalPages: Math.ceil(data.total / limit),
+        query: filterProductsQuery,
+      },
+    });
+    document.dispatchEvent(customEvent);
+  }
+
+  private static getQueryParamsForFiltering(filterProductsQuery: FilterProductsQuery): string {
+    const { categoryId, sort, search, minPriceValue, maxPriceValue, brands, sockets, coresAmount } =
+      filterProductsQuery;
     const categoryQuery = categoryId ? `filter=categories.id:"${categoryId}"` : '';
     const searchQuery = search ? `text.en=${search}` : '';
     const sortQuery = sort ? `sort=${sort}` : '';
@@ -50,35 +74,18 @@ export class ProductAPI {
     const brandsFacetQuery = brands ? `facet=variants.attributes.manufacturer:${brands}` : '';
     const socketsFilterQuery = sockets ? `filter.query=variants.attributes.socket:${sockets}` : '';
     const socketsFacetQuery = sockets ? `facet=variants.attributes.socket:${sockets}` : '';
-    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${socketsFilterQuery}&${socketsFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}`;
-    const offset = limit * page;
-    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}&limit=${limit}&offset=${offset}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
-    });
-    const data = await response.json();
-    console.log(data);
-    const customEvent: CustomEvent = new CustomEvent('myCustomEvent', {
-      detail: {
-        message: 'Custom event dispatched',
-        data: data.results,
-        currentPage: page,
-        totalPages: Math.ceil(data.total / limit),
-        query: filterProductsQuery,
-      },
-    });
-    // console.log(data);
-    document.dispatchEvent(customEvent);
+    const coresAmountFilterQuery = coresAmount ? `filter.query=variants.attributes.cores-amount:${coresAmount}` : '';
+    const coresAmountFacetQuery = coresAmount ? `facet=variants.attributes.cores-amount:${coresAmount}` : '';
+    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${socketsFilterQuery}&${socketsFacetQuery}&${coresAmountFilterQuery}&${coresAmountFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}`;
+    return queryParams;
   }
 
   public static async getFiltersData(categoryId: string): Promise<FiltersData> {
     const categoryFilterQuery = categoryId ? `filter.query=categories.id:subtree("${categoryId}")` : '';
     const brandsFacetQuery = `facet=variants.attributes.manufacturer`;
     const socketFacetQuery = `facet=variants.attributes.socket`;
-    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}&${socketFacetQuery}`;
+    const coresAmountFacetQuery = `facet=variants.attributes.cores-amount`;
+    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}&${socketFacetQuery}&${coresAmountFacetQuery}`;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
     const response = await fetch(url, {
       method: 'GET',
@@ -91,6 +98,7 @@ export class ProductAPI {
     const result = {
       manufacturers: data.facets['variants.attributes.manufacturer'].terms,
       sockets: data.facets['variants.attributes.socket'].terms,
+      coresAmount: data.facets['variants.attributes.cores-amount'].terms,
     };
     return result;
   }

@@ -165,6 +165,7 @@ export interface FilterProductsQuery {
   maxPriceValue?: string;
   brands?: string;
   sockets?: string;
+  coresAmount?: string;
 }
 
 export type FacetsProducts = {
@@ -179,6 +180,7 @@ export type FacetsProducts = {
 export type Facets = {
   'variants.attributes.manufacturer': VariantsAttributes;
   'variants.attributes.socket': VariantsAttributes;
+  'variants.attributes.cores-amount': VariantsAttributes;
 };
 
 type VariantsAttributes = {
@@ -193,6 +195,7 @@ type VariantsAttributes = {
 export interface FiltersData {
   manufacturers: TermsData[];
   sockets: TermsData[];
+  coresAmount: TermsData[];
 }
 
 type TermsData = {
