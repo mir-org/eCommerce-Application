@@ -50,7 +50,12 @@ type MasterData = {
   staged: CurrentAndStaged;
 };
 
+type Description = {
+  en: string;
+};
+
 type CurrentAndStaged = {
+  description: Description;
   categories: Ids[];
   categoryOrderHints: object;
   masterVariant: MasterVariant;
