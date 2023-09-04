@@ -1,7 +1,7 @@
-import { ProductAPI } from '../../../../../api/product-api/product-api';
-import { ElementCreator } from '../../../../utils/element-creator';
-import InputFieldsCreator from '../../../../utils/input-fields-creator';
-import { View } from '../../../view';
+import { ProductAPI } from '../../../../../../../api/product-api/product-api';
+import { ElementCreator } from '../../../../../../utils/element-creator';
+import InputFieldsCreator from '../../../../../../utils/input-fields-creator';
+import { View } from '../../../../../view';
 import {
   CssClasses,
   PLACEHOLDER,
@@ -11,6 +11,7 @@ import {
   TEXT,
   SORT_OPTIONS,
   SortOptionData,
+  CATEGORY_ID,
 } from './filters-view-types';
 
 export class FiltersView extends View {
@@ -184,6 +185,7 @@ export class FiltersView extends View {
     const maxValueUsd = String(maxPrice * 100 || '*');
     const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
     await ProductAPI.getFilteredProducts({
+      categoryId: CATEGORY_ID,
       search: searchValue,
       sort: sortValue,
       minPriceValue: minValueUsd,

@@ -64,3 +64,5 @@ export type SortOptionData = {
   TEXT: string;
   VALUE: string;
 };
+
+export const CATEGORY_ID = '0c1874b3-f13a-4879-ae0c-4cc69c02d71c';
