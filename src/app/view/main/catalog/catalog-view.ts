@@ -48,17 +48,4 @@ export default class CatalogView extends View {
     linkElementCreator.addInnerElement(linkTextCreator);
     return linkElementCreator.getElement();
   }
-
-  private cardWrapperClickHandler(event: MouseEvent): void {
-    const сtarget = event.target;
-    if (сtarget instanceof HTMLElement) {
-      const card = сtarget.closest('.product-card');
-      if (card) {
-        const ID = card.getAttribute('data-id');
-        this.router.navigate(`catalog/${ID}`);
-      }
-    }
-  }
 }
-
-// this.cardsWrapper?.getElement().addEventListener('click', this.cardWrapperClickHandler.bind(this));
