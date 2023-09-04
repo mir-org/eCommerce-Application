@@ -12,6 +12,8 @@ class UserProfileView extends View {
 
   private shippingAddressFieldSet: ElementCreator | null;
 
+  private billingAddressFieldSet: ElementCreator | null;
+
   private cityShippingAddressInput: HTMLInputElement | null;
 
   private cityBillingAddressInput: HTMLInputElement | null;
@@ -24,17 +26,24 @@ class UserProfileView extends View {
 
   private postalCodeBillingAddressInput: HTMLInputElement | null;
 
+  private countryShippingAddressInput: HTMLSelectElement | null;
+
+  private countryBillingAddressInput: HTMLSelectElement | null;
+
   constructor() {
     super('section', PROFILE_CLASSES.PROFILE);
     this.form = null;
     this.data = null;
     this.shippingAddressFieldSet = null;
+    this.billingAddressFieldSet = null;
     this.cityShippingAddressInput = null;
     this.cityBillingAddressInput = null;
     this.streetShippingAddressInput = null;
     this.streetBillingAddressInput = null;
     this.postalCodeShippingAddressInput = null;
     this.postalCodeBillingAddressInput = null;
+    this.countryShippingAddressInput = null;
+    this.countryBillingAddressInput = null;
     this.configView();
   }
 
@@ -60,6 +69,7 @@ class UserProfileView extends View {
     this.addShippingFieldSet();
     this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
     this.addBillingFieldSet();
+    this.addAddressInput(this.billingAddressFieldSet, 'billing');
   }
 
   private async getCustomerData(): Promise<CustomerInfo> {
@@ -84,7 +94,15 @@ class UserProfileView extends View {
     //   this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
     //   this.inputKeydownFn();
     // });
+    firstNameInputCreator.addInnerElement(this.addControlButtons());
     this.form?.addInnerElement(firstNameInputCreator.getElement());
+  }
+
+  private addControlButtons(): ElementCreator {
+    const buttonsWrapper = new ElementCreator('div', 'controls');
+    buttonsWrapper.addInnerElement(this.addEditButton());
+    buttonsWrapper.addInnerElement(this.addSaveButton());
+    return buttonsWrapper;
   }
 
   private addLastNameInput(): void {
@@ -104,6 +122,7 @@ class UserProfileView extends View {
     //   this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
     //   this.inputKeydownFn();
     // });
+    lastNameInputCreator.addInnerElement(this.addControlButtons());
     this.form?.addInnerElement(lastNameInputCreator.getElement());
   }
 
@@ -124,6 +143,7 @@ class UserProfileView extends View {
     //   this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
     //   this.inputKeydownFn();
     // });
+    dateOfBirthInputCreator.addInnerElement(this.addControlButtons());
     this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
   }
 
@@ -144,6 +164,7 @@ class UserProfileView extends View {
     //   this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
     //   this.inputKeydownFn();
     // });
+    emailInputCreator.addInnerElement(this.addControlButtons());
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
 
@@ -158,7 +179,7 @@ class UserProfileView extends View {
 
   private addBillingFieldSet(): void {
     const fieldSet = new ElementCreator('fieldset', 'fieldset');
-    // this.billingAddressFieldSet = fieldSet;
+    this.billingAddressFieldSet = fieldSet;
     const legendFieldSet = new ElementCreator('legend', 'legend');
     legendFieldSet.getElement().textContent = 'Billing Addresses';
     fieldSet.addInnerElement(legendFieldSet);
@@ -170,7 +191,7 @@ class UserProfileView extends View {
       this.addCityAddressInput(wrapper, type);
       this.addStreetAddressInput(wrapper, type);
       this.addPostalCodeAddressInput(wrapper, type);
-      // this.addCountryAddressInput(wrapper, type);
+      this.addCountryAddressInput(wrapper, type);
       // this.addDefaultCheckbox(wrapper, type);
     }
   }
@@ -250,6 +271,72 @@ class UserProfileView extends View {
     //   this.inputKeydownFn();
     // });
     wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
+  }
+
+  private addCountryAddressInput(wrapper: ElementCreator, type: string): void {
+    // TODO refactor to separate createSelect method
+    const countryOptions = ['USA', 'Russia'];
+    const countryValues = ['US', 'RU'];
+    const wrapperClasses = ['user-profile__country-input-wrapper', 'primary-wrapper'];
+    const labelClasses = ['user-profile__country-label', 'primary-label'];
+    const selectClasses = ['user-profile__country-input', 'primary-input'];
+    const countryAddressInputWrapper = new ElementCreator('div', wrapperClasses);
+    const countryAddressInputLabel = new ElementCreator('label', labelClasses);
+    countryAddressInputLabel.getElement().textContent = 'Country';
+    const countryAddressInputCreator = new ElementCreator('select', selectClasses);
+    for (let i = 0; i < countryOptions.length; i += 1) {
+      const option = document.createElement('option');
+      option.setAttribute('value', countryValues[i]);
+      option.textContent = countryOptions[i];
+      countryAddressInputCreator.getElement().appendChild(option);
+    }
+    countryAddressInputWrapper.addInnerElement(countryAddressInputLabel.getElement());
+    countryAddressInputLabel.addInnerElement(countryAddressInputCreator.getElement());
+    const countryAddressInputElement = countryAddressInputCreator.getElement() as HTMLSelectElement;
+    countryAddressInputElement.setAttribute('disabled', '');
+    if (type === 'shipping') {
+      this.countryShippingAddressInput = countryAddressInputElement;
+    } else if (type === 'billing') {
+      this.countryBillingAddressInput = countryAddressInputElement;
+    }
+    wrapper?.addInnerElement(countryAddressInputWrapper.getElement());
+  }
+
+  private addEditButton(): ElementCreator {
+    const editButton = new ElementCreator('button', 'edit');
+    editButton.getElement().textContent = 'Edit';
+    editButton.getElement().setAttribute('type', 'button');
+    editButton.getElement().addEventListener('click', (event) => this.editButtonCallback(event));
+    return editButton;
+  }
+
+  private addSaveButton(): ElementCreator {
+    const saveButton = new ElementCreator('button', 'save');
+    saveButton.getElement().textContent = 'Save';
+    saveButton.getElement().setAttribute('type', 'button');
+    saveButton.getElement().setAttribute('disabled', '');
+    saveButton.getElement().addEventListener('click', (event) => this.saveButtonCallback(event));
+    return saveButton;
+  }
+
+  private editButtonCallback(event: Event): void {
+    console.log(event.target);
+    const editButton = event.target as HTMLButtonElement;
+    const saveButton = editButton.nextSibling as HTMLButtonElement;
+    saveButton.disabled = false;
+    editButton.disabled = true;
+    const input = editButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
+    input.disabled = false;
+  }
+
+  private saveButtonCallback(event: Event): void {
+    console.log(event.target);
+    const saveButton = event.target as HTMLButtonElement;
+    const editButton = saveButton.previousSibling as HTMLButtonElement;
+    editButton.disabled = false;
+    saveButton.disabled = true;
+    const input = saveButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
+    input.disabled = true;
   }
 }
 
