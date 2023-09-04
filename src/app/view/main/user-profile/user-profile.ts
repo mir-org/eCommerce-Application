@@ -1,14 +1,24 @@
 import { CustomerAPI } from '../../../../api/customer-api/customer-api';
 import { CustomerInfo } from '../../../../api/customer-api/customer-api-types';
+import { createPopupWithText } from '../../../utils/create-popup-with-text';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
+import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
-import { PROFILE_CLASSES, PROFILE_TEXT } from './user-profile-types';
+import { INITIAL_VALUE, PROFILE_CLASSES, PROFILE_TEXT } from './user-profile-types';
 
 class UserProfileView extends View {
   private form: ElementCreator | null;
 
   private data: CustomerInfo | null;
+
+  private firstNameInput: HTMLInputElement | null;
+
+  private lastNameInput: HTMLInputElement | null;
+
+  private emailInput: HTMLInputElement | null;
+
+  private dateOfBirthInput: HTMLInputElement | null;
 
   private shippingAddressFieldSet: ElementCreator | null;
 
@@ -30,10 +40,16 @@ class UserProfileView extends View {
 
   private countryBillingAddressInput: HTMLSelectElement | null;
 
+  private errorLine: HTMLElement | null;
+
   constructor() {
     super('section', PROFILE_CLASSES.PROFILE);
     this.form = null;
     this.data = null;
+    this.firstNameInput = null;
+    this.lastNameInput = null;
+    this.emailInput = null;
+    this.dateOfBirthInput = null;
     this.shippingAddressFieldSet = null;
     this.billingAddressFieldSet = null;
     this.cityShippingAddressInput = null;
@@ -44,6 +60,7 @@ class UserProfileView extends View {
     this.postalCodeBillingAddressInput = null;
     this.countryShippingAddressInput = null;
     this.countryBillingAddressInput = null;
+    this.errorLine = null;
     this.configView();
   }
 
@@ -86,14 +103,14 @@ class UserProfileView extends View {
       'text',
       ''
     );
-    // const firstNameInputElement = firstNameInputCreator.getInputElement();
-    // firstNameInputCreator.getInputElement().setAttribute('required', '');
+    const firstNameInputElement = firstNameInputCreator.getInputElement();
+    firstNameInputCreator.getInputElement().setAttribute('required', '');
     firstNameInputCreator.getInputElement().setAttribute('disabled', '');
-    // this.firstNameInput = firstNameInputElement;
-    // firstNameInputElement.addEventListener('input', () => {
-    //   this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
-    //   this.inputKeydownFn();
-    // });
+    this.firstNameInput = firstNameInputElement;
+    firstNameInputElement.addEventListener('input', () => {
+      this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
+      this.inputKeydownFn();
+    });
     firstNameInputCreator.addInnerElement(this.addControlButtons('firstName'));
     this.form?.addInnerElement(firstNameInputCreator.getElement());
   }
@@ -114,14 +131,14 @@ class UserProfileView extends View {
       'text',
       ''
     );
-    // const lastNameInputElement = lastNameInputCreator.getInputElement();
-    // lastNameInputCreator.getInputElement().setAttribute('required', '');
+    const lastNameInputElement = lastNameInputCreator.getInputElement();
+    lastNameInputCreator.getInputElement().setAttribute('required', '');
     lastNameInputCreator.getInputElement().setAttribute('disabled', '');
-    // this.lastNameInput = lastNameInputElement;
-    // lastNameInputElement.addEventListener('input', () => {
-    //   this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
-    //   this.inputKeydownFn();
-    // });
+    this.lastNameInput = lastNameInputElement;
+    lastNameInputElement.addEventListener('input', () => {
+      this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
+      this.inputKeydownFn();
+    });
     lastNameInputCreator.addInnerElement(this.addControlButtons('lastName'));
     this.form?.addInnerElement(lastNameInputCreator.getElement());
   }
@@ -135,14 +152,14 @@ class UserProfileView extends View {
       'date',
       ''
     );
-    // const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
-    // dateOfBirthInputCreator.getInputElement().setAttribute('required', '');
+    const dateOfBirthInputElement = dateOfBirthInputCreator.getInputElement();
+    dateOfBirthInputCreator.getInputElement().setAttribute('required', '');
     dateOfBirthInputCreator.getInputElement().setAttribute('disabled', '');
-    // this.dateOfBirthInput = dateOfBirthInputElement;
-    // dateOfBirthInputElement.addEventListener('input', () => {
-    //   this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
-    //   this.inputKeydownFn();
-    // });
+    this.dateOfBirthInput = dateOfBirthInputElement;
+    dateOfBirthInputElement.addEventListener('input', () => {
+      this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
+      this.inputKeydownFn();
+    });
     dateOfBirthInputCreator.addInnerElement(this.addControlButtons('birthDay'));
     this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
   }
@@ -156,14 +173,14 @@ class UserProfileView extends View {
       'email',
       ''
     );
-    // const emailInputElement = emailInputCreator.getInputElement();
-    // emailInputCreator.getInputElement().setAttribute('required', '');
+    const emailInputElement = emailInputCreator.getInputElement();
+    emailInputCreator.getInputElement().setAttribute('required', '');
     emailInputCreator.getInputElement().setAttribute('disabled', '');
-    // this.emailInput = emailInputElement;
-    // emailInputElement.addEventListener('input', () => {
-    //   this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
-    //   this.inputKeydownFn();
-    // });
+    this.emailInput = emailInputElement;
+    emailInputElement.addEventListener('input', () => {
+      this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
+      this.inputKeydownFn();
+    });
     emailInputCreator.addInnerElement(this.addControlButtons('email'));
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
@@ -331,6 +348,7 @@ class UserProfileView extends View {
     input.disabled = false;
   }
 
+  // eslint-disable-next-line max-lines-per-function
   private saveButtonCallback(event: Event): void {
     console.log(event.target);
     const saveButton = event.target as HTMLButtonElement;
@@ -341,23 +359,60 @@ class UserProfileView extends View {
     const input = saveButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
     input.disabled = true;
     const newInfo = input.value ?? '';
-    console.log(field);
-    switch (field) {
-      case 'firstName':
-        CustomerAPI.updateCustomerFirstName(newInfo);
-        break;
-      case 'lastName':
-        CustomerAPI.updateCustomerLastName(newInfo);
-        break;
-      case 'email':
-        CustomerAPI.updateCustomerEmail(newInfo);
-        break;
-      case 'birthDay':
-        CustomerAPI.updateCustomerBirthDay(newInfo);
-        break;
-      default:
-        break;
+    const valid = !input.classList.contains('invalid');
+    if (valid) {
+      switch (field) {
+        case 'firstName':
+          CustomerAPI.updateCustomerFirstName(newInfo);
+          break;
+        case 'lastName':
+          CustomerAPI.updateCustomerLastName(newInfo);
+          break;
+        case 'email':
+          CustomerAPI.updateCustomerEmail(newInfo);
+          break;
+        case 'birthDay':
+          CustomerAPI.updateCustomerBirthDay(newInfo);
+          break;
+        default:
+          break;
+      }
+    } else {
+      switch (field) {
+        case 'firstName':
+          createPopupWithText('Wrong format of first name');
+          break;
+        case 'lastName':
+          createPopupWithText('Wrong format of last name');
+          break;
+        case 'email':
+          createPopupWithText('Wrong format of email');
+          break;
+        case 'birthDay':
+          createPopupWithText('Wrong format of birthday');
+          break;
+        default:
+          break;
+      }
     }
+  }
+
+  private inputValidation(inputCreator: InputFieldsCreator, validatorFn: () => string): boolean {
+    const inputElement = inputCreator.getInputElement();
+    const errorLineElement = inputCreator.getErrorLine();
+    const error = validatorFn();
+    if (error) {
+      inputElement.classList.add(PROFILE_CLASSES.INPUT_INVALID);
+      errorLineElement.textContent = `${error}`;
+      return false;
+    }
+    inputElement.classList.remove(PROFILE_CLASSES.INPUT_INVALID);
+    errorLineElement.textContent = INITIAL_VALUE.ERROR_LINE;
+    return true;
+  }
+
+  private inputKeydownFn(): void {
+    this.errorLine?.classList.remove(PROFILE_CLASSES.ERROR_LINE_SHOW);
   }
 }
 

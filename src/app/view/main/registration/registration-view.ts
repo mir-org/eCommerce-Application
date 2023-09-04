@@ -465,7 +465,7 @@ class RegistrationView extends View {
           this.errorLine.textContent = `${error}`;
         }
       } else {
-        this.errorLine.textContent = 'Fix all errors';
+        this.errorLine.textContent = 'Fix all errors.';
         this.errorLine?.classList.add(SIGN_UP_CLASSES.ERROR_LINE_SHOW);
       }
     }

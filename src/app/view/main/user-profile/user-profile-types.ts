@@ -8,6 +8,8 @@ export const PROFILE_CLASSES = {
   CITY: 'city',
   STREET: 'street',
   POSTAL_CODE: 'postal-code',
+  INPUT_INVALID: 'invalid',
+  ERROR_LINE_SHOW: 'show',
 };
 
 export const PROFILE_TEXT = {
@@ -19,4 +21,16 @@ export const PROFILE_TEXT = {
   CITY: 'City',
   STREET: 'Street',
   POSTAL_CODE: 'Postal Code',
+};
+
+export const INITIAL_VALUE = {
+  INPUT_VALUE: {
+    EMAIL: '',
+    PASSWORD: '',
+  },
+  PLACEHOLDER: {
+    EMAIL: '',
+    PASSWORD: '',
+  },
+  ERROR_LINE: '',
 };
