@@ -25,6 +25,8 @@ export class FiltersView extends View {
 
   private brands: Set<string> = new Set();
 
+  private sockets: Set<string> = new Set();
+
   constructor() {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
@@ -39,6 +41,7 @@ export class FiltersView extends View {
     this.addSortBar();
     this.addPriceBlock();
     this.addBrandsList();
+    this.addSocketsList();
   }
 
   private addSearchBar(): void {
@@ -157,6 +160,34 @@ export class FiltersView extends View {
     this.viewElementCreator.addInnerElement(brandsFilterBlock);
   }
 
+  private async addSocketsList(): Promise<void> {
+    const socketFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const socketBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.SOCKETS_HEADER);
+    const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
+    try {
+      const { sockets } = await ProductAPI.getFiltersData(CATEGORY_ID);
+      sockets.forEach((socketInfo) => {
+        const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
+        const inputElementCreator = new InputFieldsCreator(
+          CssClasses.FILTERS,
+          CssClasses.CHECKBOX_INPUT,
+          `${socketInfo.term} (${socketInfo.count})`,
+          `${socketInfo.term}`,
+          INPUT_TYPE.BRANDS_INPUT,
+          PLACEHOLDER.BRANDS_INPUT
+        );
+        lineElementCreator.addInnerElement(inputElementCreator.getElement());
+        listElementCreator.addInnerElement(lineElementCreator);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    listElementCreator.getElement().addEventListener('change', this.socketsListCallback.bind(this));
+    socketFilterBlock.addInnerElement(socketBlockHeader);
+    socketFilterBlock.addInnerElement(listElementCreator);
+    this.viewElementCreator.addInnerElement(socketFilterBlock);
+  }
+
   private async brandsListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
@@ -165,6 +196,19 @@ export class FiltersView extends View {
       }
       if (e.target.checked === false) {
         this.brands.delete(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+    }
+  }
+
+  private async socketsListCallback(e: Event): Promise<void> {
+    if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
+      if (e.target.checked === true) {
+        this.sockets.add(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+      if (e.target.checked === false) {
+        this.sockets.delete(e.target.value);
         this.getFilteredProducts.call(this);
       }
     }
@@ -181,6 +225,7 @@ export class FiltersView extends View {
     const minValueUsd = String(minPrice * 100 || '0');
     const maxValueUsd = String(maxPrice * 100 || '*');
     const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
+    const socketsString = [...this.sockets].map((socket) => `"${socket}"`).join(',');
     await ProductAPI.getFilteredProducts({
       categoryId: CATEGORY_ID,
       search: searchValue,
@@ -188,6 +233,7 @@ export class FiltersView extends View {
       minPriceValue: minValueUsd,
       maxPriceValue: maxValueUsd,
       brands: brandsString,
+      sockets: socketsString,
     });
   }
 }

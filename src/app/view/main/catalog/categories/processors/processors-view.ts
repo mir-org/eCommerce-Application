@@ -41,6 +41,7 @@ class ProcessorsView extends View {
       minPriceValue: '0',
       maxPriceValue: '*',
       brands: '',
+      sockets: '',
     };
     this.configView();
   }

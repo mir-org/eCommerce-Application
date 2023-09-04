@@ -40,6 +40,7 @@ export const INPUT_TYPE = {
 export const TEXT = {
   PRICE_HEADER: 'Price(USD)',
   BRANDS_HEADER: 'Brands',
+  SOCKETS_HEADER: 'Socket',
 };
 
 export const SORT_OPTIONS = [

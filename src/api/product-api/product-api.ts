@@ -38,7 +38,7 @@ export class ProductAPI {
     page: number = 0,
     limit: number = 4
   ): Promise<void> {
-    const { categoryId, sort, search, minPriceValue, maxPriceValue, brands } = filterProductsQuery;
+    const { categoryId, sort, search, minPriceValue, maxPriceValue, brands, sockets } = filterProductsQuery;
     const categoryQuery = categoryId ? `filter=categories.id:"${categoryId}"` : '';
     const searchQuery = search ? `text.en=${search}` : '';
     const sortQuery = sort ? `sort=${sort}` : '';
@@ -48,7 +48,9 @@ export class ProductAPI {
         : '';
     const brandsFilterQuery = brands ? `filter.query=variants.attributes.manufacturer:${brands}` : '';
     const brandsFacetQuery = brands ? `facet=variants.attributes.manufacturer:${brands}` : '';
-    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}`;
+    const socketsFilterQuery = sockets ? `filter.query=variants.attributes.socket:${sockets}` : '';
+    const socketsFacetQuery = sockets ? `facet=variants.attributes.socket:${sockets}` : '';
+    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${socketsFilterQuery}&${socketsFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}`;
     const offset = limit * page;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}&limit=${limit}&offset=${offset}`;
     const response = await fetch(url, {
@@ -58,6 +60,7 @@ export class ProductAPI {
       },
     });
     const data = await response.json();
+    console.log(data);
     const customEvent: CustomEvent = new CustomEvent('myCustomEvent', {
       detail: {
         message: 'Custom event dispatched',
@@ -74,7 +77,8 @@ export class ProductAPI {
   public static async getFiltersData(categoryId: string): Promise<FiltersData> {
     const categoryFilterQuery = categoryId ? `filter.query=categories.id:subtree("${categoryId}")` : '';
     const brandsFacetQuery = `facet=variants.attributes.manufacturer`;
-    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}`;
+    const socketFacetQuery = `facet=variants.attributes.socket`;
+    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}&${socketFacetQuery}`;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
     const response = await fetch(url, {
       method: 'GET',
@@ -83,8 +87,10 @@ export class ProductAPI {
       },
     });
     const data: FacetsProducts = await response.json();
+    console.log(data);
     const result = {
       manufacturers: data.facets['variants.attributes.manufacturer'].terms,
+      sockets: data.facets['variants.attributes.socket'].terms,
     };
     return result;
   }
