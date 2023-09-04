@@ -8,11 +8,14 @@ import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
 import Observer from './observer/observer';
+// import { FiltersView } from './view/main/catalog/filters/filters-view';
 
 class App {
   private router: Router;
 
   private header: HeaderView | null;
+
+  // private filter: FiltersView | null;
 
   private main: MainView | null;
 
@@ -21,6 +24,7 @@ class App {
   constructor() {
     AuthAPI.setAccessToken();
     this.header = null;
+    // this.filter = null;
     this.main = null;
     const state = new State();
     const routes = this.createRoutes(state);
@@ -86,6 +90,22 @@ class App {
         callback: async () => {
           const { default: CatalogView } = await import('./view/main/catalog/catalog-view');
           this.setContent(Pages.CATALOG, new CatalogView(this.router));
+        },
+      },
+      {
+        path: `${Pages.PROCESSORS}`,
+        callback: async () => {
+          const { default: ProcessorsView } = await import('./view/main/catalog/categories/processors/processors-view');
+          this.setContent(Pages.CATALOG, new ProcessorsView(this.router));
+        },
+      },
+      {
+        path: `${Pages.GRAPHIC_CARDS}`,
+        callback: async () => {
+          const { default: GraphicCardsView } = await import(
+            './view/main/catalog/categories/graphic-cards/graphic-cards-view'
+          );
+          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router));
         },
       },
       {

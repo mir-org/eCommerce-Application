@@ -1,144 +1,52 @@
-import { View } from '../../view';
 import { Router } from '../../../router/router';
 import { ElementCreator } from '../../../utils/element-creator';
-import { CATALOG_CLASSES, CATALOG_TEXT } from './catalog-view-types';
-import { ProductAPI } from '../../../../api/product-api/product-api';
-import { ProductCard, ProductCards } from '../../../../api/product-api/product-api-types';
-import { clearElement } from '../../../utils/clear-element';
-import { FiltersView } from './filters/filters-view';
+import { View } from '../../view';
+import { BREAD_CRUMBS_INFO, CATALOG_CLASSES, CATALOG_TEXT, CatalogLinkParams } from './catalog-view-types';
+import { Pages } from '../../../router/pages';
+import { BreadCrumbsCreator } from '../../../utils/bread-crumbs-creator';
 
-class CatalogView extends View {
-  private content: ElementCreator | null;
-
-  private contentProducts: ElementCreator | null;
-
-  private cardsWrapper: ElementCreator | null;
-
+export default class CatalogView extends View {
   constructor(private router: Router) {
     super('section', CATALOG_CLASSES.CATALOG);
-    this.content = null;
-    this.contentProducts = null;
-    this.cardsWrapper = null;
-    this.configView();
+    this.configureView();
   }
 
-  private configView(): void {
-    this.addTitle();
-    this.addContent();
-    this.addAside();
-    this.addProductsWrapper();
-    this.cardsWrapper?.getElement().addEventListener('click', this.cardWrapperClickHandler.bind(this));
+  private configureView(): void {
+    this.addBreadCrumbs();
+    this.addCategoryLinks();
   }
 
-  private addTitle(): void {
-    const title = new ElementCreator('h1', CATALOG_CLASSES.TITLE, CATALOG_TEXT.TITLE);
-    this.viewElementCreator.addInnerElement(title);
+  private addBreadCrumbs(): void {
+    const breadCrumbsCreator = new BreadCrumbsCreator(BREAD_CRUMBS_INFO, this.router);
+    this.viewElementCreator.addInnerElement(breadCrumbsCreator.getElement());
   }
 
-  private addContent(): void {
-    const content = new ElementCreator('div', CATALOG_CLASSES.CONTENT, CATALOG_TEXT.CONTENT);
-    this.content = content;
-    this.viewElementCreator.addInnerElement(content);
+  private addCategoryLinks(): void {
+    const linksBlockCreator = new ElementCreator('div', CATALOG_CLASSES.LINKS_WRAPPER);
+    const processorsLinkElement = this.getProcessorsLink({
+      src: '../../../../assets/images/cpu.svg',
+      text: CATALOG_TEXT.PROCESSORS_LINK,
+      callback: () => this.router.navigate(Pages.PROCESSORS),
+    });
+    const graphicCardsLinkElement = this.getProcessorsLink({
+      src: '../../../../assets/images/graphic-card.svg',
+      text: CATALOG_TEXT.GRAPHIC_CARDS_LINK,
+      callback: () => this.router.navigate(Pages.GRAPHIC_CARDS),
+    });
+    linksBlockCreator.addInnerElement(processorsLinkElement);
+    linksBlockCreator.addInnerElement(graphicCardsLinkElement);
+    this.viewElementCreator.addInnerElement(linksBlockCreator);
   }
 
-  private addAside(): void {
-    const aside = new ElementCreator('aside', CATALOG_CLASSES.ASIDE, CATALOG_TEXT.ASIDE);
-    const filtersView = new FiltersView();
-    aside.addInnerElement(filtersView.getHTMLElement());
-    this.content?.addInnerElement(aside);
-  }
-
-  private addProductsWrapper(): void {
-    const products = new ElementCreator('div', CATALOG_CLASSES.PRODUCTS, '');
-    this.contentProducts = products;
-    this.content?.addInnerElement(products);
-    this.createAllProductCards();
-    this.createPaginator();
-  }
-
-  private async createAllProductCards(): Promise<void> {
-    const cardsWrapper = new ElementCreator('div', 'cards-wrapper', '');
-    this.cardsWrapper = cardsWrapper;
-    this.contentProducts?.addInnerElement(cardsWrapper);
-    try {
-      const products = await this.getProductCardsInfo(0);
-      products.forEach((product: ProductCard) => {
-        cardsWrapper.addInnerElement(this.createProductCard(product));
-      });
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-  private async createPaginator(): Promise<void> {
-    const pages = await ProductAPI.getNumberOfPages();
-    const btnsWrapper = new ElementCreator('div', 'paginator', '');
-    this.contentProducts?.addInnerElement(btnsWrapper);
-    for (let i = 0; i < pages; i += 1) {
-      const button = new ElementCreator('button', 'paginator-btn', `${i + 1}`);
-      button.getElement().addEventListener('click', async () => {
-        try {
-          const products = await this.getProductCardsInfo(i);
-          clearElement(this.cardsWrapper?.getElement());
-          products.forEach((product: ProductCard) => {
-            this.cardsWrapper?.addInnerElement(this.createProductCard(product));
-          });
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      });
-      btnsWrapper.addInnerElement(button);
-    }
-  }
-
-  private createProductCard(product: ProductCard): ElementCreator {
-    const { name } = product;
-    const { description } = product;
-    const { price } = product;
-    const { image } = product;
-    const { discount } = product;
-    const { id } = product;
-    const card = new ElementCreator('div', 'product-card', '');
-    const cardTitle = new ElementCreator('h2', 'product-card-name', `${name}`);
-    const cardImg = new ElementCreator('img', 'product-card-image', '');
-    const cardPrice = new ElementCreator('div', 'product-card-price', `$${price}`);
-    const cardDiscount = new ElementCreator('div', 'product-card-discount', `$${discount}`);
-    const cardDescription = new ElementCreator('div', 'product-card-description', `${description}`);
-    cardImg.getElement().setAttribute('src', `${image}`);
-    card.addInnerElement(cardTitle);
-    card.addInnerElement(cardImg);
-    card.addInnerElement(cardPrice);
-    card.addInnerElement(cardDiscount);
-    card.addInnerElement(cardDescription);
-    card.getElement().dataset.id = id;
-    return card;
-  }
-
-  private async getProductCardsInfo(page: number): Promise<ProductCards> {
-    try {
-      const products = (await ProductAPI.getAllProducts(page)).results;
-
-      const productCards = products.map((product) => {
-        const name = product.masterData.current.name.en;
-        let description = '';
-        if (product.masterData.current.metaDescription) {
-          description = product.masterData.current.metaDescription.en;
-        }
-        const price = product.masterData.current.masterVariant.prices[0].value.centAmount / 100;
-        const discountValue = product.masterData?.current?.masterVariant?.prices[0]?.discounted?.value?.centAmount;
-        let discount;
-        if (discountValue) {
-          discount = discountValue / 100;
-        }
-        const image = product.masterData.current.masterVariant.images[0].url;
-        const { id } = product;
-        return { name, description, price, image, discount, id };
-      });
-      return productCards;
-    } catch (error) {
-      console.error('Error:', error);
-      return [];
-    }
+  private getProcessorsLink(linkParams: CatalogLinkParams): HTMLElement {
+    const linkElementCreator = new ElementCreator('a', CATALOG_CLASSES.LINK);
+    const linkImgCreator = new ElementCreator('img', CATALOG_CLASSES.LINK_IMG);
+    linkImgCreator.getElement().setAttribute('src', linkParams.src);
+    linkElementCreator.addInnerElement(linkImgCreator);
+    const linkTextCreator = new ElementCreator('div', CATALOG_CLASSES.LINK_TEXT, linkParams.text);
+    linkElementCreator.getElement().addEventListener('click', linkParams.callback);
+    linkElementCreator.addInnerElement(linkTextCreator);
+    return linkElementCreator.getElement();
   }
 
   private cardWrapperClickHandler(event: MouseEvent): void {
@@ -152,5 +60,3 @@ class CatalogView extends View {
     }
   }
 }
-
-export default CatalogView;

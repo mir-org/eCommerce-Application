@@ -33,6 +33,46 @@ export type ProductCard = {
   id: string;
 };
 
+export interface MyCustomEvent {
+  detail: string;
+  data: EventData[];
+  currentPage: number;
+  totalPages: number;
+  query: FilterProductsQuery;
+}
+
+type EventData = {
+  categories: Ids[];
+  categoryOrderHints: object;
+  createdAt: string;
+  description: Language;
+  hasStagedChanges: boolean;
+  id: string;
+  key: string;
+  lastModifiedAt: string;
+  masterVariant: MasterVariant;
+  metaDescription: {
+    de: string;
+    en: string;
+  };
+  metaTitle: {
+    de: string;
+    en: string;
+  };
+  name: {
+    en: string;
+  };
+  priceMode: string;
+  productType: Ids;
+  published: boolean;
+  searchKeywords: object;
+  slug: {
+    en: string;
+  };
+  variants: [];
+  version: number;
+};
+
 type CreatedAndModified = {
   clientId: string;
   isPlatformClient: boolean;
@@ -123,6 +163,7 @@ type LabelObject = {
 };
 
 export interface FilterProductsQuery {
+  categoryId: string;
   search?: string;
   sort?: string;
   minPriceValue?: string;
