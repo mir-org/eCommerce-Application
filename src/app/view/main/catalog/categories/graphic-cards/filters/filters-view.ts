@@ -83,8 +83,8 @@ export class FiltersView extends View {
   }
 
   private addPriceBlock(): void {
-    const priceFilterBlock = new ElementCreator('div', CssClasses.PRICE_BLOCK);
-    const priceBlockHeader = new ElementCreator('header', CssClasses.PRICE_HEADER, TEXT.PRICE_HEADER);
+    const priceFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const priceBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.PRICE_HEADER);
     const priceLine = new ElementCreator('div', CssClasses.PRICE_LINE);
     this.addPriceLine(priceLine);
     priceFilterBlock.addInnerElement(priceBlockHeader.getElement());
@@ -130,23 +130,18 @@ export class FiltersView extends View {
   }
 
   private async addBrandsList(): Promise<void> {
+    const brandsFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const brandsBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.BRANDS_HEADER);
     const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
     try {
-      const products = (await ProductAPI.getAllProducts()).results;
-      const brands = products.map((productInfo) => {
-        const brandName = productInfo.masterData.current.masterVariant.attributes.find(
-          (elem) => elem.name === 'manufacturer'
-        )?.value;
-        return brandName;
-      });
-      const uniqueBrands = [...new Set(brands)];
-      uniqueBrands.forEach((brandName) => {
+      const { manufacturers } = await ProductAPI.getFiltersData(CATEGORY_ID);
+      manufacturers.forEach((manufacturerInfo) => {
         const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
         const inputElementCreator = new InputFieldsCreator(
           CssClasses.FILTERS,
-          CssClasses.BRANDS_INPUT,
-          `${brandName}`,
-          `${brandName}`,
+          CssClasses.CHECKBOX_INPUT,
+          `${manufacturerInfo.term} (${manufacturerInfo.count})`,
+          `${manufacturerInfo.term}`,
           INPUT_TYPE.BRANDS_INPUT,
           PLACEHOLDER.BRANDS_INPUT
         );
@@ -157,7 +152,9 @@ export class FiltersView extends View {
       console.log(e);
     }
     listElementCreator.getElement().addEventListener('change', this.brandsListCallback.bind(this));
-    this.viewElementCreator.addInnerElement(listElementCreator.getElement());
+    brandsFilterBlock.addInnerElement(brandsBlockHeader);
+    brandsFilterBlock.addInnerElement(listElementCreator);
+    this.viewElementCreator.addInnerElement(brandsFilterBlock);
   }
 
   private async brandsListCallback(e: Event): Promise<void> {

@@ -165,3 +165,34 @@ export interface FilterProductsQuery {
   maxPriceValue?: string;
   brands?: string;
 }
+
+export type FacetsProducts = {
+  count: number;
+  facets: Facets;
+  limit: number;
+  offset: number;
+  results: Product[];
+  total: number;
+};
+
+export type Facets = {
+  'variants.attributes.manufacturer': VariantsAttributesManufacturer;
+};
+
+type VariantsAttributesManufacturer = {
+  dataType: string;
+  missing: number;
+  other: number;
+  terms: ManufacturerData[];
+  total: number;
+  type: string;
+};
+
+export interface FiltersData {
+  manufacturers: ManufacturerData[];
+}
+
+type ManufacturerData = {
+  term: string;
+  count: number;
+};

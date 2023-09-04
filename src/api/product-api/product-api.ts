@@ -1,5 +1,5 @@
 import { CTP_PROJECT_KEY, CTP_API_URL, TOKEN_STORAGE_KEY } from '../api-data';
-import { AllProducts, FilterProductsQuery, Product } from './product-api-types';
+import { AllProducts, FacetsProducts, FilterProductsQuery, FiltersData, Product } from './product-api-types';
 
 export class ProductAPI {
   public static async getAllProducts(pageNumber: number = 0, limit: number = 4): Promise<AllProducts> {
@@ -67,7 +67,25 @@ export class ProductAPI {
         query: filterProductsQuery,
       },
     });
-    console.log(data);
+    // console.log(data);
     document.dispatchEvent(customEvent);
+  }
+
+  public static async getFiltersData(categoryId: string): Promise<FiltersData> {
+    const categoryFilterQuery = categoryId ? `filter.query=categories.id:subtree("${categoryId}")` : '';
+    const brandsFacetQuery = `facet=variants.attributes.manufacturer`;
+    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}`;
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
+    });
+    const data: FacetsProducts = await response.json();
+    const result = {
+      manufacturers: data.facets['variants.attributes.manufacturer'].terms,
+    };
+    return result;
   }
 }
