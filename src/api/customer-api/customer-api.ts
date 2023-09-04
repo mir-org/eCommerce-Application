@@ -1,9 +1,14 @@
-// import { ElementCreator } from '../../app/utils/element-creator';
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
 import { AuthAPI, AuthStatusCodes } from '../auth-api/auth-api';
-import { CustomerInfo, MyCustomerDraft, StatusCodes } from './customer-api-types';
+import { CustomerInfo, MyCustomerDraft, StatusCodes, HeadersInfo } from './customer-api-types';
+import { createPopupWithText } from '../../app/utils/create-popup-with-text';
 
 export class CustomerAPI {
+  private static headers: HeadersInfo = {
+    Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+    'Content-Type': 'application/json',
+  };
+
   public static async loginCustomer(email: string, password: string): Promise<number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/login`;
     const responseStatus = await AuthAPI.fetchPasswordToken(email, password);
@@ -12,9 +17,7 @@ export class CustomerAPI {
     }
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
+      headers: this.headers,
       body: JSON.stringify({
         email,
         password,
@@ -27,9 +30,7 @@ export class CustomerAPI {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
+      headers: this.headers,
       body: JSON.stringify({
         email: customerData.email,
         password: customerData.password,
@@ -55,21 +56,17 @@ export class CustomerAPI {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me`;
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
+      headers: this.headers,
     });
     const data = await response.json();
     return data;
   }
 
-  public static async updateCustomerFirstName(name: string): Promise<void> {
+  public static async updateCustomerFirstName(info: string): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
+      headers: this.headers,
     });
     const customerData = await response.json();
     console.log(customerData.version);
@@ -78,27 +75,23 @@ export class CustomerAPI {
       actions: [
         {
           action: 'setFirstName',
-          firstName: name,
+          firstName: info,
         },
       ],
     };
     await fetch(url, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
+      headers: this.headers,
       body: JSON.stringify(requestBody),
     });
-    // CustomerAPI.createPopupWithText('First Name updated');
+    createPopupWithText('First Name updated');
   }
 
-  public static async updateCustomerLastName(): Promise<void> {
+  public static async updateCustomerLastName(info: string): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
+      headers: this.headers,
     });
     const customerData = await response.json();
     const requestBody = {
@@ -106,33 +99,63 @@ export class CustomerAPI {
       actions: [
         {
           action: 'setLastName',
-          lastName: 'Ivanov',
+          lastName: info,
         },
       ],
     };
     await fetch(url, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-      },
+      headers: this.headers,
       body: JSON.stringify(requestBody),
     });
+    createPopupWithText('Last Name updated');
   }
 
-  // public static createPopupWithText(message: string): void {
-  //   const popup = new ElementCreator('div', 'popup', message);
+  public static async updateCustomerEmail(info: string): Promise<void> {
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: this.headers,
+    });
+    const customerData = await response.json();
+    const requestBody = {
+      version: customerData.version,
+      actions: [
+        {
+          action: 'changeEmail',
+          email: info,
+        },
+      ],
+    };
+    await fetch(url, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify(requestBody),
+    });
+    createPopupWithText('Email updated');
+  }
 
-  //   const closeButton = new ElementCreator('button', 'primary-button', 'Close');
-
-  //   closeButton.getElement().addEventListener('click', () => {
-  //     document.body.removeChild(popup.getElement());
-  //   });
-
-  //   popup.addInnerElement(closeButton);
-  //   document.body.appendChild(popup.getElement());
-
-  //   setTimeout(() => {
-  //     document.body.removeChild(popup.getElement());
-  //   }, 2000);
-  // }
+  public static async updateCustomerBirthDay(info: string): Promise<void> {
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: this.headers,
+    });
+    const customerData = await response.json();
+    const requestBody = {
+      version: customerData.version,
+      actions: [
+        {
+          action: 'setDateOfBirth',
+          dateOfBirth: info,
+        },
+      ],
+    };
+    await fetch(url, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify(requestBody),
+    });
+    createPopupWithText('Birthday updated');
+  }
 }

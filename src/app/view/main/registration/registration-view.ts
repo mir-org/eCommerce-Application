@@ -9,6 +9,7 @@ import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
 import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE, KEY_FOR_SAVE } from './registration-view-types';
 import Observer from '../../../observer/observer';
+import { createPopupWithText } from '../../../utils/create-popup-with-text';
 
 class RegistrationView extends View {
   private form: ElementCreator | null;
@@ -454,7 +455,7 @@ class RegistrationView extends View {
             this.observer.userIsLoggedIn(this.state);
             this.router.navigate(Pages.INDEX);
             await CustomerAPI.getCustomerInfo();
-            this.createPopupWithText('Registration successful, automatically logged in!');
+            createPopupWithText('Registration successful, automatically logged in!');
           } else if (response === 400) {
             this.errorLine.textContent = 'The user with that email already exists!';
           } else {
@@ -579,23 +580,6 @@ class RegistrationView extends View {
 
   private inputKeydownFn(): void {
     this.errorLine?.classList.remove(SIGN_UP_CLASSES.ERROR_LINE_SHOW);
-  }
-
-  private createPopupWithText(message: string): void {
-    const popup = new ElementCreator('div', 'popup', message);
-
-    const closeButton = new ElementCreator('button', 'primary-button', 'Close');
-
-    closeButton.getElement().addEventListener('click', () => {
-      document.body.removeChild(popup.getElement());
-    });
-
-    popup.addInnerElement(closeButton);
-    document.body.appendChild(popup.getElement());
-
-    setTimeout(() => {
-      document.body.removeChild(popup.getElement());
-    }, 2000);
   }
 }
 

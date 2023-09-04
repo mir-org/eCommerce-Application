@@ -49,3 +49,8 @@ export enum StatusCodes {
   successfulLogin = 200,
   successfulRegistration = 201,
 }
+
+export type HeadersInfo = {
+  Authorization: string;
+  'Content-Type': string;
+};

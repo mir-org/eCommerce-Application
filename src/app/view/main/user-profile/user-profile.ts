@@ -94,14 +94,14 @@ class UserProfileView extends View {
     //   this.inputValidation(firstNameInputCreator, () => Validator.nameField(firstNameInputElement.value));
     //   this.inputKeydownFn();
     // });
-    firstNameInputCreator.addInnerElement(this.addControlButtons());
+    firstNameInputCreator.addInnerElement(this.addControlButtons('firstName'));
     this.form?.addInnerElement(firstNameInputCreator.getElement());
   }
 
-  private addControlButtons(): ElementCreator {
+  private addControlButtons(btnType: string): ElementCreator {
     const buttonsWrapper = new ElementCreator('div', 'controls');
-    buttonsWrapper.addInnerElement(this.addEditButton());
-    buttonsWrapper.addInnerElement(this.addSaveButton());
+    buttonsWrapper.addInnerElement(this.addEditButton(btnType));
+    buttonsWrapper.addInnerElement(this.addSaveButton(btnType));
     return buttonsWrapper;
   }
 
@@ -122,7 +122,7 @@ class UserProfileView extends View {
     //   this.inputValidation(lastNameInputCreator, () => Validator.nameField(lastNameInputElement.value));
     //   this.inputKeydownFn();
     // });
-    lastNameInputCreator.addInnerElement(this.addControlButtons());
+    lastNameInputCreator.addInnerElement(this.addControlButtons('lastName'));
     this.form?.addInnerElement(lastNameInputCreator.getElement());
   }
 
@@ -143,7 +143,7 @@ class UserProfileView extends View {
     //   this.inputValidation(dateOfBirthInputCreator, () => Validator.birthField(dateOfBirthInputElement.value));
     //   this.inputKeydownFn();
     // });
-    dateOfBirthInputCreator.addInnerElement(this.addControlButtons());
+    dateOfBirthInputCreator.addInnerElement(this.addControlButtons('birthDay'));
     this.form?.addInnerElement(dateOfBirthInputCreator.getElement());
   }
 
@@ -164,7 +164,7 @@ class UserProfileView extends View {
     //   this.inputValidation(emailInputCreator, () => Validator.emailField(emailInputElement.value));
     //   this.inputKeydownFn();
     // });
-    emailInputCreator.addInnerElement(this.addControlButtons());
+    emailInputCreator.addInnerElement(this.addControlButtons('email'));
     this.form?.addInnerElement(emailInputCreator.getElement());
   }
 
@@ -302,20 +302,22 @@ class UserProfileView extends View {
     wrapper?.addInnerElement(countryAddressInputWrapper.getElement());
   }
 
-  private addEditButton(): ElementCreator {
+  private addEditButton(btnType: string): ElementCreator {
     const editButton = new ElementCreator('button', 'edit');
     editButton.getElement().textContent = 'Edit';
     editButton.getElement().setAttribute('type', 'button');
     editButton.getElement().addEventListener('click', (event) => this.editButtonCallback(event));
+    editButton.getElement().dataset.btnType = btnType;
     return editButton;
   }
 
-  private addSaveButton(): ElementCreator {
+  private addSaveButton(btnType: string): ElementCreator {
     const saveButton = new ElementCreator('button', 'save');
     saveButton.getElement().textContent = 'Save';
     saveButton.getElement().setAttribute('type', 'button');
     saveButton.getElement().setAttribute('disabled', '');
     saveButton.getElement().addEventListener('click', (event) => this.saveButtonCallback(event));
+    saveButton.getElement().dataset.btnType = btnType;
     return saveButton;
   }
 
@@ -332,14 +334,30 @@ class UserProfileView extends View {
   private saveButtonCallback(event: Event): void {
     console.log(event.target);
     const saveButton = event.target as HTMLButtonElement;
+    const field = saveButton?.dataset?.btnType;
     const editButton = saveButton.previousSibling as HTMLButtonElement;
     editButton.disabled = false;
     saveButton.disabled = true;
     const input = saveButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
     input.disabled = true;
-    const newName = input.value ?? '';
-    CustomerAPI.updateCustomerFirstName(newName);
-    // CustomerAPI.updateCustomerLastName();
+    const newInfo = input.value ?? '';
+    console.log(field);
+    switch (field) {
+      case 'firstName':
+        CustomerAPI.updateCustomerFirstName(newInfo);
+        break;
+      case 'lastName':
+        CustomerAPI.updateCustomerLastName(newInfo);
+        break;
+      case 'email':
+        CustomerAPI.updateCustomerEmail(newInfo);
+        break;
+      case 'birthDay':
+        CustomerAPI.updateCustomerBirthDay(newInfo);
+        break;
+      default:
+        break;
+    }
   }
 }
 
