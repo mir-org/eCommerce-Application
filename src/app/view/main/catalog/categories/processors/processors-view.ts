@@ -1,18 +1,19 @@
-import { View } from '../../../view';
-import { Router } from '../../../../router/router';
-import { ElementCreator } from '../../../../utils/element-creator';
-import { CATALOG_CLASSES, CATALOG_TEXT } from './catalog-view-types';
-import { ProductAPI } from '../../../../../api/product-api/product-api';
+import { View } from '../../../../view';
+import { Router } from '../../../../../router/router';
+import { ElementCreator } from '../../../../../utils/element-creator';
+import { BREAD_CRUMBS_INFO, CATEGORY_CLASSES, CATEGORY_TEXT } from './processors-view-types';
+import { ProductAPI } from '../../../../../../api/product-api/product-api';
 import {
   ProductCard,
   ProductCards,
   MyCustomEvent,
   FilterProductsQuery,
-} from '../../../../../api/product-api/product-api-types';
-import { clearElement } from '../../../../utils/clear-element';
+} from '../../../../../../api/product-api/product-api-types';
+import { clearElement } from '../../../../../utils/clear-element';
 import { FiltersView } from './filters/filters-view';
+import { BreadCrumbsCreator } from '../../../../../utils/bread-crumbs-creator';
 
-class CatalogView extends View {
+class ProcessorsView extends View {
   private content: ElementCreator | null;
 
   private contentProducts: ElementCreator | null;
@@ -24,17 +25,23 @@ class CatalogView extends View {
   private totalPages: number = 0;
 
   private query: FilterProductsQuery;
+  // private router: Router,
+  // private filter: FiltersView | null
 
-  constructor(
-    private router: Router,
-    private filter: FiltersView | null
-  ) {
-    super('section', CATALOG_CLASSES.CATALOG);
+  constructor(private router: Router) {
+    super('section', CATEGORY_CLASSES.CATALOG);
     this.content = null;
     this.contentProducts = null;
     this.cardsWrapper = null;
-    this.filter = filter;
-    this.query = { search: '', sort: 'price desc', minPriceValue: '0', maxPriceValue: '*', brands: '' };
+    // this.filter = filter;
+    this.query = {
+      categoryId: '0c1874b3-f13a-4879-ae0c-4cc69c02d71c',
+      search: '',
+      sort: 'price desc',
+      minPriceValue: '0',
+      maxPriceValue: '*',
+      brands: '',
+    };
     this.configView();
   }
 
@@ -46,18 +53,18 @@ class CatalogView extends View {
   }
 
   private addTitle(): void {
-    const title = new ElementCreator('h1', CATALOG_CLASSES.TITLE, CATALOG_TEXT.TITLE);
+    const title = new ElementCreator('h1', CATEGORY_CLASSES.TITLE, CATEGORY_TEXT.TITLE);
     this.viewElementCreator.addInnerElement(title);
   }
 
   private addContent(): void {
-    const content = new ElementCreator('div', CATALOG_CLASSES.CONTENT, CATALOG_TEXT.CONTENT);
+    const content = new ElementCreator('div', CATEGORY_CLASSES.CONTENT, CATEGORY_TEXT.CONTENT);
     this.content = content;
     this.viewElementCreator.addInnerElement(content);
   }
 
   private addAside(): void {
-    const aside = new ElementCreator('aside', CATALOG_CLASSES.ASIDE, CATALOG_TEXT.ASIDE);
+    const aside = new ElementCreator('aside', CATEGORY_CLASSES.ASIDE, CATEGORY_TEXT.ASIDE);
     const filtersView = new FiltersView();
     aside.addInnerElement(filtersView.getHTMLElement());
     this.content?.addInnerElement(aside);
@@ -83,6 +90,7 @@ class CatalogView extends View {
         const { id } = product;
         return { name, description, price, image, discount, id };
       });
+      this.addBreadCrumbs();
       this.createProductsWrapper();
       this.createAllProductCards(productCards);
       this.createPaginator();
@@ -127,12 +135,18 @@ class CatalogView extends View {
   }
 
   private async addProductsWrapper(): Promise<void> {
-    const products = new ElementCreator('div', CATALOG_CLASSES.PRODUCTS, '');
+    const products = new ElementCreator('div', CATEGORY_CLASSES.PRODUCTS, '');
     this.contentProducts = products;
     this.content?.addInnerElement(products);
+    this.addBreadCrumbs();
     this.createProductsWrapper();
     this.fetchFilteredProducts();
     this.createPaginator();
+  }
+
+  private addBreadCrumbs(): void {
+    const breadCrumbsCreator = new BreadCrumbsCreator(BREAD_CRUMBS_INFO, this.router);
+    this.contentProducts?.addInnerElement(breadCrumbsCreator.getElement());
   }
 
   private createProductsWrapper(): void {
@@ -171,4 +185,4 @@ class CatalogView extends View {
   }
 }
 
-export default CatalogView;
+export default ProcessorsView;

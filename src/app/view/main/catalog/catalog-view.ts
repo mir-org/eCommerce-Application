@@ -26,7 +26,7 @@ export default class CatalogView extends View {
     const processorsLinkElement = this.getProcessorsLink({
       src: '../../../../assets/images/cpu.svg',
       text: CATALOG_TEXT.PROCESSORS_LINK,
-      callback: () => this.router.navigate(Pages.INDEX),
+      callback: () => this.router.navigate(Pages.PROCESSORS),
     });
     const graphicCardsLinkElement = this.getProcessorsLink({
       src: '../../../../assets/images/graphic-card.svg',

@@ -93,6 +93,13 @@ class App {
         },
       },
       {
+        path: `${Pages.PROCESSORS}`,
+        callback: async () => {
+          const { default: ProcessorsView } = await import('./view/main/catalog/categories/processors/processors-view');
+          this.setContent(Pages.CATALOG, new ProcessorsView(this.router));
+        },
+      },
+      {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');

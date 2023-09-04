@@ -8,6 +8,7 @@ const Pages: IPages = {
   REGISTRATION: 'registration',
   USER_PROFILE: 'profile',
   CATALOG: 'catalog',
+  PROCESSORS: 'processors',
   NOT_FOUND: 'not-found',
 };
 

@@ -158,6 +158,7 @@ type LabelObject = {
 };
 
 export interface FilterProductsQuery {
+  categoryId: string;
   search?: string;
   sort?: string;
   minPriceValue?: string;
