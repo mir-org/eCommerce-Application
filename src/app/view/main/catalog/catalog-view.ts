@@ -60,3 +60,5 @@ export default class CatalogView extends View {
     }
   }
 }
+
+// this.cardsWrapper?.getElement().addEventListener('click', this.cardWrapperClickHandler.bind(this));
