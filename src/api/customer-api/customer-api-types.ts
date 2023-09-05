@@ -11,6 +11,28 @@ export type MyCustomerDraft = {
   billingAddresses?: number[];
 };
 
+export type CustomerInfo = {
+  addresses: Address[];
+  authenticationMode: string;
+  billingAddressIds: number[];
+  createdAt: string;
+  createdBy: { anonymousId: string; clientId: string; isPlatformClient: boolean };
+  dateOfBirth: string;
+  email: string;
+  firstName: string;
+  id: string;
+  isEmailVerified: boolean;
+  lastMessageSequenceNumber: number;
+  lastModifiedAt: string;
+  lastModifiedBy: { anonymousId: string; clientId: string; isPlatformClient: boolean };
+  lastName: string;
+  password: string;
+  shippingAddressIds: number[];
+  stores: [];
+  version: number;
+  versionModifiedAt: string;
+};
+
 export type Address = {
   country: string;
   streetName: string;
@@ -27,3 +49,8 @@ export enum StatusCodes {
   successfulLogin = 200,
   successfulRegistration = 201,
 }
+
+export type HeadersInfo = {
+  Authorization: string;
+  'Content-Type': string;
+};
