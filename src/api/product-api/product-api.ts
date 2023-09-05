@@ -67,7 +67,7 @@ export class ProductAPI {
         query: filterProductsQuery,
       },
     });
-    console.log(data);
+    // console.log(data);
     document.dispatchEvent(customEvent);
   }
 }

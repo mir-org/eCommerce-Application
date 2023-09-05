@@ -1,0 +1,167 @@
+.product {
+  max-width: 1200px;
+  width: 100%;
+  padding: 10px 20px 20px 20px;
+
+  &__title {
+    margin: 0 0 20px 70px;
+    font-size: 22px;
+  }
+
+  &__subtitle {
+    margin: 0 0 10px 0;
+    font-size: 22px;
+  }
+
+  &__top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 0 20px 0;
+  }
+
+  &__slider {
+    flex: 0 0 50%;
+  }
+
+  &__buy {
+    flex: 0 0 35%;
+    min-width: 340px;
+  }
+
+  &__bot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &__description {
+    flex: 0 1 40%;
+    min-width: 340px;
+  }
+
+  &__atributes {
+    flex: 0 1 40%;
+    min-width: 340px;
+  }
+
+  @media (max-width: 940px) {
+    &__top {
+      justify-content: center;
+    }
+
+    &__slider {
+      position: relative;
+      left: -35px;
+      justify-content: center;
+      flex: 0 0 100%;
+      margin: 0 0 20px 0;
+    }
+
+    &__buy {
+      flex: 0 0 50%;
+      margin: 0 0 20px 0;
+    }
+
+    &__bot {
+      justify-content: center;
+    }
+
+    &__description {
+      flex: 0 0 100%;
+      max-width: 500px;
+    }
+
+    &__atributes {
+      flex: 0 0 100%;
+      max-width: 500px;
+      margin: 0 0 20px 0;
+    }
+  }
+}
+
+.slider {
+  display: flex;
+  gap: 20px;
+
+  &__item {
+    width: 50px;
+    height: 50px;
+  }
+
+  &__main-item {
+    width: 450px;
+    height: 450px;
+  }
+
+  &__image {
+    max-width: 100%;
+    cursor: zoom-in;
+  }
+}
+
+.buy {
+  display: flex;
+  height: 50px;
+  padding: 10px;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.241);
+
+  &__price {
+    color: black;
+
+    &_disable {
+      font-size: 16px;
+      color: gray;
+      text-decoration: line-through;
+    }
+  }
+
+  &__discount-price {
+    color: orange;
+  }
+
+  &__button {
+    width: 100px;
+    height: 40px;
+    margin: 0 0 0 60px;
+    font-size: 16px;
+    color: white;
+    background-color: rgb(55, 188, 106);
+    border-radius: 5px;
+  }
+}
+
+.atributes {
+  &__title {
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    border-bottom: thick double #32a1ce;
+  }
+
+  &__key {
+    margin: 0 10px 0 0;
+  }
+
+  &__value {
+  }
+}
+
+.description {
+  &__title {
+  }
+
+  &__text {
+    font-size: 16px;
+    line-height: 120%;
+  }
+}

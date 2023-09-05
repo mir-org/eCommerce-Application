@@ -90,7 +90,12 @@ type MasterData = {
   staged: CurrentAndStaged;
 };
 
+type Description = {
+  en: string;
+};
+
 type CurrentAndStaged = {
+  description: Description;
   categories: Ids[];
   categoryOrderHints: object;
   masterVariant: MasterVariant;
@@ -120,7 +125,7 @@ type MasterVariant = {
   sku: string;
 };
 
-type Image = {
+export type Image = {
   url: string;
   dimensions: ImageDimensions;
 };
@@ -142,7 +147,7 @@ type Prices = {
   channel?: Ids;
 };
 
-type Attributes = {
+export type Attributes = {
   name: string;
   value: string | boolean | AttributeValueObject;
 };
