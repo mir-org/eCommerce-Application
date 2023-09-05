@@ -1,14 +1,9 @@
 import { TOKEN_STORAGE_KEY, CTP_PROJECT_KEY, CTP_API_URL } from '../api-data';
 import { AuthAPI, AuthStatusCodes } from '../auth-api/auth-api';
-import { CustomerInfo, MyCustomerDraft, StatusCodes, HeadersInfo } from './customer-api-types';
+import { CustomerInfo, MyCustomerDraft, StatusCodes } from './customer-api-types';
 import { createPopupWithText } from '../../app/utils/create-popup-with-text';
 
 export class CustomerAPI {
-  private static headers: HeadersInfo = {
-    Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
-    'Content-Type': 'application/json',
-  };
-
   public static async loginCustomer(email: string, password: string): Promise<number> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/login`;
     const responseStatus = await AuthAPI.fetchPasswordToken(email, password);
@@ -17,7 +12,9 @@ export class CustomerAPI {
     }
     const response = await fetch(url, {
       method: 'POST',
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
       body: JSON.stringify({
         email,
         password,
@@ -27,12 +24,12 @@ export class CustomerAPI {
   }
 
   public static async registerCustomer(customerData: MyCustomerDraft): Promise<number> {
-    console.log(customerData.shippingAddresses);
-    console.log(customerData.billingAddresses);
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
     const response = await fetch(url, {
       method: 'POST',
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
       body: JSON.stringify({
         email: customerData.email,
         password: customerData.password,
@@ -58,18 +55,23 @@ export class CustomerAPI {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me`;
     const response = await fetch(url, {
       method: 'GET',
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
     });
     const data = await response.json();
     return data;
   }
 
+  // eslint-disable-next-line max-lines-per-function
   public static async updateCustomerFirstName(info: string): Promise<void> {
     try {
       const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
       const response = await fetch(url, {
         method: 'GET',
-        headers: this.headers,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        },
       });
       if (response.status === 400) {
         const errorResponse = await response.json();
@@ -87,7 +89,9 @@ export class CustomerAPI {
         };
         const postResponse = await fetch(url, {
           method: 'POST',
-          headers: this.headers,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+          },
           body: JSON.stringify(requestBody),
         });
         if (postResponse.status === 400) {
@@ -106,7 +110,9 @@ export class CustomerAPI {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
     const response = await fetch(url, {
       method: 'GET',
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
     });
     const customerData = await response.json();
     const requestBody = {
@@ -120,7 +126,9 @@ export class CustomerAPI {
     };
     await fetch(url, {
       method: 'POST',
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
       body: JSON.stringify(requestBody),
     });
     createPopupWithText('Last Name updated.');
@@ -130,7 +138,9 @@ export class CustomerAPI {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
     const response = await fetch(url, {
       method: 'GET',
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
     });
     const customerData = await response.json();
     const requestBody = {
@@ -144,18 +154,23 @@ export class CustomerAPI {
     };
     await fetch(url, {
       method: 'POST',
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
       body: JSON.stringify(requestBody),
     });
     createPopupWithText('Email updated.');
   }
 
+  // eslint-disable-next-line max-lines-per-function
   public static async updateCustomerBirthDay(info: string): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
     try {
       const response = await fetch(url, {
         method: 'GET',
-        headers: this.headers,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        },
       });
       if (!response.ok) {
         throw new Error('Failed to fetch data.');
@@ -173,7 +188,9 @@ export class CustomerAPI {
       try {
         const request = await fetch(url, {
           method: 'POST',
-          headers: this.headers,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+          },
           body: JSON.stringify(requestBody),
         });
         if (!request.ok) {
@@ -194,7 +211,9 @@ export class CustomerAPI {
       const postUrl = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/password/`;
       const response = await fetch(getUrl, {
         method: 'GET',
-        headers: this.headers,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        },
       });
       const customerData = await response.json();
       const requestBody = {
@@ -204,7 +223,9 @@ export class CustomerAPI {
       };
       const postResponse = await fetch(postUrl, {
         method: 'POST',
-        headers: this.headers,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        },
         body: JSON.stringify(requestBody),
       });
       if (postResponse.status === 400) {

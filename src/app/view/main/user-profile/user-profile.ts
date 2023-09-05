@@ -105,7 +105,6 @@ class UserProfileView extends View {
 
   private async getCustomerData(): Promise<CustomerInfo> {
     this.data = await CustomerAPI.getCustomerInfo();
-    console.log(this.data);
     return this.data;
   }
 
@@ -453,7 +452,6 @@ class UserProfileView extends View {
       const postCodeInputWrapper = countryAddressInputCreator.getElement().parentElement?.parentElement
         ?.previousSibling as HTMLElement;
       const postCodeInput = postCodeInputWrapper?.firstChild?.firstChild;
-      console.log(postCodeInput);
       postCodeInput?.dispatchEvent(new Event('input'));
     };
     countryAddressInputElement.addEventListener('change', () => handleCountryAddressInputChange());
