@@ -61,7 +61,7 @@ export class ProductAPI {
   }
 
   private static getQueryParamsForFiltering(filterProductsQuery: FilterProductsQuery): string {
-    const { categoryId, sort, search, minPriceValue, maxPriceValue, brands, sockets, coresAmount } =
+    const { categoryId, sort, search, minPriceValue, maxPriceValue, brands, sockets, coresAmount, chipset } =
       filterProductsQuery;
     const categoryQuery = categoryId ? `filter=categories.id:"${categoryId}"` : '';
     const searchQuery = search ? `text.en=${search}` : '';
@@ -76,7 +76,9 @@ export class ProductAPI {
     const socketsFacetQuery = sockets ? `facet=variants.attributes.socket:${sockets}` : '';
     const coresAmountFilterQuery = coresAmount ? `filter.query=variants.attributes.cores-amount:${coresAmount}` : '';
     const coresAmountFacetQuery = coresAmount ? `facet=variants.attributes.cores-amount:${coresAmount}` : '';
-    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${socketsFilterQuery}&${socketsFacetQuery}&${coresAmountFilterQuery}&${coresAmountFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}`;
+    const chipsetFilterQuery = chipset ? `filter.query=variants.attributes.chipset:${chipset}` : '';
+    const chipsetFacetQuery = chipset ? `facet=variants.attributes.chipset:${chipset}` : '';
+    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${socketsFilterQuery}&${socketsFacetQuery}&${coresAmountFilterQuery}&${coresAmountFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}&${chipsetFilterQuery}&${chipsetFacetQuery}`;
     return queryParams;
   }
 
@@ -85,7 +87,8 @@ export class ProductAPI {
     const brandsFacetQuery = `facet=variants.attributes.manufacturer`;
     const socketFacetQuery = `facet=variants.attributes.socket`;
     const coresAmountFacetQuery = `facet=variants.attributes.cores-amount`;
-    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}&${socketFacetQuery}&${coresAmountFacetQuery}`;
+    const chipsetFacetQuery = `facet=variants.attributes.chipset`;
+    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}&${socketFacetQuery}&${coresAmountFacetQuery}&${chipsetFacetQuery}`;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
     const response = await fetch(url, {
       method: 'GET',
@@ -99,6 +102,7 @@ export class ProductAPI {
       manufacturers: data.facets['variants.attributes.manufacturer'].terms,
       sockets: data.facets['variants.attributes.socket'].terms,
       coresAmount: data.facets['variants.attributes.cores-amount'].terms,
+      chipset: data.facets['variants.attributes.chipset'].terms,
     };
     return result;
   }

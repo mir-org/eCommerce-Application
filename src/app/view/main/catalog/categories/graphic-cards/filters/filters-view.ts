@@ -25,6 +25,8 @@ export class FiltersView extends View {
 
   private brands: Set<string> = new Set();
 
+  private chipsets: Set<string> = new Set();
+
   constructor() {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
@@ -39,6 +41,7 @@ export class FiltersView extends View {
     this.addSortBar();
     this.addPriceBlock();
     this.addBrandsList();
+    this.addChipsetList();
   }
 
   private addSearchBar(): void {
@@ -157,6 +160,34 @@ export class FiltersView extends View {
     this.viewElementCreator.addInnerElement(brandsFilterBlock);
   }
 
+  private async addChipsetList(): Promise<void> {
+    const chipsetFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const chipsetBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.CHIPSETS_HEADER);
+    const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
+    try {
+      const { chipset } = await ProductAPI.getFiltersData(CATEGORY_ID);
+      chipset.forEach((chipsetInfo) => {
+        const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
+        const inputElementCreator = new InputFieldsCreator(
+          CssClasses.FILTERS,
+          CssClasses.CHECKBOX_INPUT,
+          `${chipsetInfo.term} (${chipsetInfo.count})`,
+          `${chipsetInfo.term}`,
+          INPUT_TYPE.BRANDS_INPUT,
+          PLACEHOLDER.BRANDS_INPUT
+        );
+        lineElementCreator.addInnerElement(inputElementCreator.getElement());
+        listElementCreator.addInnerElement(lineElementCreator);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    listElementCreator.getElement().addEventListener('change', this.chipsetListCallback.bind(this));
+    chipsetFilterBlock.addInnerElement(chipsetBlockHeader);
+    chipsetFilterBlock.addInnerElement(listElementCreator);
+    this.viewElementCreator.addInnerElement(chipsetFilterBlock);
+  }
+
   private async brandsListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
@@ -165,6 +196,19 @@ export class FiltersView extends View {
       }
       if (e.target.checked === false) {
         this.brands.delete(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+    }
+  }
+
+  private async chipsetListCallback(e: Event): Promise<void> {
+    if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
+      if (e.target.checked === true) {
+        this.chipsets.add(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+      if (e.target.checked === false) {
+        this.chipsets.delete(e.target.value);
         this.getFilteredProducts.call(this);
       }
     }
@@ -181,6 +225,7 @@ export class FiltersView extends View {
     const minValueUsd = String(minPrice * 100 || '0');
     const maxValueUsd = String(maxPrice * 100 || '*');
     const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
+    const chipsetsString = [...this.chipsets].map((chipset) => `"${chipset}"`).join(',');
     await ProductAPI.getFilteredProducts({
       categoryId: CATEGORY_ID,
       search: searchValue,
@@ -188,6 +233,7 @@ export class FiltersView extends View {
       minPriceValue: minValueUsd,
       maxPriceValue: maxValueUsd,
       brands: brandsString,
+      chipset: chipsetsString,
     });
   }
 }
