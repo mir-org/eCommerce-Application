@@ -14,7 +14,7 @@ export type MyCustomerDraft = {
 export type CustomerInfo = {
   addresses: Address[];
   authenticationMode: string;
-  billingAddressIds: number[];
+  billingAddressIds: string[];
   createdAt: string;
   createdBy: { anonymousId: string; clientId: string; isPlatformClient: boolean };
   dateOfBirth: string;
@@ -27,7 +27,7 @@ export type CustomerInfo = {
   lastModifiedBy: { anonymousId: string; clientId: string; isPlatformClient: boolean };
   lastName: string;
   password: string;
-  shippingAddressIds: number[];
+  shippingAddressIds: string[];
   stores: [];
   version: number;
   versionModifiedAt: string;

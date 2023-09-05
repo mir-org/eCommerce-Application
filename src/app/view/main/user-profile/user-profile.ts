@@ -334,6 +334,7 @@ class UserProfileView extends View {
   private createAddress(address: Address): ElementCreator {
     const addressWrapper = new ElementCreator('div', PROFILE_CLASSES.ADDRESS);
     const { id } = address;
+    addressWrapper.addInnerElement(this.addAddressInfo(address).getElement());
     addressWrapper.addInnerElement(this.addCityAddressInput(address).getElement());
     addressWrapper.addInnerElement(this.addStreetAddressInput(address).getElement());
     addressWrapper.addInnerElement(this.addPostalCodeAddressInput(address).getElement());
@@ -343,6 +344,23 @@ class UserProfileView extends View {
       addressWrapper.getElement().dataset.id = id;
     }
     return addressWrapper;
+  }
+
+  private addAddressInfo(address: Address): ElementCreator {
+    const addressInfoWrapper = new ElementCreator('div', 'user-profile__addresses-wrapper');
+    const defaultBillingAddressId = this.data?.defaultBillingAddressId;
+    const defaultShippingAddressId = this.data?.defaultShippingAddressId;
+    const billingAddressIds = this.data?.billingAddressIds;
+    const shippingAddressIds = this.data?.shippingAddressIds;
+    let text = '';
+    if (address.id) {
+      if (address.id === defaultBillingAddressId) text += 'Default ';
+      if (address.id === defaultShippingAddressId) text += 'Default ';
+      if (billingAddressIds?.includes(address.id)) text += 'Billing Address';
+      if (shippingAddressIds?.includes(address.id)) text += 'Shipping Address';
+    }
+    addressInfoWrapper.getElement().textContent = text;
+    return addressInfoWrapper;
   }
 
   private addCityAddressInput(address: Address): InputFieldsCreator {
@@ -397,9 +415,10 @@ class UserProfileView extends View {
     const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
     postalCodeAddressInputElement.setAttribute('disabled', '');
     const handlePostalCodeInputChange = (): void => {
-      const country = '';
+      const id = postalCodeAddressInputElement.parentElement?.parentElement?.parentElement?.dataset.id;
+      const selectElement = document.querySelector(`div[data-id="${id}"] select`) as HTMLSelectElement;
       this.inputValidation(postalCodeAddressInputCreator, () =>
-        Validator.postalCodeField(postalCodeAddressInputElement.value, country)
+        Validator.postalCodeField(postalCodeAddressInputElement.value, selectElement?.value ?? '')
       );
       this.inputKeydownFn();
     };
@@ -430,6 +449,14 @@ class UserProfileView extends View {
     const countryAddressInputElement = countryAddressInputCreator.getElement() as HTMLSelectElement;
     countryAddressInputElement.setAttribute('disabled', '');
     countryAddressInputElement.value = address.country ?? '';
+    const handleCountryAddressInputChange = (): void => {
+      const postCodeInputWrapper = countryAddressInputCreator.getElement().parentElement?.parentElement
+        ?.previousSibling as HTMLElement;
+      const postCodeInput = postCodeInputWrapper?.firstChild?.firstChild;
+      console.log(postCodeInput);
+      postCodeInput?.dispatchEvent(new Event('input'));
+    };
+    countryAddressInputElement.addEventListener('change', () => handleCountryAddressInputChange());
     return countryAddressInputWrapper;
   }
 

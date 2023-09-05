@@ -27,6 +27,8 @@ export class CustomerAPI {
   }
 
   public static async registerCustomer(customerData: MyCustomerDraft): Promise<number> {
+    console.log(customerData.shippingAddresses);
+    console.log(customerData.billingAddresses);
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/signup`;
     const response = await fetch(url, {
       method: 'POST',
