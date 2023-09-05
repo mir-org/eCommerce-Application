@@ -1,9 +1,9 @@
 export const PROFILE_CLASSES = {
   PROFILE: 'user-profile',
-  TITLE: 'registration__title',
+  TITLE: 'user-profile__title',
   EMAIL: 'email',
   PASSWORD: 'password',
-  CONFIRM_PASSWORD: 'confirm-password',
+  CURRENT_PASSWORD: 'current-password',
   FIRST_NAME: 'first-name',
   LAST_NAME: 'last-name',
   DATE_OF_BIRTH: 'date-of-birth',
@@ -23,7 +23,7 @@ export const PROFILE_CLASSES = {
 export const PROFILE_TEXT = {
   EMAIL: 'Email',
   PASSWORD: 'Password',
-  CONFIRM_PASSWORD: 'Current Password',
+  CURRENT_PASSWORD: 'Current Password',
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
   DATE_OF_BIRTH: 'Date of Birth',

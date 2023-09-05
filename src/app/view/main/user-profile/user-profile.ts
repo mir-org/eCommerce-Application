@@ -22,7 +22,7 @@ class UserProfileView extends View {
 
   private passwordInput: HTMLInputElement | null;
 
-  private confirmPasswordInput: HTMLInputElement | null;
+  private currentPasswordInput: HTMLInputElement | null;
 
   private shippingAddressFieldSet: ElementCreator | null;
 
@@ -57,7 +57,7 @@ class UserProfileView extends View {
     this.emailInput = null;
     this.dateOfBirthInput = null;
     this.passwordInput = null;
-    this.confirmPasswordInput = null;
+    this.currentPasswordInput = null;
     this.passwordWrapper = null;
     this.shippingAddressFieldSet = null;
     this.billingAddressFieldSet = null;
@@ -85,7 +85,7 @@ class UserProfileView extends View {
   }
 
   private addForm(): void {
-    this.form = new ElementCreator('form', 'registration__form');
+    this.form = new ElementCreator('form', 'user-profile__form');
     this.viewElementCreator.addInnerElement(this.form.getElement());
     this.addFirstNameInput();
     this.addLastNameInput();
@@ -100,6 +100,7 @@ class UserProfileView extends View {
 
   private async getCustomerData(): Promise<CustomerInfo> {
     this.data = await CustomerAPI.getCustomerInfo();
+    console.log(this.data);
     return this.data;
   }
 
@@ -223,37 +224,37 @@ class UserProfileView extends View {
     };
     passwordInputElement.addEventListener('input', handlePasswordInputChange);
     passwordInputElement.addEventListener('focusin', handlePasswordInputChange);
-    this.addConfirmPasswordInput();
+    this.addCurrentPasswordInput();
     passwordInputCreator.addInnerElement(this.addControlButtons('password').getElement());
     this.form?.addInnerElement(passwordInputCreator.getElement());
   }
 
-  private addConfirmPasswordInput(): void {
-    const confirmPasswordInputCreator = new InputFieldsCreator(
+  private addCurrentPasswordInput(): void {
+    const currentPasswordInputCreator = new InputFieldsCreator(
       PROFILE_CLASSES.PROFILE,
-      PROFILE_CLASSES.CONFIRM_PASSWORD,
-      PROFILE_TEXT.CONFIRM_PASSWORD,
+      PROFILE_CLASSES.CURRENT_PASSWORD,
+      PROFILE_TEXT.CURRENT_PASSWORD,
       '',
       'password',
       ''
     );
-    const confirmPasswordInputElement = confirmPasswordInputCreator.getInputElement();
-    confirmPasswordInputCreator.getInputElement().setAttribute('required', '');
-    confirmPasswordInputElement.setAttribute('disabled', '');
-    this.confirmPasswordInput = confirmPasswordInputElement;
-    this.addShowHidePasswordIcon(this.confirmPasswordInput, confirmPasswordInputCreator);
+    const currentPasswordInputElement = currentPasswordInputCreator.getInputElement();
+    currentPasswordInputCreator.getInputElement().setAttribute('required', '');
+    currentPasswordInputElement.setAttribute('disabled', '');
+    this.currentPasswordInput = currentPasswordInputElement;
+    this.addShowHidePasswordIcon(this.currentPasswordInput, currentPasswordInputCreator);
     const handleConfirmPasswordInputChange = (): void => {
       const passwordValue = this.passwordInput?.value;
       if (passwordValue !== undefined) {
-        this.inputValidation(confirmPasswordInputCreator, () =>
-          Validator.confirmPasswordField(confirmPasswordInputElement.value, passwordValue)
+        this.inputValidation(currentPasswordInputCreator, () =>
+          Validator.passwordField(currentPasswordInputElement.value)
         );
         this.inputKeydownFn();
       }
     };
-    confirmPasswordInputElement.addEventListener('input', handleConfirmPasswordInputChange);
-    confirmPasswordInputElement.addEventListener('focusin', handleConfirmPasswordInputChange);
-    this.passwordWrapper?.addInnerElement(confirmPasswordInputCreator.getElement());
+    currentPasswordInputElement.addEventListener('input', handleConfirmPasswordInputChange);
+    currentPasswordInputElement.addEventListener('focusin', handleConfirmPasswordInputChange);
+    this.passwordWrapper?.addInnerElement(currentPasswordInputCreator.getElement());
   }
 
   private addShowHidePasswordIcon(passwordInput: HTMLInputElement, passwordInputCreator: InputFieldsCreator): void {
@@ -438,26 +439,47 @@ class UserProfileView extends View {
     return saveButton;
   }
 
+  // private editButtonCallback(event: Event): void {
+  //   const editButton = event.target as HTMLButtonElement;
+  //   const saveButton = editButton.nextSibling as HTMLButtonElement;
+  //   saveButton.disabled = false;
+  //   editButton.disabled = true;
+  //   const input = editButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
+  //   input.disabled = false;
+  // }
+
   private editButtonCallback(event: Event): void {
-    console.log(event.target);
     const editButton = event.target as HTMLButtonElement;
     const saveButton = editButton.nextSibling as HTMLButtonElement;
     saveButton.disabled = false;
     editButton.disabled = true;
-    const input = editButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
-    input.disabled = false;
+    const inputs = editButton.parentElement?.parentElement?.querySelectorAll(
+      '.primary-input'
+    ) as NodeListOf<HTMLInputElement>;
+    inputs.forEach((input) => {
+      const inputCopy = input as HTMLInputElement;
+      inputCopy.disabled = false;
+    });
   }
 
   // TODO REFACTOR THIS
   // eslint-disable-next-line max-lines-per-function
   private saveButtonCallback(event: Event): void {
-    console.log(event.target);
     const saveButton = event.target as HTMLButtonElement;
     const field = saveButton?.dataset?.btnType;
     const editButton = saveButton.previousSibling as HTMLButtonElement;
-    const input = saveButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
-    const newInfo = input.value ?? '';
-    const valid = !input.classList.contains('invalid');
+    const inputs = saveButton.parentElement?.parentElement?.querySelectorAll(
+      '.primary-input'
+    ) as NodeListOf<HTMLInputElement>;
+    const newInfo = inputs[0]?.value ?? '';
+    console.log(newInfo);
+    const current = inputs[1]?.value ?? '';
+    let valid = true;
+    inputs.forEach((input) => {
+      if (input.classList.contains('invalid')) {
+        valid = false;
+      }
+    });
     if (valid) {
       switch (field) {
         case 'firstName':
@@ -473,12 +495,18 @@ class UserProfileView extends View {
           CustomerAPI.updateCustomerEmail(newInfo);
           break;
         case 'password':
-          CustomerAPI.updateCustomerPassword(newInfo);
+          CustomerAPI.updateCustomerPassword(newInfo, current);
           break;
         default:
           break;
       }
-      input.disabled = true;
+      inputs.forEach((input) => {
+        const inputCopy = input as HTMLInputElement;
+        inputCopy.disabled = true;
+        // inputCopy.value = '';
+        inputCopy.focus();
+        inputCopy.blur();
+      });
       editButton.disabled = false;
       saveButton.disabled = true;
     } else {

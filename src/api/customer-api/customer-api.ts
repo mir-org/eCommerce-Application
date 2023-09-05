@@ -4,8 +4,6 @@ import { CustomerInfo, MyCustomerDraft, StatusCodes, HeadersInfo } from './custo
 import { createPopupWithText } from '../../app/utils/create-popup-with-text';
 
 export class CustomerAPI {
-  private static password = '';
-
   private static headers: HeadersInfo = {
     Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
     'Content-Type': 'application/json',
@@ -25,7 +23,6 @@ export class CustomerAPI {
         password,
       }),
     });
-    CustomerAPI.password = password;
     return response.status;
   }
 
@@ -66,28 +63,41 @@ export class CustomerAPI {
   }
 
   public static async updateCustomerFirstName(info: string): Promise<void> {
-    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: this.headers,
-    });
-    const customerData = await response.json();
-    console.log(customerData.version);
-    const requestBody = {
-      version: customerData.version,
-      actions: [
-        {
-          action: 'setFirstName',
-          firstName: info,
-        },
-      ],
-    };
-    await fetch(url, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify(requestBody),
-    });
-    createPopupWithText('First Name updated.');
+    try {
+      const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.headers,
+      });
+      if (response.status === 400) {
+        const errorResponse = await response.json();
+        createPopupWithText(`Error ${response.status}: ${errorResponse.message}`);
+      } else {
+        const customerData = await response.json();
+        const requestBody = {
+          version: customerData.version,
+          actions: [
+            {
+              action: 'setFirstName',
+              firstName: info,
+            },
+          ],
+        };
+        const postResponse = await fetch(url, {
+          method: 'POST',
+          headers: this.headers,
+          body: JSON.stringify(requestBody),
+        });
+        if (postResponse.status === 400) {
+          const errorResponse = await postResponse.json();
+          createPopupWithText(`Error ${postResponse.status}: ${errorResponse.message}`);
+        } else {
+          createPopupWithText('First Name updated.');
+        }
+      }
+    } catch (error) {
+      this.handleFetchError(error);
+    }
   }
 
   public static async updateCustomerLastName(info: string): Promise<void> {
@@ -176,26 +186,43 @@ export class CustomerAPI {
     }
   }
 
-  public static async updateCustomerPassword(info: string): Promise<void> {
-    console.log(CustomerAPI.password);
-    console.log(info);
-    const getUrl = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
-    const postUrl = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/password/`;
-    const response = await fetch(getUrl, {
-      method: 'GET',
-      headers: this.headers,
-    });
-    const customerData = await response.json();
-    const requestBody = {
-      version: customerData.version,
-      currentPassword: CustomerAPI.password,
-      newPassword: info,
-    };
-    await fetch(postUrl, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify(requestBody),
-    });
-    createPopupWithText('Password updated.');
+  public static async updateCustomerPassword(info: string, current: string): Promise<void> {
+    try {
+      const getUrl = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;
+      const postUrl = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/password/`;
+      const response = await fetch(getUrl, {
+        method: 'GET',
+        headers: this.headers,
+      });
+      const customerData = await response.json();
+      const requestBody = {
+        version: customerData.version,
+        currentPassword: current,
+        newPassword: info,
+      };
+      const postResponse = await fetch(postUrl, {
+        method: 'POST',
+        headers: this.headers,
+        body: JSON.stringify(requestBody),
+      });
+      if (postResponse.status === 400) {
+        const errorResponse = await postResponse.json();
+        createPopupWithText(`Error ${postResponse.status}: ${errorResponse.message}`);
+      } else {
+        await AuthAPI.fetchPasswordToken(customerData.email, info);
+        createPopupWithText('Password updated.');
+      }
+    } catch (error) {
+      this.handleFetchError(error);
+    }
+  }
+
+  private static handleFetchError(error: unknown): void {
+    if (error instanceof Error) {
+      createPopupWithText(`Error: ${error.message}`);
+    } else {
+      createPopupWithText(`Unknown error: ${error}`);
+    }
+    throw error;
   }
 }
