@@ -27,6 +27,8 @@ export class FiltersView extends View {
 
   private chipsets: Set<string> = new Set();
 
+  private vramAmounts: Set<string> = new Set();
+
   constructor() {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
@@ -42,6 +44,7 @@ export class FiltersView extends View {
     this.addPriceBlock();
     this.addBrandsList();
     this.addChipsetList();
+    this.addVramAmountList();
   }
 
   private addSearchBar(): void {
@@ -188,6 +191,34 @@ export class FiltersView extends View {
     this.viewElementCreator.addInnerElement(chipsetFilterBlock);
   }
 
+  private async addVramAmountList(): Promise<void> {
+    const vramAmountsFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const vramAmountsBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.VRAM_AMOUNT_HEADER);
+    const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
+    try {
+      const { vramAmount } = await ProductAPI.getFiltersData(CATEGORY_ID);
+      vramAmount.forEach((vramAmountInfo) => {
+        const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
+        const inputElementCreator = new InputFieldsCreator(
+          CssClasses.FILTERS,
+          CssClasses.CHECKBOX_INPUT,
+          `${vramAmountInfo.term} (${vramAmountInfo.count})`,
+          `${vramAmountInfo.term}`,
+          INPUT_TYPE.BRANDS_INPUT,
+          PLACEHOLDER.BRANDS_INPUT
+        );
+        lineElementCreator.addInnerElement(inputElementCreator.getElement());
+        listElementCreator.addInnerElement(lineElementCreator);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    listElementCreator.getElement().addEventListener('change', this.vramAmountListCallback.bind(this));
+    vramAmountsFilterBlock.addInnerElement(vramAmountsBlockHeader);
+    vramAmountsFilterBlock.addInnerElement(listElementCreator);
+    this.viewElementCreator.addInnerElement(vramAmountsFilterBlock);
+  }
+
   private async brandsListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
@@ -214,6 +245,19 @@ export class FiltersView extends View {
     }
   }
 
+  private async vramAmountListCallback(e: Event): Promise<void> {
+    if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
+      if (e.target.checked === true) {
+        this.vramAmounts.add(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+      if (e.target.checked === false) {
+        this.vramAmounts.delete(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+    }
+  }
+
   private async getFilteredProducts(): Promise<void> {
     const searchValue = this.searchInput?.value;
     const sortValue = this.sortBar?.value;
@@ -226,6 +270,7 @@ export class FiltersView extends View {
     const maxValueUsd = String(maxPrice * 100 || '*');
     const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
     const chipsetsString = [...this.chipsets].map((chipset) => `"${chipset}"`).join(',');
+    const vramAmountsString = [...this.vramAmounts].map((vramAmount) => `"${vramAmount}"`).join(',');
     await ProductAPI.getFilteredProducts({
       categoryId: CATEGORY_ID,
       search: searchValue,
@@ -234,6 +279,7 @@ export class FiltersView extends View {
       maxPriceValue: maxValueUsd,
       brands: brandsString,
       chipset: chipsetsString,
+      vramAmount: vramAmountsString,
     });
   }
 }

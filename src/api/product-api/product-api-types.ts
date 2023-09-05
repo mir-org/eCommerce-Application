@@ -167,6 +167,7 @@ export interface FilterProductsQuery {
   sockets?: string;
   coresAmount?: string;
   chipset?: string;
+  vramAmount?: string;
 }
 
 export type FacetsProducts = {
@@ -183,6 +184,7 @@ export type Facets = {
   'variants.attributes.socket': VariantsAttributes;
   'variants.attributes.cores-amount': VariantsAttributes;
   'variants.attributes.chipset': VariantsAttributes;
+  'variants.attributes.vram-amount': VariantsAttributes;
 };
 
 type VariantsAttributes = {
@@ -199,6 +201,7 @@ export interface FiltersData {
   sockets: TermsData[];
   coresAmount: TermsData[];
   chipset: TermsData[];
+  vramAmount: TermsData[];
 }
 
 type TermsData = {

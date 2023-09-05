@@ -41,6 +41,7 @@ export const TEXT = {
   PRICE_HEADER: 'Price(USD)',
   BRANDS_HEADER: 'Brands',
   CHIPSETS_HEADER: 'Chipsets',
+  VRAM_AMOUNT_HEADER: 'Vram amount',
 };
 
 export const SORT_OPTIONS = [

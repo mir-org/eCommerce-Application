@@ -61,8 +61,18 @@ export class ProductAPI {
   }
 
   private static getQueryParamsForFiltering(filterProductsQuery: FilterProductsQuery): string {
-    const { categoryId, sort, search, minPriceValue, maxPriceValue, brands, sockets, coresAmount, chipset } =
-      filterProductsQuery;
+    const {
+      categoryId,
+      sort,
+      search,
+      minPriceValue,
+      maxPriceValue,
+      brands,
+      sockets,
+      coresAmount,
+      chipset,
+      vramAmount,
+    } = filterProductsQuery;
     const categoryQuery = categoryId ? `filter=categories.id:"${categoryId}"` : '';
     const searchQuery = search ? `text.en=${search}` : '';
     const sortQuery = sort ? `sort=${sort}` : '';
@@ -78,7 +88,9 @@ export class ProductAPI {
     const coresAmountFacetQuery = coresAmount ? `facet=variants.attributes.cores-amount:${coresAmount}` : '';
     const chipsetFilterQuery = chipset ? `filter.query=variants.attributes.chipset:${chipset}` : '';
     const chipsetFacetQuery = chipset ? `facet=variants.attributes.chipset:${chipset}` : '';
-    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${socketsFilterQuery}&${socketsFacetQuery}&${coresAmountFilterQuery}&${coresAmountFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}&${chipsetFilterQuery}&${chipsetFacetQuery}`;
+    const vramAmountFilterQuery = vramAmount ? `filter.query=variants.attributes.vram-amount:${vramAmount}` : '';
+    const vramAmountFacetQuery = vramAmount ? `facet=variants.attributes.vram-amount:${vramAmount}` : '';
+    const queryParams = `${categoryQuery}&${brandsFilterQuery}&${brandsFacetQuery}&${socketsFilterQuery}&${socketsFacetQuery}&${coresAmountFilterQuery}&${coresAmountFacetQuery}&${priceQuery}&${sortQuery}&${searchQuery}&${chipsetFilterQuery}&${chipsetFacetQuery}&${vramAmountFilterQuery}&${vramAmountFacetQuery}`;
     return queryParams;
   }
 
@@ -88,7 +100,8 @@ export class ProductAPI {
     const socketFacetQuery = `facet=variants.attributes.socket`;
     const coresAmountFacetQuery = `facet=variants.attributes.cores-amount`;
     const chipsetFacetQuery = `facet=variants.attributes.chipset`;
-    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}&${socketFacetQuery}&${coresAmountFacetQuery}&${chipsetFacetQuery}`;
+    const vramAmountFacetQuery = `facet=variants.attributes.vram-amount`;
+    const queryParams = `${categoryFilterQuery}&${brandsFacetQuery}&${socketFacetQuery}&${coresAmountFacetQuery}&${chipsetFacetQuery}&${vramAmountFacetQuery}`;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/product-projections/search?${queryParams}`;
     const response = await fetch(url, {
       method: 'GET',
@@ -103,6 +116,7 @@ export class ProductAPI {
       sockets: data.facets['variants.attributes.socket'].terms,
       coresAmount: data.facets['variants.attributes.cores-amount'].terms,
       chipset: data.facets['variants.attributes.chipset'].terms,
+      vramAmount: data.facets['variants.attributes.vram-amount'].terms,
     };
     return result;
   }
