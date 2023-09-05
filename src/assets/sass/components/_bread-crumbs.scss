@@ -26,6 +26,7 @@
     user-select: none;
 
     &--active {
+      cursor: default;
       color: gray;
     }
   }

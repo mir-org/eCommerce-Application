@@ -50,6 +50,7 @@ class GraphicCardsView extends View {
     this.addContent();
     this.addAside();
     this.addProductsWrapper();
+    this.content?.getElement().addEventListener('click', this.cardWrapperClickHandler.bind(this));
   }
 
   private addTitle(): void {
@@ -182,6 +183,17 @@ class GraphicCardsView extends View {
     card.addInnerElement(cardDescription);
     card.getElement().dataset.id = id;
     return card;
+  }
+
+  private cardWrapperClickHandler(event: MouseEvent): void {
+    const сtarget = event.target;
+    if (сtarget instanceof HTMLElement) {
+      const card = сtarget.closest('.product-card');
+      if (card) {
+        const ID = card.getAttribute('data-id');
+        this.router.navigate(`catalog/${ID}`);
+      }
+    }
   }
 }
 

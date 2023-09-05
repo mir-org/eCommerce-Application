@@ -51,6 +51,7 @@
   z-index: 40;
   margin: 2px 5px 0;
   font-size: 14px;
+  white-space: pre-line;
 }
 
 .primary-label:has(.primary-input:focus),

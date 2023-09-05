@@ -26,7 +26,9 @@
 @import "pages/login";
 @import "pages/not-found";
 @import "pages/catalog";
+@import "pages/user-profile";
 @import "pages/category";
+@import "pages/product";
 
 @import "themes/theme";
 @import "themes/admin";
@@ -66,4 +68,23 @@ body {
 
 .hide {
   display: none;
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f0f0f0;
+  width: 300px;
+  height: 200px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 999;
 }
