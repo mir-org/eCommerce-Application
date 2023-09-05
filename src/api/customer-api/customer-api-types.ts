@@ -31,6 +31,8 @@ export type CustomerInfo = {
   stores: [];
   version: number;
   versionModifiedAt: string;
+  defaultBillingAddressId?: string;
+  defaultShippingAddressId?: string;
 };
 
 export type Address = {
@@ -38,6 +40,7 @@ export type Address = {
   streetName: string;
   postalCode: string;
   city: string;
+  id?: string;
 };
 
 export type RegisterCustomerAnswer = {

@@ -209,7 +209,8 @@ export class CustomerAPI {
         const errorResponse = await postResponse.json();
         createPopupWithText(`Error ${postResponse.status}: ${errorResponse.message}`);
       } else {
-        await AuthAPI.fetchPasswordToken(customerData.email, info);
+        console.log(customerData.email);
+        await CustomerAPI.loginCustomer(customerData.email, info);
         createPopupWithText('Password updated.');
       }
     } catch (error) {
