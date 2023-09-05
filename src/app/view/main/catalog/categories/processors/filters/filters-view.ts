@@ -66,7 +66,6 @@ export class FiltersView extends View {
     if (!this.searchInput) throw new Error();
     if (e.code === 'Enter' || e.key === 'Enter') {
       await this.getFilteredProducts();
-      this.searchInput.value = '';
     }
   }
 
