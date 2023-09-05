@@ -1,4 +1,6 @@
 import { ProductAPI } from '../../../../../../../api/product-api/product-api';
+import { Pages } from '../../../../../../router/pages';
+import { Router } from '../../../../../../router/router';
 import { ElementCreator } from '../../../../../../utils/element-creator';
 import InputFieldsCreator from '../../../../../../utils/input-fields-creator';
 import { View } from '../../../../../view';
@@ -29,7 +31,7 @@ export class FiltersView extends View {
 
   private vramAmounts: Set<HTMLInputElement> = new Set();
 
-  constructor() {
+  constructor(private router: Router) {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
     this.sortBar = null;
@@ -39,6 +41,7 @@ export class FiltersView extends View {
   }
 
   private async configureView(): Promise<void> {
+    this.addCatalogNavigation();
     this.addSearchBar();
     this.addSortBar();
     this.addPriceBlock();
@@ -46,6 +49,42 @@ export class FiltersView extends View {
     await this.addChipsetList();
     await this.addVramAmountList();
     this.addResetButton();
+  }
+
+  private addCatalogNavigation(): void {
+    const navigationBlockCreator = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const navigationButtonCreator = new ElementCreator('button', CssClasses.NAVIGATION_BUTTON, TEXT.NAVIGATION_BUTTON);
+    const navigationMenuCreator = new ElementCreator('div', CssClasses.NAVIGATION_MENU);
+    const pcComponentsLinkCreator = new ElementCreator(
+      'a',
+      CssClasses.NAVIGATION_CATEGORY,
+      TEXT.PC_COMPONENTS_CATEGORY
+    );
+    const processorsLinkCreator = new ElementCreator(
+      'a',
+      CssClasses.NAVIGATION_SUBCATEGORY,
+      TEXT.PROCESSORS_SUBCATEGORY
+    );
+    const graphicCardsLinkCreator = new ElementCreator(
+      'a',
+      [CssClasses.NAVIGATION_SUBCATEGORY, CssClasses.NAVIGATION_SUBCATEGORY_ACTIVE],
+      TEXT.GRAPHIC_CARDS_SUBCATEGORY
+    );
+    navigationBlockCreator.getElement().addEventListener('click', (e: Event) => {
+      if (e.target === navigationButtonCreator.getElement()) {
+        navigationButtonCreator.getElement().classList.toggle(CssClasses.NAVIGATION_BUTTON_ACTIVE);
+        navigationMenuCreator.getElement().classList.toggle(CssClasses.NAVIGATION_MENU_ACTIVE);
+      }
+      if (e.target === pcComponentsLinkCreator.getElement()) this.router.navigate(Pages.CATALOG);
+      if (e.target === processorsLinkCreator.getElement()) this.router.navigate(Pages.PROCESSORS);
+      if (e.target === graphicCardsLinkCreator.getElement()) this.router.navigate(Pages.GRAPHIC_CARDS);
+    });
+    navigationMenuCreator.addInnerElement(pcComponentsLinkCreator);
+    navigationMenuCreator.addInnerElement(processorsLinkCreator);
+    navigationMenuCreator.addInnerElement(graphicCardsLinkCreator);
+    navigationBlockCreator.addInnerElement(navigationButtonCreator);
+    navigationBlockCreator.addInnerElement(navigationMenuCreator);
+    this.viewElementCreator.addInnerElement(navigationBlockCreator);
   }
 
   private addSearchBar(): void {

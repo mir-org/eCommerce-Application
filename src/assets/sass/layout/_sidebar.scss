@@ -2,11 +2,16 @@
   padding: 15px;
 
   &__search-input-wrapper {
-    margin-bottom: 25px;
+    margin: 10px 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid black;
   }
 
   &__sort-bar {
-    margin-bottom: 25px;
+    width: 100%;
+    margin: 0px 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid black;
   }
 
   &__block {
@@ -96,5 +101,92 @@
     padding: 5px 30px;
     margin: 20px auto 0;
     border-radius: 5px;
+  }
+  &__navigation {
+    &-button {
+      margin-bottom: 5px;
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      border-radius: 3px;
+      background-color: #d4d4d4;
+      padding: 5px 10px;
+      text-align: start;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        width: 7px;
+        height: 7px;
+        border: 2px solid $black-color;
+        border-top: none;
+        border-left: none;
+        transform: translateY(-50%) rotate(45deg);
+        transition: 0.1s;
+      }
+
+      &--active {
+        &::after {
+          transform: translateY(-50%) rotate(-135deg);
+        }
+      }
+    }
+    &-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      display: none;
+
+      &--active {
+        display: flex;
+      }
+    }
+    &-category {
+      cursor: pointer;
+      padding: 0 0 0 10px;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 7px;
+        height: 7px;
+        border: 2px solid $black-color;
+        border-top: none;
+        border-left: none;
+        transform: translateY(-50%) rotate(-45deg);
+      }
+    }
+    &-subcategory {
+      cursor: pointer;
+      padding: 0 0 0 20px;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        width: 7px;
+        height: 7px;
+        border: 2px solid $black-color;
+        border-top: none;
+        border-left: none;
+        transform: translateY(-50%) rotate(-45deg);
+      }
+
+      &--active {
+        color: $filters-reset-button-background-color;
+
+        &::after {
+          border-color: $filters-reset-button-background-color;
+        }
+      }
+    }
   }
 }

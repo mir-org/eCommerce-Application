@@ -66,7 +66,7 @@ class ProcessorsView extends View {
 
   private addAside(): void {
     const aside = new ElementCreator('aside', CATEGORY_CLASSES.ASIDE, CATEGORY_TEXT.ASIDE);
-    const filtersView = new FiltersView();
+    const filtersView = new FiltersView(this.router);
     aside.addInnerElement(filtersView.getHTMLElement());
     this.content?.addInnerElement(aside);
     document.addEventListener('myCustomEvent', ((event: CustomEvent<MyCustomEvent>) => {
