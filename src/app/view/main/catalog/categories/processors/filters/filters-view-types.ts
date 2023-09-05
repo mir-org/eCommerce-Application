@@ -11,6 +11,7 @@ export const CssClasses = {
   BRANDS_LIST: 'filters__brands-list',
   BRANDS_LINE: 'filters__brands-line',
   CHECKBOX_INPUT: 'checkbox',
+  RESET_BUTTON: 'filters__reset-button',
 };
 
 export const PLACEHOLDER = {
@@ -21,8 +22,7 @@ export const PLACEHOLDER = {
 
 export const INITIAL_VALUE = {
   INPUT: '',
-  PRICE_MIN_INPUT: '',
-  PRICE_MAX_INPUT: '',
+  SORT_BAR: 'price desc',
 };
 
 export const INPUT_LABEL = {
@@ -42,6 +42,7 @@ export const TEXT = {
   BRANDS_HEADER: 'Brands',
   SOCKETS_HEADER: 'Socket',
   CORES_AMOUNT_HEADER: 'Cores amount',
+  RESET_BUTTON: 'reset',
 };
 
 export const SORT_OPTIONS = [

@@ -86,4 +86,15 @@
   &__brands-line {
     margin-bottom: 10px;
   }
+
+  &__reset-button {
+    display: block;
+    background-color: $filters-reset-button-background-color;
+    color: $filters-reset-button-color;
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+    padding: 5px 30px;
+    margin: 20px auto 0;
+    border-radius: 5px;
+  }
 }

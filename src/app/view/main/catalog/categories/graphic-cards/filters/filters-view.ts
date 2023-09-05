@@ -23,11 +23,11 @@ export class FiltersView extends View {
 
   private maxPriceInput: HTMLInputElement | null;
 
-  private brands: Set<string> = new Set();
+  private brands: Set<HTMLInputElement> = new Set();
 
-  private chipsets: Set<string> = new Set();
+  private chipsets: Set<HTMLInputElement> = new Set();
 
-  private vramAmounts: Set<string> = new Set();
+  private vramAmounts: Set<HTMLInputElement> = new Set();
 
   constructor() {
     super('section', CssClasses.FILTERS);
@@ -38,13 +38,14 @@ export class FiltersView extends View {
     this.configureView();
   }
 
-  private configureView(): void {
+  private async configureView(): Promise<void> {
     this.addSearchBar();
     this.addSortBar();
     this.addPriceBlock();
-    this.addBrandsList();
-    this.addChipsetList();
-    this.addVramAmountList();
+    await this.addBrandsList();
+    await this.addChipsetList();
+    await this.addVramAmountList();
+    this.addResetButton();
   }
 
   private addSearchBar(): void {
@@ -78,7 +79,10 @@ export class FiltersView extends View {
       selectElementCreator.addInnerElement(optionElement);
     });
     const selectElement = selectElementCreator.getElement();
-    if (selectElement instanceof HTMLSelectElement) this.sortBar = selectElement;
+    if (selectElement instanceof HTMLSelectElement) {
+      this.sortBar = selectElement;
+      selectElement.value = INITIAL_VALUE.SORT_BAR;
+    }
     selectElement.addEventListener('change', this.sortBarCallback.bind(this));
     this.viewElementCreator.addInnerElement(selectElement);
   }
@@ -102,7 +106,7 @@ export class FiltersView extends View {
       CssClasses.FILTERS,
       CssClasses.PRICE_INPUT,
       INPUT_LABEL.PRICE_MIN_INPUT,
-      INITIAL_VALUE.PRICE_MIN_INPUT,
+      INITIAL_VALUE.INPUT,
       INPUT_TYPE.PRICE_INPUT,
       PLACEHOLDER.PRICE_INPUT
     );
@@ -114,7 +118,7 @@ export class FiltersView extends View {
       CssClasses.FILTERS,
       CssClasses.PRICE_INPUT,
       INPUT_LABEL.PRICE_MAX_INPUT,
-      INITIAL_VALUE.PRICE_MAX_INPUT,
+      INITIAL_VALUE.INPUT,
       INPUT_TYPE.PRICE_INPUT,
       PLACEHOLDER.PRICE_INPUT
     );
@@ -221,11 +225,11 @@ export class FiltersView extends View {
   private async brandsListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
-        this.brands.add(e.target.value);
+        this.brands.add(e.target);
         this.getFilteredProducts.call(this);
       }
       if (e.target.checked === false) {
-        this.brands.delete(e.target.value);
+        this.brands.delete(e.target);
         this.getFilteredProducts.call(this);
       }
     }
@@ -234,11 +238,11 @@ export class FiltersView extends View {
   private async chipsetListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
-        this.chipsets.add(e.target.value);
+        this.chipsets.add(e.target);
         this.getFilteredProducts.call(this);
       }
       if (e.target.checked === false) {
-        this.chipsets.delete(e.target.value);
+        this.chipsets.delete(e.target);
         this.getFilteredProducts.call(this);
       }
     }
@@ -247,14 +251,45 @@ export class FiltersView extends View {
   private async vramAmountListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
-        this.vramAmounts.add(e.target.value);
+        this.vramAmounts.add(e.target);
         this.getFilteredProducts.call(this);
       }
       if (e.target.checked === false) {
-        this.vramAmounts.delete(e.target.value);
+        this.vramAmounts.delete(e.target);
         this.getFilteredProducts.call(this);
       }
     }
+  }
+
+  private addResetButton(): void {
+    const buttonCreator = new ElementCreator('button', CssClasses.RESET_BUTTON, TEXT.RESET_BUTTON);
+    buttonCreator.getElement().addEventListener('click', this.resetButtonCallback.bind(this));
+    this.viewElementCreator.addInnerElement(buttonCreator);
+  }
+
+  private async resetButtonCallback(): Promise<void> {
+    const writableInputs = [this.searchInput, this.minPriceInput, this.maxPriceInput];
+    writableInputs.forEach((inputElement) => {
+      const element = inputElement;
+      if (element) {
+        element.value = INITIAL_VALUE.INPUT;
+        element.focus();
+        element.blur();
+      }
+    });
+    if (this.sortBar) this.sortBar.value = INITIAL_VALUE.SORT_BAR;
+    this.resetCheckboxElements(this.brands);
+    this.resetCheckboxElements(this.chipsets);
+    this.resetCheckboxElements(this.vramAmounts);
+    await this.getFilteredProducts();
+  }
+
+  private resetCheckboxElements(setObj: Set<HTMLInputElement>): void {
+    [...setObj].forEach((inputElement) => {
+      const element = inputElement;
+      element.checked = false;
+      setObj.delete(element);
+    });
   }
 
   private async getFilteredProducts(): Promise<void> {
@@ -267,9 +302,9 @@ export class FiltersView extends View {
     const maxPrice = Number(this.maxPriceInput.value || '*');
     const minValueUsd = String(minPrice * 100 || '0');
     const maxValueUsd = String(maxPrice * 100 || '*');
-    const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
-    const chipsetsString = [...this.chipsets].map((chipset) => `"${chipset}"`).join(',');
-    const vramAmountsString = [...this.vramAmounts].map((vramAmount) => `"${vramAmount}"`).join(',');
+    const brandsString = [...this.brands].map((brand) => `"${brand.value}"`).join(',');
+    const chipsetsString = [...this.chipsets].map((chipset) => `"${chipset.value}"`).join(',');
+    const vramAmountsString = [...this.vramAmounts].map((vramAmount) => `"${vramAmount.value}"`).join(',');
     await ProductAPI.getFilteredProducts({
       categoryId: CATEGORY_ID,
       search: searchValue,
