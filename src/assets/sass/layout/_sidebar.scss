@@ -9,12 +9,15 @@
     margin-bottom: 25px;
   }
 
-  &__price-block {
-    margin-bottom: 25px;
+  &__block {
+    padding: 10px 0 25px;
+    border-bottom: 1px solid black;
   }
 
-  &__price-header {
-    margin-bottom: 5px;
+  &__header {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 
   &__price-line {
@@ -55,5 +58,32 @@
         transform: translateY(-50%);
       }
     }
+  }
+
+  &__checkbox-input-wrapper.primary-wrapper {
+    min-height: 20px;
+  }
+
+  &__checkbox-label.primary-label {
+    height: 20px;
+    font-size: 0.9rem;
+    padding: 0 0 0 30px;
+    color: black;
+
+    &:has(.primary-input:not(:placeholder-shown)) {
+      transform: none;
+      font-size: 0.9rem;
+    }
+  }
+  &__checkbox-input.primary-input {
+    left: 0px;
+    width: 20px;
+    &:not(:placeholder-shown) {
+      transform: none;
+    }
+  }
+
+  &__brands-line {
+    margin-bottom: 10px;
   }
 }

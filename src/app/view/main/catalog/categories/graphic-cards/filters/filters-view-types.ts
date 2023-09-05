@@ -3,14 +3,14 @@ export const CssClasses = {
   SEARCH_INPUT: 'search',
   SORT: 'filters__sort-bar',
   SORT_OPTION: 'filters__sort-option',
-  PRICE_BLOCK: 'filters__price-block',
-  PRICE_HEADER: 'filters__price-header',
+  FILTERS_BLOCK: 'filters__block',
+  FILTERS_HEADER: 'filters__header',
   PRICE_LINE: 'filters__price-line',
   PRICE_SPLITTER: 'filters__price-splitter',
   PRICE_INPUT: 'price',
   BRANDS_LIST: 'filters__brands-list',
   BRANDS_LINE: 'filters__brands-line',
-  BRANDS_INPUT: 'brands',
+  CHECKBOX_INPUT: 'checkbox',
 };
 
 export const PLACEHOLDER = {
@@ -39,6 +39,9 @@ export const INPUT_TYPE = {
 
 export const TEXT = {
   PRICE_HEADER: 'Price(USD)',
+  BRANDS_HEADER: 'Brands',
+  CHIPSETS_HEADER: 'Chipsets',
+  VRAM_AMOUNT_HEADER: 'Vram amount',
 };
 
 export const SORT_OPTIONS = [

@@ -19,6 +19,7 @@
     justify-content: space-around;
     &-aside {
       width: 20%;
+      min-width: 220px;
       border-right: 1px solid $black-color;
       height: 100%;
     }

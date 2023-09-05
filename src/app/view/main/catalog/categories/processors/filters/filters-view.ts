@@ -25,6 +25,10 @@ export class FiltersView extends View {
 
   private brands: Set<string> = new Set();
 
+  private sockets: Set<string> = new Set();
+
+  private coresAmount: Set<string> = new Set();
+
   constructor() {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
@@ -39,6 +43,8 @@ export class FiltersView extends View {
     this.addSortBar();
     this.addPriceBlock();
     this.addBrandsList();
+    this.addSocketsList();
+    this.addCoresAmountList();
   }
 
   private addSearchBar(): void {
@@ -60,7 +66,6 @@ export class FiltersView extends View {
     if (!this.searchInput) throw new Error();
     if (e.code === 'Enter' || e.key === 'Enter') {
       await this.getFilteredProducts();
-      this.searchInput.value = '';
     }
   }
 
@@ -83,8 +88,8 @@ export class FiltersView extends View {
   }
 
   private addPriceBlock(): void {
-    const priceFilterBlock = new ElementCreator('div', CssClasses.PRICE_BLOCK);
-    const priceBlockHeader = new ElementCreator('header', CssClasses.PRICE_HEADER, TEXT.PRICE_HEADER);
+    const priceFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const priceBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.PRICE_HEADER);
     const priceLine = new ElementCreator('div', CssClasses.PRICE_LINE);
     this.addPriceLine(priceLine);
     priceFilterBlock.addInnerElement(priceBlockHeader.getElement());
@@ -130,23 +135,18 @@ export class FiltersView extends View {
   }
 
   private async addBrandsList(): Promise<void> {
+    const brandsFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const brandsBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.BRANDS_HEADER);
     const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
     try {
-      const products = (await ProductAPI.getAllProducts()).results;
-      const brands = products.map((productInfo) => {
-        const brandName = productInfo.masterData.current.masterVariant.attributes.find(
-          (elem) => elem.name === 'manufacturer'
-        )?.value;
-        return brandName;
-      });
-      const uniqueBrands = [...new Set(brands)];
-      uniqueBrands.forEach((brandName) => {
+      const { manufacturers } = await ProductAPI.getFiltersData(CATEGORY_ID);
+      manufacturers.forEach((manufacturerInfo) => {
         const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
         const inputElementCreator = new InputFieldsCreator(
           CssClasses.FILTERS,
-          CssClasses.BRANDS_INPUT,
-          `${brandName}`,
-          `${brandName}`,
+          CssClasses.CHECKBOX_INPUT,
+          `${manufacturerInfo.term} (${manufacturerInfo.count})`,
+          `${manufacturerInfo.term}`,
           INPUT_TYPE.BRANDS_INPUT,
           PLACEHOLDER.BRANDS_INPUT
         );
@@ -157,7 +157,65 @@ export class FiltersView extends View {
       console.log(e);
     }
     listElementCreator.getElement().addEventListener('change', this.brandsListCallback.bind(this));
-    this.viewElementCreator.addInnerElement(listElementCreator.getElement());
+    brandsFilterBlock.addInnerElement(brandsBlockHeader);
+    brandsFilterBlock.addInnerElement(listElementCreator);
+    this.viewElementCreator.addInnerElement(brandsFilterBlock);
+  }
+
+  private async addSocketsList(): Promise<void> {
+    const socketFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const socketBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.SOCKETS_HEADER);
+    const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
+    try {
+      const { sockets } = await ProductAPI.getFiltersData(CATEGORY_ID);
+      sockets.forEach((socketInfo) => {
+        const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
+        const inputElementCreator = new InputFieldsCreator(
+          CssClasses.FILTERS,
+          CssClasses.CHECKBOX_INPUT,
+          `${socketInfo.term} (${socketInfo.count})`,
+          `${socketInfo.term}`,
+          INPUT_TYPE.BRANDS_INPUT,
+          PLACEHOLDER.BRANDS_INPUT
+        );
+        lineElementCreator.addInnerElement(inputElementCreator.getElement());
+        listElementCreator.addInnerElement(lineElementCreator);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    listElementCreator.getElement().addEventListener('change', this.socketsListCallback.bind(this));
+    socketFilterBlock.addInnerElement(socketBlockHeader);
+    socketFilterBlock.addInnerElement(listElementCreator);
+    this.viewElementCreator.addInnerElement(socketFilterBlock);
+  }
+
+  private async addCoresAmountList(): Promise<void> {
+    const coresAmountFilterBlock = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const coresAmountBlockHeader = new ElementCreator('header', CssClasses.FILTERS_HEADER, TEXT.CORES_AMOUNT_HEADER);
+    const listElementCreator = new ElementCreator('ul', CssClasses.BRANDS_LIST);
+    try {
+      const { coresAmount } = await ProductAPI.getFiltersData(CATEGORY_ID);
+      coresAmount.forEach((coresAmountInfo) => {
+        const lineElementCreator = new ElementCreator('li', CssClasses.BRANDS_LINE);
+        const inputElementCreator = new InputFieldsCreator(
+          CssClasses.FILTERS,
+          CssClasses.CHECKBOX_INPUT,
+          `${coresAmountInfo.term} (${coresAmountInfo.count})`,
+          `${coresAmountInfo.term}`,
+          INPUT_TYPE.BRANDS_INPUT,
+          PLACEHOLDER.BRANDS_INPUT
+        );
+        lineElementCreator.addInnerElement(inputElementCreator.getElement());
+        listElementCreator.addInnerElement(lineElementCreator);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    listElementCreator.getElement().addEventListener('change', this.coresAmountListCallback.bind(this));
+    coresAmountFilterBlock.addInnerElement(coresAmountBlockHeader);
+    coresAmountFilterBlock.addInnerElement(listElementCreator);
+    this.viewElementCreator.addInnerElement(coresAmountFilterBlock);
   }
 
   private async brandsListCallback(e: Event): Promise<void> {
@@ -168,6 +226,32 @@ export class FiltersView extends View {
       }
       if (e.target.checked === false) {
         this.brands.delete(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+    }
+  }
+
+  private async socketsListCallback(e: Event): Promise<void> {
+    if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
+      if (e.target.checked === true) {
+        this.sockets.add(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+      if (e.target.checked === false) {
+        this.sockets.delete(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+    }
+  }
+
+  private async coresAmountListCallback(e: Event): Promise<void> {
+    if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
+      if (e.target.checked === true) {
+        this.coresAmount.add(e.target.value);
+        this.getFilteredProducts.call(this);
+      }
+      if (e.target.checked === false) {
+        this.coresAmount.delete(e.target.value);
         this.getFilteredProducts.call(this);
       }
     }
@@ -184,6 +268,8 @@ export class FiltersView extends View {
     const minValueUsd = String(minPrice * 100 || '0');
     const maxValueUsd = String(maxPrice * 100 || '*');
     const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
+    const socketsString = [...this.sockets].map((socket) => `"${socket}"`).join(',');
+    const coresAmountString = [...this.coresAmount].map((coresAmount) => `"${coresAmount}"`).join(',');
     await ProductAPI.getFilteredProducts({
       categoryId: CATEGORY_ID,
       search: searchValue,
@@ -191,6 +277,8 @@ export class FiltersView extends View {
       minPriceValue: minValueUsd,
       maxPriceValue: maxValueUsd,
       brands: brandsString,
+      sockets: socketsString,
+      coresAmount: coresAmountString,
     });
   }
 }

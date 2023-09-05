@@ -33,9 +33,7 @@ export class BreadCrumbsCreator {
         ? [BREAD_CRUMBS_CLASSES.BREAD_CRUMBS_LINK, BREAD_CRUMBS_CLASSES.BREAD_CRUMBS_LINK_ACTIVE]
         : BREAD_CRUMBS_CLASSES.BREAD_CRUMBS_LINK;
       const linkCreator = new ElementCreator('a', cssClasses, breadCrumbInfo.text);
-      if (!breadCrumbInfo.isCurrent) {
-        linkCreator.getElement().addEventListener('click', () => this.router.navigate(breadCrumbInfo.pagePath));
-      }
+      linkCreator.getElement().addEventListener('click', () => this.router.navigate(breadCrumbInfo.pagePath));
       elementCreator.addInnerElement(linkCreator);
       this.element.addInnerElement(elementCreator);
     });

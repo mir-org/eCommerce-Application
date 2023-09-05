@@ -169,4 +169,47 @@ export interface FilterProductsQuery {
   minPriceValue?: string;
   maxPriceValue?: string;
   brands?: string;
+  sockets?: string;
+  coresAmount?: string;
+  chipset?: string;
+  vramAmount?: string;
 }
+
+export type FacetsProducts = {
+  count: number;
+  facets: Facets;
+  limit: number;
+  offset: number;
+  results: Product[];
+  total: number;
+};
+
+export type Facets = {
+  'variants.attributes.manufacturer': VariantsAttributes;
+  'variants.attributes.socket': VariantsAttributes;
+  'variants.attributes.cores-amount': VariantsAttributes;
+  'variants.attributes.chipset': VariantsAttributes;
+  'variants.attributes.vram-amount': VariantsAttributes;
+};
+
+type VariantsAttributes = {
+  dataType: string;
+  missing: number;
+  other: number;
+  terms: TermsData[];
+  total: number;
+  type: string;
+};
+
+export interface FiltersData {
+  manufacturers: TermsData[];
+  sockets: TermsData[];
+  coresAmount: TermsData[];
+  chipset: TermsData[];
+  vramAmount: TermsData[];
+}
+
+type TermsData = {
+  term: string;
+  count: number;
+};
