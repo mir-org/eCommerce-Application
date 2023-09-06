@@ -1,4 +1,6 @@
 import { ProductAPI } from '../../../../../../../api/product-api/product-api';
+import { Pages } from '../../../../../../router/pages';
+import { Router } from '../../../../../../router/router';
 import { ElementCreator } from '../../../../../../utils/element-creator';
 import InputFieldsCreator from '../../../../../../utils/input-fields-creator';
 import { View } from '../../../../../view';
@@ -23,28 +25,119 @@ export class FiltersView extends View {
 
   private maxPriceInput: HTMLInputElement | null;
 
-  private brands: Set<string> = new Set();
+  private brands: Set<HTMLInputElement> = new Set();
 
-  private chipsets: Set<string> = new Set();
+  private chipsets: Set<HTMLInputElement> = new Set();
 
-  private vramAmounts: Set<string> = new Set();
+  private vramAmounts: Set<HTMLInputElement> = new Set();
 
-  constructor() {
+  private currentFiltersView: ElementCreator | null;
+
+  constructor(private router: Router) {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
     this.sortBar = null;
     this.minPriceInput = null;
     this.maxPriceInput = null;
+    this.currentFiltersView = null;
     this.configureView();
   }
 
-  private configureView(): void {
+  private async configureView(): Promise<void> {
+    this.addCatalogNavigation();
+    this.addActiveFiltersBlock();
     this.addSearchBar();
     this.addSortBar();
     this.addPriceBlock();
-    this.addBrandsList();
-    this.addChipsetList();
-    this.addVramAmountList();
+    await this.addBrandsList();
+    await this.addChipsetList();
+    await this.addVramAmountList();
+    this.addResetButton();
+  }
+
+  private addCatalogNavigation(): void {
+    const navigationBlockCreator = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const navigationButtonCreator = new ElementCreator('button', CssClasses.ACCORDION_BUTTON, TEXT.NAVIGATION_BUTTON);
+    const navigationMenuCreator = new ElementCreator('div', CssClasses.ACCORDION_MENU);
+    const pcComponentsLinkCreator = new ElementCreator(
+      'a',
+      CssClasses.NAVIGATION_CATEGORY,
+      TEXT.PC_COMPONENTS_CATEGORY
+    );
+    const processorsLinkCreator = new ElementCreator(
+      'a',
+      CssClasses.NAVIGATION_SUBCATEGORY,
+      TEXT.PROCESSORS_SUBCATEGORY
+    );
+    const graphicCardsLinkCreator = new ElementCreator(
+      'a',
+      [CssClasses.NAVIGATION_SUBCATEGORY, CssClasses.NAVIGATION_SUBCATEGORY_ACTIVE],
+      TEXT.GRAPHIC_CARDS_SUBCATEGORY
+    );
+    navigationBlockCreator.getElement().addEventListener('click', (e: Event) => {
+      if (e.target === navigationButtonCreator.getElement()) {
+        navigationButtonCreator.getElement().classList.toggle(CssClasses.ACCORDION_BUTTON_ACTIVE);
+        navigationMenuCreator.getElement().classList.toggle(CssClasses.ACCORDION_MENU_ACTIVE);
+      }
+      if (e.target === pcComponentsLinkCreator.getElement()) this.router.navigate(Pages.CATALOG);
+      if (e.target === processorsLinkCreator.getElement()) this.router.navigate(Pages.PROCESSORS);
+      if (e.target === graphicCardsLinkCreator.getElement()) this.router.navigate(Pages.GRAPHIC_CARDS);
+    });
+    navigationMenuCreator.addInnerElement(pcComponentsLinkCreator);
+    navigationMenuCreator.addInnerElement(processorsLinkCreator);
+    navigationMenuCreator.addInnerElement(graphicCardsLinkCreator);
+    navigationBlockCreator.addInnerElement(navigationButtonCreator);
+    navigationBlockCreator.addInnerElement(navigationMenuCreator);
+    this.viewElementCreator.addInnerElement(navigationBlockCreator);
+  }
+
+  private addActiveFiltersBlock(): void {
+    const activeFiltersBlockCreator = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const activeFiltersButtonCreator = new ElementCreator('button', CssClasses.ACCORDION_BUTTON, TEXT.CURRENT_FILTERS);
+    const activeFiltersMenuCreator = new ElementCreator('div', CssClasses.ACCORDION_MENU);
+    activeFiltersButtonCreator.getElement().addEventListener('click', (e: Event) => {
+      if (e.target === activeFiltersButtonCreator.getElement()) {
+        activeFiltersButtonCreator.getElement().classList.toggle(CssClasses.ACCORDION_BUTTON_ACTIVE);
+        activeFiltersMenuCreator.getElement().classList.toggle(CssClasses.ACCORDION_MENU_ACTIVE);
+      }
+    });
+    this.currentFiltersView = activeFiltersMenuCreator;
+    activeFiltersBlockCreator.addInnerElement(activeFiltersButtonCreator);
+    activeFiltersBlockCreator.addInnerElement(activeFiltersMenuCreator);
+    this.viewElementCreator.addInnerElement(activeFiltersBlockCreator);
+  }
+
+  private addActiveFilters(activeFiltersInfo: string[]): void {
+    activeFiltersInfo.forEach((filterElement) => {
+      const currentFilterCreator = new ElementCreator('div', CssClasses.CURRENT_FILTER, filterElement);
+      this.currentFiltersView?.addInnerElement(currentFilterCreator);
+    });
+  }
+
+  private updateCurrentFiltersView(): void {
+    while (this.currentFiltersView?.getElement().firstChild) {
+      this.currentFiltersView?.getElement().firstChild?.remove();
+    }
+    const currentFiltersInfo: string[] = [];
+    if (this.searchInput?.value) {
+      currentFiltersInfo.push(`Search: ${this.searchInput?.value}`);
+    }
+    if (this.minPriceInput?.value || this.maxPriceInput?.value) {
+      currentFiltersInfo.push(`Price(USD): ${this.minPriceInput?.value || '0'} - ${this.maxPriceInput?.value || '∞'}`);
+    }
+    if (this.brands.size) {
+      const brandsString = [...this.brands].map((brand) => `"${brand.value}"`).join(', ');
+      currentFiltersInfo.push(`Brands: ${brandsString}`);
+    }
+    if (this.chipsets.size) {
+      const chipsetsString = [...this.chipsets].map((chipset) => `"${chipset.value}"`).join(', ');
+      currentFiltersInfo.push(`Chipsets: ${chipsetsString}`);
+    }
+    if (this.vramAmounts.size) {
+      const vramString = [...this.vramAmounts].map((vramAmount) => `"${vramAmount.value}"`).join(', ');
+      currentFiltersInfo.push(`VRam amount: ${vramString}`);
+    }
+    this.addActiveFilters(currentFiltersInfo);
   }
 
   private addSearchBar(): void {
@@ -66,6 +159,7 @@ export class FiltersView extends View {
     if (!this.searchInput) throw new Error();
     if (e.code === 'Enter' || e.key === 'Enter') {
       await this.getFilteredProducts();
+      this.updateCurrentFiltersView();
     }
   }
 
@@ -78,7 +172,10 @@ export class FiltersView extends View {
       selectElementCreator.addInnerElement(optionElement);
     });
     const selectElement = selectElementCreator.getElement();
-    if (selectElement instanceof HTMLSelectElement) this.sortBar = selectElement;
+    if (selectElement instanceof HTMLSelectElement) {
+      this.sortBar = selectElement;
+      selectElement.value = INITIAL_VALUE.SORT_BAR;
+    }
     selectElement.addEventListener('change', this.sortBarCallback.bind(this));
     this.viewElementCreator.addInnerElement(selectElement);
   }
@@ -102,7 +199,7 @@ export class FiltersView extends View {
       CssClasses.FILTERS,
       CssClasses.PRICE_INPUT,
       INPUT_LABEL.PRICE_MIN_INPUT,
-      INITIAL_VALUE.PRICE_MIN_INPUT,
+      INITIAL_VALUE.INPUT,
       INPUT_TYPE.PRICE_INPUT,
       PLACEHOLDER.PRICE_INPUT
     );
@@ -114,7 +211,7 @@ export class FiltersView extends View {
       CssClasses.FILTERS,
       CssClasses.PRICE_INPUT,
       INPUT_LABEL.PRICE_MAX_INPUT,
-      INITIAL_VALUE.PRICE_MAX_INPUT,
+      INITIAL_VALUE.INPUT,
       INPUT_TYPE.PRICE_INPUT,
       PLACEHOLDER.PRICE_INPUT
     );
@@ -132,6 +229,7 @@ export class FiltersView extends View {
 
   private async priceInputCallback(): Promise<void> {
     await this.getFilteredProducts.call(this);
+    this.updateCurrentFiltersView();
   }
 
   private async addBrandsList(): Promise<void> {
@@ -221,40 +319,75 @@ export class FiltersView extends View {
   private async brandsListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
-        this.brands.add(e.target.value);
+        this.brands.add(e.target);
         this.getFilteredProducts.call(this);
       }
       if (e.target.checked === false) {
-        this.brands.delete(e.target.value);
+        this.brands.delete(e.target);
         this.getFilteredProducts.call(this);
       }
+      this.updateCurrentFiltersView();
     }
   }
 
   private async chipsetListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
-        this.chipsets.add(e.target.value);
+        this.chipsets.add(e.target);
         this.getFilteredProducts.call(this);
       }
       if (e.target.checked === false) {
-        this.chipsets.delete(e.target.value);
+        this.chipsets.delete(e.target);
         this.getFilteredProducts.call(this);
       }
+      this.updateCurrentFiltersView();
     }
   }
 
   private async vramAmountListCallback(e: Event): Promise<void> {
     if (e.target instanceof HTMLInputElement && e.target.closest('input')) {
       if (e.target.checked === true) {
-        this.vramAmounts.add(e.target.value);
+        this.vramAmounts.add(e.target);
         this.getFilteredProducts.call(this);
       }
       if (e.target.checked === false) {
-        this.vramAmounts.delete(e.target.value);
+        this.vramAmounts.delete(e.target);
         this.getFilteredProducts.call(this);
       }
+      this.updateCurrentFiltersView();
     }
+  }
+
+  private addResetButton(): void {
+    const buttonCreator = new ElementCreator('button', CssClasses.RESET_BUTTON, TEXT.RESET_BUTTON);
+    buttonCreator.getElement().addEventListener('click', this.resetButtonCallback.bind(this));
+    this.viewElementCreator.addInnerElement(buttonCreator);
+  }
+
+  private async resetButtonCallback(): Promise<void> {
+    const writableInputs = [this.searchInput, this.minPriceInput, this.maxPriceInput];
+    writableInputs.forEach((inputElement) => {
+      const element = inputElement;
+      if (element) {
+        element.value = INITIAL_VALUE.INPUT;
+        element.focus();
+        element.blur();
+      }
+    });
+    if (this.sortBar) this.sortBar.value = INITIAL_VALUE.SORT_BAR;
+    this.resetCheckboxElements(this.brands);
+    this.resetCheckboxElements(this.chipsets);
+    this.resetCheckboxElements(this.vramAmounts);
+    this.updateCurrentFiltersView();
+    await this.getFilteredProducts();
+  }
+
+  private resetCheckboxElements(setObj: Set<HTMLInputElement>): void {
+    [...setObj].forEach((inputElement) => {
+      const element = inputElement;
+      element.checked = false;
+      setObj.delete(element);
+    });
   }
 
   private async getFilteredProducts(): Promise<void> {
@@ -267,9 +400,9 @@ export class FiltersView extends View {
     const maxPrice = Number(this.maxPriceInput.value || '*');
     const minValueUsd = String(minPrice * 100 || '0');
     const maxValueUsd = String(maxPrice * 100 || '*');
-    const brandsString = [...this.brands].map((brand) => `"${brand}"`).join(',');
-    const chipsetsString = [...this.chipsets].map((chipset) => `"${chipset}"`).join(',');
-    const vramAmountsString = [...this.vramAmounts].map((vramAmount) => `"${vramAmount}"`).join(',');
+    const brandsString = [...this.brands].map((brand) => `"${brand.value}"`).join(',');
+    const chipsetsString = [...this.chipsets].map((chipset) => `"${chipset.value}"`).join(',');
+    const vramAmountsString = [...this.vramAmounts].map((vramAmount) => `"${vramAmount.value}"`).join(',');
     await ProductAPI.getFilteredProducts({
       categoryId: CATEGORY_ID,
       search: searchValue,

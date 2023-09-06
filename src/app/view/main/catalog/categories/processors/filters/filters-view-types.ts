@@ -11,6 +11,15 @@ export const CssClasses = {
   BRANDS_LIST: 'filters__brands-list',
   BRANDS_LINE: 'filters__brands-line',
   CHECKBOX_INPUT: 'checkbox',
+  RESET_BUTTON: 'filters__reset-button',
+  ACCORDION_BUTTON: 'filters__accordion-button',
+  ACCORDION_BUTTON_ACTIVE: 'filters__accordion-button--active',
+  ACCORDION_MENU: 'filters__accordion-menu',
+  ACCORDION_MENU_ACTIVE: 'filters__accordion-menu--active',
+  NAVIGATION_CATEGORY: 'filters__navigation-category',
+  NAVIGATION_SUBCATEGORY: 'filters__navigation-subcategory',
+  NAVIGATION_SUBCATEGORY_ACTIVE: 'filters__navigation-subcategory--active',
+  CURRENT_FILTER: 'filters__current-filter',
 };
 
 export const PLACEHOLDER = {
@@ -21,8 +30,7 @@ export const PLACEHOLDER = {
 
 export const INITIAL_VALUE = {
   INPUT: '',
-  PRICE_MIN_INPUT: '',
-  PRICE_MAX_INPUT: '',
+  SORT_BAR: 'price desc',
 };
 
 export const INPUT_LABEL = {
@@ -42,6 +50,12 @@ export const TEXT = {
   BRANDS_HEADER: 'Brands',
   SOCKETS_HEADER: 'Socket',
   CORES_AMOUNT_HEADER: 'Cores amount',
+  RESET_BUTTON: 'reset',
+  NAVIGATION_BUTTON: 'Navigation',
+  PC_COMPONENTS_CATEGORY: 'PC-Components',
+  PROCESSORS_SUBCATEGORY: 'Processors',
+  GRAPHIC_CARDS_SUBCATEGORY: 'Graphic cards',
+  CURRENT_FILTERS: 'Current filters',
 };
 
 export const SORT_OPTIONS = [

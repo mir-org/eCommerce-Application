@@ -24,12 +24,12 @@ export default class CatalogView extends View {
   private addCategoryLinks(): void {
     const linksBlockCreator = new ElementCreator('div', CATALOG_CLASSES.LINKS_WRAPPER);
     const processorsLinkElement = this.getProcessorsLink({
-      src: '../../../../assets/images/cpu.svg',
+      src: './assets/images/cpu.svg',
       text: CATALOG_TEXT.PROCESSORS_LINK,
       callback: () => this.router.navigate(Pages.PROCESSORS),
     });
     const graphicCardsLinkElement = this.getProcessorsLink({
-      src: '../../../../assets/images/graphic-card.svg',
+      src: './assets/images/graphic-card.svg',
       text: CATALOG_TEXT.GRAPHIC_CARDS_LINK,
       callback: () => this.router.navigate(Pages.GRAPHIC_CARDS),
     });
