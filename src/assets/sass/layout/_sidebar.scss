@@ -1,6 +1,16 @@
 .filters {
   padding: 15px;
+  height: 100vh;
+  overflow: auto;
 
+  &::-webkit-scrollbar {
+    width: 3px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #858585;
+  }
   &__search-input-wrapper {
     margin: 10px 0 15px;
     padding-bottom: 10px;
@@ -90,6 +100,10 @@
 
   &__brands-line {
     margin-bottom: 10px;
+
+    @media (max-width: 460px) {
+      margin-bottom: 20px;
+    }
   }
 
   &__reset-button {
