@@ -70,6 +70,10 @@ body {
   display: none;
 }
 
+.scroll-lock {
+  overflow: hidden;
+}
+
 .popup {
   display: flex;
   flex-direction: column;

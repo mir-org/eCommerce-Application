@@ -113,7 +113,7 @@ class App {
         callback: async (id) => {
           const { default: ProductView } = await import('./view/main/product/product-view');
           if (id !== undefined) {
-            this.setContent(Pages.CATALOG, new ProductView(id, this.router));
+            this.setContent(Pages.CATALOG, new ProductView(id));
           }
         },
       },
