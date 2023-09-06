@@ -74,7 +74,11 @@ body {
   overflow: hidden;
 }
 
-.popup {
+.scroll-lock {
+  overflow: hidden;
+}
+
+.popup-with-text {
   display: flex;
   flex-direction: column;
   position: fixed;

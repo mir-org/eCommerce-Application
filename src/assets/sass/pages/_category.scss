@@ -64,10 +64,11 @@
           color: $catalog-card-old-price;
         }
         &__discount {
-          font-size: 1.15rem;
+          font-size: 1.3rem;
+          color: orange;
         }
         &__description {
-          overflow: scroll;
+          overflow: auto;
         }
       }
       .cards-wrapper {

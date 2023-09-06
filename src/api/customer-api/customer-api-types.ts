@@ -14,7 +14,7 @@ export type MyCustomerDraft = {
 export type CustomerInfo = {
   addresses: Address[];
   authenticationMode: string;
-  billingAddressIds: number[];
+  billingAddressIds: string[];
   createdAt: string;
   createdBy: { anonymousId: string; clientId: string; isPlatformClient: boolean };
   dateOfBirth: string;
@@ -27,10 +27,12 @@ export type CustomerInfo = {
   lastModifiedBy: { anonymousId: string; clientId: string; isPlatformClient: boolean };
   lastName: string;
   password: string;
-  shippingAddressIds: number[];
+  shippingAddressIds: string[];
   stores: [];
   version: number;
   versionModifiedAt: string;
+  defaultBillingAddressId?: string;
+  defaultShippingAddressId?: string;
 };
 
 export type Address = {
@@ -38,6 +40,7 @@ export type Address = {
   streetName: string;
   postalCode: string;
   city: string;
+  id?: string;
 };
 
 export type RegisterCustomerAnswer = {
@@ -49,8 +52,3 @@ export enum StatusCodes {
   successfulLogin = 200,
   successfulRegistration = 201,
 }
-
-export type HeadersInfo = {
-  Authorization: string;
-  'Content-Type': string;
-};

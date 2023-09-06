@@ -20,8 +20,10 @@ export class AuthAPI {
       },
     });
     const data = await response.json();
-    const accessToken = data.access_token;
-    localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
+    // const accessToken = data.access_token;
+    const refreshToken = data.refresh_token;
+    this.fetchRefreshToken(refreshToken);
+    // localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
   }
 
   public static async fetchPasswordToken(email: string, password: string): Promise<number> {
@@ -36,8 +38,10 @@ export class AuthAPI {
       return response.status;
     }
     const data = await response.json();
-    const accessToken = data.access_token;
-    localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
+    const refreshToken = data.refresh_token;
+    this.fetchRefreshToken(refreshToken);
+    // const accessToken = data.access_token;
+    // localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
     return response.status;
   }
 
@@ -50,6 +54,7 @@ export class AuthAPI {
       },
     });
     const data = await response.json();
+    console.log(data);
     const accessToken = data.access_token;
     localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
   }

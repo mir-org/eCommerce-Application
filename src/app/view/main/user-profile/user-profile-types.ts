@@ -7,6 +7,7 @@ export const PROFILE_CLASSES = {
   FIRST_NAME: 'first-name',
   LAST_NAME: 'last-name',
   DATE_OF_BIRTH: 'date-of-birth',
+  ADDRESS: ['user-profile__addresses-input-wrapper', 'primary-wrapper'],
   CITY: 'city',
   STREET: 'street',
   POSTAL_CODE: 'postal-code',

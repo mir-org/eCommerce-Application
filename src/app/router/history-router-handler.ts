@@ -1,4 +1,3 @@
-/* eslint-disable */
 interface RequestParams {
   path: string;
   resource: string;
@@ -20,6 +19,7 @@ class HistoryRouterHandler {
 
     window.addEventListener('popstate', this.handler);
   }
+
   public navigate(url: PopStateEvent | string): void {
     if (typeof url === 'string') {
       this.setHistory(url);

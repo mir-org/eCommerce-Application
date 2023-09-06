@@ -1,9 +1,10 @@
 .user-profile {
   width: 50%;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
 
-  .user-profile__show-hide-icon {
+  &__show-hide-icon {
     width: 10px;
     height: 10px;
     position: absolute;
@@ -11,6 +12,21 @@
     right: 20px;
     z-index: 20;
     user-select: none;
+  }
+
+  .user-profile__addresses-input-wrapper.primary-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .user-profile__addresses-input-wrapper.primary-wrapper[data-id] {
+    border: 1px solid black;
+    padding: 10px;
+  }
+
+  &__addresses-wrapper {
+    font-size: 1.33rem;
   }
 
   .controls {
