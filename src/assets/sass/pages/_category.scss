@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: space-around;
     &-aside {
-      max-width: 320px;
+      flex: 0 1 250px;
       min-width: 189px;
       border-right: 1px solid $black-color;
       height: 100%;
