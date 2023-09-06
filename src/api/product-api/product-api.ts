@@ -110,7 +110,7 @@ export class ProductAPI {
       },
     });
     const data: FacetsProducts = await response.json();
-    console.log(data);
+    // console.log(data);
     const result = {
       manufacturers: data.facets['variants.attributes.manufacturer'].terms,
       sockets: data.facets['variants.attributes.socket'].terms,
