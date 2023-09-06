@@ -162,6 +162,7 @@ export class CustomerAPI {
     createPopupWithText('Email updated.');
   }
 
+  // TODO REFACTOR
   // eslint-disable-next-line max-lines-per-function
   public static async updateCustomerBirthDay(info: string): Promise<void> {
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/`;

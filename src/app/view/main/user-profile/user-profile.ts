@@ -97,10 +97,6 @@ class UserProfileView extends View {
     this.addPasswordInput();
     this.addAddressesWrapper();
     this.createAddresses();
-    // this.addShippingFieldSet();
-    // this.addAddressInput(this.shippingAddressFieldSet, 'shipping');
-    // this.addBillingFieldSet();
-    // this.addAddressInput(this.billingAddressFieldSet, 'billing');
   }
 
   private async getCustomerData(): Promise<CustomerInfo> {
@@ -302,16 +298,6 @@ class UserProfileView extends View {
     this.form?.addInnerElement(fieldSet);
   }
 
-  // private addAddressInput(wrapper: ElementCreator | null, type: string): void {
-  //   if (wrapper) {
-  // this.addCityAddressInput(wrapper, type);
-  // this.addStreetAddressInput(wrapper, type);
-  // this.addPostalCodeAddressInput(wrapper, type);
-  // this.addCountryAddressInput(wrapper, type);
-  // this.addDefaultCheckbox(wrapper, type);
-  //   }
-  // }
-
   private addAddressesWrapper(): void {
     const addressesWrapper = new ElementCreator('div', ['user-profile__addresses-input-wrapper', 'primary-wrapper']);
     this.addressesWrapper = addressesWrapper;
@@ -458,118 +444,6 @@ class UserProfileView extends View {
     return countryAddressInputWrapper;
   }
 
-  // private addCityAddressInput(wrapper: ElementCreator, type: string): void {
-  //   const cityAddressInputCreator = new InputFieldsCreator(
-  //     PROFILE_CLASSES.PROFILE,
-  //     PROFILE_CLASSES.CITY,
-  //     PROFILE_TEXT.CITY,
-  //     this.data?.addresses[0].city ?? '',
-  //     'text',
-  //     ''
-  //   );
-  //   const cityAddressInputElement = cityAddressInputCreator.getInputElement();
-  //   cityAddressInputElement.setAttribute('disabled', '');
-  //   if (type === 'shipping') {
-  //     this.cityShippingAddressInput = cityAddressInputElement;
-  //   } else if (type === 'billing') {
-  //     this.cityBillingAddressInput = cityAddressInputElement;
-  //   }
-  //   const handleCityAddressInputChange = (): void => {
-  //     this.inputValidation(cityAddressInputCreator, () => Validator.cityField(cityAddressInputElement.value));
-  //     this.inputKeydownFn();
-  //   };
-  //   cityAddressInputElement.addEventListener('input', handleCityAddressInputChange);
-  //   cityAddressInputElement.addEventListener('focusin', handleCityAddressInputChange);
-  //   wrapper?.addInnerElement(cityAddressInputCreator.getElement());
-  // }
-
-  // private addStreetAddressInput(wrapper: ElementCreator, type: string): void {
-  //   const streetAddressInputCreator = new InputFieldsCreator(
-  //     PROFILE_CLASSES.PROFILE,
-  //     PROFILE_CLASSES.STREET,
-  //     PROFILE_TEXT.STREET,
-  //     this.data?.addresses[0].streetName ?? '',
-  //     'text',
-  //     ''
-  //   );
-  //   const streetAddressInputElement = streetAddressInputCreator.getInputElement();
-  //   streetAddressInputElement.setAttribute('disabled', '');
-  //   if (type === 'shipping') {
-  //     this.streetShippingAddressInput = streetAddressInputElement;
-  //   } else if (type === 'billing') {
-  //     this.streetBillingAddressInput = streetAddressInputElement;
-  //   }
-  //   const handleStreetAddressInputChange = (): void => {
-  //     this.inputValidation(streetAddressInputCreator, () => Validator.streetField(streetAddressInputElement.value));
-  //     this.inputKeydownFn();
-  //   };
-  //   streetAddressInputElement.addEventListener('input', handleStreetAddressInputChange);
-  //   streetAddressInputElement.addEventListener('focusin', handleStreetAddressInputChange);
-  //   wrapper?.addInnerElement(streetAddressInputCreator.getElement());
-  // }
-
-  // private addPostalCodeAddressInput(wrapper: ElementCreator, type: string): void {
-  //   const postalCodeAddressInputCreator = new InputFieldsCreator(
-  //     PROFILE_CLASSES.PROFILE,
-  //     PROFILE_CLASSES.POSTAL_CODE,
-  //     PROFILE_TEXT.POSTAL_CODE,
-  //     this.data?.addresses[0].postalCode ?? '',
-  //     'text',
-  //     ''
-  //   );
-  //   const postalCodeAddressInputElement = postalCodeAddressInputCreator.getInputElement();
-  //   postalCodeAddressInputElement.setAttribute('disabled', '');
-  //   if (type === 'shipping') {
-  //     this.postalCodeShippingAddressInput = postalCodeAddressInputElement;
-  //   } else if (type === 'billing') {
-  //     this.postalCodeBillingAddressInput = postalCodeAddressInputElement;
-  //   }
-  //   const handlePostalCodeInputChange = (): void => {
-  //     let country = '';
-  //     this.inputValidation(postalCodeAddressInputCreator, () => {
-  //       if (type === 'shipping') {
-  //         country = this.countryShippingAddressInput?.value ?? '';
-  //       } else if (type === 'billing') {
-  //         country = this.countryBillingAddressInput?.value ?? '';
-  //       }
-  //       return Validator.postalCodeField(postalCodeAddressInputElement.value, country);
-  //     });
-  //     this.inputKeydownFn();
-  //   };
-  //   postalCodeAddressInputElement.addEventListener('input', () => handlePostalCodeInputChange());
-  //   postalCodeAddressInputElement.addEventListener('focusin', () => handlePostalCodeInputChange());
-  //   wrapper?.addInnerElement(postalCodeAddressInputCreator.getElement());
-  // }
-
-  // private addCountryAddressInput(wrapper: ElementCreator, type: string): void {
-  //   // TODO refactor to separate createSelect method
-  //   const countryOptions = ['USA', 'Russia'];
-  //   const countryValues = ['US', 'RU'];
-  //   const wrapperClasses = ['user-profile__country-input-wrapper', 'primary-wrapper'];
-  //   const labelClasses = ['user-profile__country-label', 'primary-label'];
-  //   const selectClasses = ['user-profile__country-input', 'primary-input'];
-  //   const countryAddressInputWrapper = new ElementCreator('div', wrapperClasses);
-  //   const countryAddressInputLabel = new ElementCreator('label', labelClasses);
-  //   countryAddressInputLabel.getElement().textContent = 'Country';
-  //   const countryAddressInputCreator = new ElementCreator('select', selectClasses);
-  //   for (let i = 0; i < countryOptions.length; i += 1) {
-  //     const option = document.createElement('option');
-  //     option.setAttribute('value', countryValues[i]);
-  //     option.textContent = countryOptions[i];
-  //     countryAddressInputCreator.getElement().appendChild(option);
-  //   }
-  //   countryAddressInputWrapper.addInnerElement(countryAddressInputLabel.getElement());
-  //   countryAddressInputLabel.addInnerElement(countryAddressInputCreator.getElement());
-  //   const countryAddressInputElement = countryAddressInputCreator.getElement() as HTMLSelectElement;
-  //   countryAddressInputElement.setAttribute('disabled', '');
-  //   if (type === 'shipping') {
-  //     this.countryShippingAddressInput = countryAddressInputElement;
-  //   } else if (type === 'billing') {
-  //     this.countryBillingAddressInput = countryAddressInputElement;
-  //   }
-  //   wrapper?.addInnerElement(countryAddressInputWrapper.getElement());
-  // }
-
   private addEditButton(btnType: string): ElementCreator {
     const editButton = new ElementCreator('button', 'edit');
     editButton.getElement().textContent = 'Edit';
@@ -588,15 +462,6 @@ class UserProfileView extends View {
     saveButton.getElement().dataset.btnType = btnType;
     return saveButton;
   }
-
-  // private editButtonCallback(event: Event): void {
-  //   const editButton = event.target as HTMLButtonElement;
-  //   const saveButton = editButton.nextSibling as HTMLButtonElement;
-  //   saveButton.disabled = false;
-  //   editButton.disabled = true;
-  //   const input = editButton.parentElement?.parentElement?.querySelector('.primary-input') as HTMLInputElement;
-  //   input.disabled = false;
-  // }
 
   private editButtonCallback(event: Event): void {
     const editButton = event.target as HTMLButtonElement;

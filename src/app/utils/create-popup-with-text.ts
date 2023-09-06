@@ -1,7 +1,7 @@
 import { ElementCreator } from './element-creator';
 
 export function createPopupWithText(message: string): void {
-  const popup = new ElementCreator('div', 'popup', message);
+  const popup = new ElementCreator('div', 'popup-with-text', message);
   const closeButton = new ElementCreator('button', 'primary-button', 'Close');
   closeButton.getElement().addEventListener('click', () => {
     document.body.removeChild(popup.getElement());
