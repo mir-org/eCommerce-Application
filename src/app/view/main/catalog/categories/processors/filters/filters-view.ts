@@ -31,17 +31,21 @@ export class FiltersView extends View {
 
   private coresAmount: Set<HTMLInputElement> = new Set();
 
+  private currentFiltersView: ElementCreator | null;
+
   constructor(private router: Router) {
     super('section', CssClasses.FILTERS);
     this.searchInput = null;
     this.sortBar = null;
     this.minPriceInput = null;
     this.maxPriceInput = null;
+    this.currentFiltersView = null;
     this.configureView();
   }
 
   private async configureView(): Promise<void> {
     this.addCatalogNavigation();
+    this.addActiveFiltersBlock();
     this.addSearchBar();
     this.addSortBar();
     this.addPriceBlock();
@@ -53,8 +57,8 @@ export class FiltersView extends View {
 
   private addCatalogNavigation(): void {
     const navigationBlockCreator = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
-    const navigationButtonCreator = new ElementCreator('button', CssClasses.NAVIGATION_BUTTON, TEXT.NAVIGATION_BUTTON);
-    const navigationMenuCreator = new ElementCreator('div', CssClasses.NAVIGATION_MENU);
+    const navigationButtonCreator = new ElementCreator('button', CssClasses.ACCORDION_BUTTON, TEXT.NAVIGATION_BUTTON);
+    const navigationMenuCreator = new ElementCreator('div', CssClasses.ACCORDION_MENU);
     const pcComponentsLinkCreator = new ElementCreator(
       'a',
       CssClasses.NAVIGATION_CATEGORY,
@@ -72,8 +76,8 @@ export class FiltersView extends View {
     );
     navigationBlockCreator.getElement().addEventListener('click', (e: Event) => {
       if (e.target === navigationButtonCreator.getElement()) {
-        navigationButtonCreator.getElement().classList.toggle(CssClasses.NAVIGATION_BUTTON_ACTIVE);
-        navigationMenuCreator.getElement().classList.toggle(CssClasses.NAVIGATION_MENU_ACTIVE);
+        navigationButtonCreator.getElement().classList.toggle(CssClasses.ACCORDION_BUTTON_ACTIVE);
+        navigationMenuCreator.getElement().classList.toggle(CssClasses.ACCORDION_MENU_ACTIVE);
       }
       if (e.target === pcComponentsLinkCreator.getElement()) this.router.navigate(Pages.CATALOG);
       if (e.target === processorsLinkCreator.getElement()) this.router.navigate(Pages.PROCESSORS);
@@ -85,6 +89,55 @@ export class FiltersView extends View {
     navigationBlockCreator.addInnerElement(navigationButtonCreator);
     navigationBlockCreator.addInnerElement(navigationMenuCreator);
     this.viewElementCreator.addInnerElement(navigationBlockCreator);
+  }
+
+  private addActiveFiltersBlock(): void {
+    const activeFiltersBlockCreator = new ElementCreator('div', CssClasses.FILTERS_BLOCK);
+    const activeFiltersButtonCreator = new ElementCreator('button', CssClasses.ACCORDION_BUTTON, TEXT.CURRENT_FILTERS);
+    const activeFiltersMenuCreator = new ElementCreator('div', CssClasses.ACCORDION_MENU);
+    activeFiltersButtonCreator.getElement().addEventListener('click', (e: Event) => {
+      if (e.target === activeFiltersButtonCreator.getElement()) {
+        activeFiltersButtonCreator.getElement().classList.toggle(CssClasses.ACCORDION_BUTTON_ACTIVE);
+        activeFiltersMenuCreator.getElement().classList.toggle(CssClasses.ACCORDION_MENU_ACTIVE);
+      }
+    });
+    this.currentFiltersView = activeFiltersMenuCreator;
+    activeFiltersBlockCreator.addInnerElement(activeFiltersButtonCreator);
+    activeFiltersBlockCreator.addInnerElement(activeFiltersMenuCreator);
+    this.viewElementCreator.addInnerElement(activeFiltersBlockCreator);
+  }
+
+  private addActiveFilters(activeFiltersInfo: string[]): void {
+    activeFiltersInfo.forEach((filterElement) => {
+      const currentFilterCreator = new ElementCreator('div', CssClasses.CURRENT_FILTER, filterElement);
+      this.currentFiltersView?.addInnerElement(currentFilterCreator);
+    });
+  }
+
+  private updateCurrentFiltersView(): void {
+    while (this.currentFiltersView?.getElement().firstChild) {
+      this.currentFiltersView?.getElement().firstChild?.remove();
+    }
+    const currentFiltersInfo: string[] = [];
+    if (this.searchInput?.value) {
+      currentFiltersInfo.push(`Search: ${this.searchInput?.value}`);
+    }
+    if (this.minPriceInput?.value || this.maxPriceInput?.value) {
+      currentFiltersInfo.push(`Price(USD): ${this.minPriceInput?.value || '0'} - ${this.maxPriceInput?.value || '∞'}`);
+    }
+    if (this.brands.size) {
+      const brandsString = [...this.brands].map((brand) => `"${brand.value}"`).join(', ');
+      currentFiltersInfo.push(`Brands: ${brandsString}`);
+    }
+    if (this.sockets.size) {
+      const socketsString = [...this.sockets].map((socket) => `"${socket.value}"`).join(', ');
+      currentFiltersInfo.push(`Sockets: ${socketsString}`);
+    }
+    if (this.coresAmount.size) {
+      const coresAmountString = [...this.coresAmount].map((coresAmount) => `"${coresAmount.value}"`).join(', ');
+      currentFiltersInfo.push(`Cores amount: ${coresAmountString}`);
+    }
+    this.addActiveFilters(currentFiltersInfo);
   }
 
   private addSearchBar(): void {
@@ -106,6 +159,7 @@ export class FiltersView extends View {
     if (!this.searchInput) throw new Error();
     if (e.code === 'Enter' || e.key === 'Enter') {
       await this.getFilteredProducts();
+      this.updateCurrentFiltersView();
     }
   }
 
@@ -175,6 +229,7 @@ export class FiltersView extends View {
 
   private async priceInputCallback(): Promise<void> {
     await this.getFilteredProducts.call(this);
+    this.updateCurrentFiltersView();
   }
 
   private async addBrandsList(): Promise<void> {
@@ -271,6 +326,7 @@ export class FiltersView extends View {
         this.brands.delete(e.target);
         this.getFilteredProducts.call(this);
       }
+      this.updateCurrentFiltersView();
     }
   }
 
@@ -284,6 +340,7 @@ export class FiltersView extends View {
         this.sockets.delete(e.target);
         this.getFilteredProducts.call(this);
       }
+      this.updateCurrentFiltersView();
     }
   }
 
@@ -297,6 +354,7 @@ export class FiltersView extends View {
         this.coresAmount.delete(e.target);
         this.getFilteredProducts.call(this);
       }
+      this.updateCurrentFiltersView();
     }
   }
 
@@ -320,6 +378,7 @@ export class FiltersView extends View {
     this.resetCheckboxElements(this.brands);
     this.resetCheckboxElements(this.sockets);
     this.resetCheckboxElements(this.coresAmount);
+    this.updateCurrentFiltersView();
     await this.getFilteredProducts();
   }
 

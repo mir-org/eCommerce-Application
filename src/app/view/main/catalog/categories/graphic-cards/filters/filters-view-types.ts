@@ -12,13 +12,14 @@ export const CssClasses = {
   BRANDS_LINE: 'filters__brands-line',
   CHECKBOX_INPUT: 'checkbox',
   RESET_BUTTON: 'filters__reset-button',
-  NAVIGATION_BUTTON: 'filters__navigation-button',
-  NAVIGATION_BUTTON_ACTIVE: 'filters__navigation-button--active',
-  NAVIGATION_MENU: 'filters__navigation-menu',
-  NAVIGATION_MENU_ACTIVE: 'filters__navigation-menu--active',
+  ACCORDION_BUTTON: 'filters__accordion-button',
+  ACCORDION_BUTTON_ACTIVE: 'filters__accordion-button--active',
+  ACCORDION_MENU: 'filters__accordion-menu',
+  ACCORDION_MENU_ACTIVE: 'filters__accordion-menu--active',
   NAVIGATION_CATEGORY: 'filters__navigation-category',
   NAVIGATION_SUBCATEGORY: 'filters__navigation-subcategory',
   NAVIGATION_SUBCATEGORY_ACTIVE: 'filters__navigation-subcategory--active',
+  CURRENT_FILTER: 'filters__current-filter',
 };
 
 export const PLACEHOLDER = {
@@ -54,6 +55,7 @@ export const TEXT = {
   PC_COMPONENTS_CATEGORY: 'PC-Components',
   PROCESSORS_SUBCATEGORY: 'Processors',
   GRAPHIC_CARDS_SUBCATEGORY: 'Graphic cards',
+  CURRENT_FILTERS: 'Current filters',
 };
 
 export const SORT_OPTIONS = [
