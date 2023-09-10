@@ -1,14 +1,14 @@
-import { CustomerAPI } from '../../../../api/CustomerAPI/CustomerAPI';
-import { AuthStatusCodes } from '../../../../api/authAPI/authAPI';
+import { CustomerAPI } from '../../../../api/customer-api/customer-api';
+import { AuthStatusCodes } from '../../../../api/auth-api/auth-api';
 import { Pages } from '../../../router/pages';
 import { Router } from '../../../router/router';
 import State from '../../../state/state';
 import { ElementCreator } from '../../../utils/element-creator';
 import InputFieldsCreator from '../../../utils/input-fields-creator';
-import HeaderView from '../../header/header-view';
 import { View } from '../../view';
 import { CssClasses, INITIAL_VALUE, KEY_FOR_SAVE, TEXT, TYPE } from './login-view-types';
 import { Validator } from '../../../utils/validator';
+import Observer from '../../../observer/observer';
 
 class LoginView extends View {
   private form: ElementCreator | null;
@@ -21,7 +21,7 @@ class LoginView extends View {
 
   constructor(
     private router: Router,
-    private header: HeaderView | null,
+    private observer: Observer,
     private state: State
   ) {
     super('section', CssClasses.LOGIN);
@@ -151,9 +151,9 @@ class LoginView extends View {
     const password = this.passwordInput.getInputElement().value;
     const loginStatusCode = await CustomerAPI.loginCustomer(email, password);
     if (loginStatusCode === AuthStatusCodes.successfulPasswordTokenFetch) {
-      this.router.navigate(Pages.INDEX);
       this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
-      this.header?.customerLogin(this.state);
+      this.observer.userIsLoggedIn(this.state);
+      this.router.navigate(Pages.INDEX);
     } else {
       this.errorLine?.classList.add(CssClasses.ERROR_LINE_SHOW);
     }
