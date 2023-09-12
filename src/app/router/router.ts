@@ -28,7 +28,8 @@ class Router {
     this.state = state;
 
     document.addEventListener('DOMContentLoaded', () => {
-      this.handler.navigate('');
+      const urlString = window.location.hash.slice(1);
+      this.navigate(urlString);
     });
   }
 
@@ -47,12 +48,10 @@ class Router {
 
     const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/${ID}`;
     const route = this.routes.find((item) => item.path === pathForFind);
-
     if (!route) {
       this.redirectToNotFoundPage();
       return;
     }
-
     route.callback(requestParams.resource);
   }
 
