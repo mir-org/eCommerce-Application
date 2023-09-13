@@ -124,6 +124,20 @@ class App {
           this.setContent(Pages.NOT_FOUND, new NotFoundView(this.router));
         },
       },
+      {
+        path: `${Pages.ABOUT_US}`,
+        callback: async () => {
+          const { default: AboutView } = await import('./view/main/about-us/about-us-view');
+          this.setContent(Pages.ABOUT_US, new AboutView(this.router));
+        },
+      },
+      {
+        path: `${Pages.CART}`,
+        callback: async () => {
+          const { default: CartView } = await import('./view/main/cart/cart-view');
+          this.setContent(Pages.CART, new CartView());
+        },
+      },
     ];
     return result;
   }

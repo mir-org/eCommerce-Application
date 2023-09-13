@@ -16,12 +16,14 @@ const CssClasses = {
 const NamePages: IPages = {
   INDEX: 'Main',
   CATALOG: 'Catalog',
+  ABOUT_US: 'About Us',
 };
 
 const USER_MENU_PAGES: IPages = {
   REGISTRATION: 'Registration',
   LOGIN: 'Login',
   USER_PROFILE: 'Your profile',
+  CART: 'Cart',
 };
 
 const TEXT = {
