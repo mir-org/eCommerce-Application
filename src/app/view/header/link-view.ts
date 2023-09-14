@@ -19,7 +19,6 @@ class LinkView extends View {
 
   public setSelectedStatus(): void {
     this.linkElements.forEach((link) => link.setNotSelectedStatus());
-
     const element = this.viewElementCreator.getElement();
     element.classList.add(CssClasses.ITEM_SELECTED);
   }

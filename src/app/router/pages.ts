@@ -11,6 +11,8 @@ const Pages: IPages = {
   PROCESSORS: 'processors',
   GRAPHIC_CARDS: 'graphic-cards',
   NOT_FOUND: 'not-found',
+  ABOUT_US: 'about-us',
+  CART: 'cart',
 };
 
 const ID = '{id}';
