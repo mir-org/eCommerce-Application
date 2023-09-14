@@ -24,20 +24,19 @@ class HistoryRouterHandler {
     if (typeof url === 'string') {
       this.setHistory(url);
     }
-    const urlString = window.location.pathname.slice(1);
-
+    const urlString = window.location.hash.slice(1);
+    const path = urlString.split('/');
     const result: RequestParams = {
       path: '',
       resource: '',
     };
-    const path = urlString.split('/');
     [result.path = '', result.resource = ''] = path;
 
     this.callback(result);
   }
 
   public setHistory(url: string): void {
-    window.history.pushState(null, '', `/${url}`);
+    window.history.pushState(null, '', `#${url}`);
   }
 }
 
