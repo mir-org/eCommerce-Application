@@ -11,6 +11,7 @@ const CssClasses = {
   NAV: ['header__nav', 'nav'],
   USER_MENU: ['header__user-menu', 'user-menu'],
   LOGOUT_BUTTON: ['user-menu__logout-button'],
+  HEADER_CART: ['header__cart', 'cart'],
 };
 
 const NamePages: IPages = {
@@ -39,18 +40,25 @@ class HeaderView extends View {
 
   private logoutButton: ElementCreator;
 
+  private cartCounter: ElementCreator | null;
+
+  private cartPrice: ElementCreator | null;
+
   constructor(router: Router, state: State) {
     super('header', CssClasses.HEADER);
     this.headerLinkElements = new Map();
     this.logoutButton = this.crateLogoutButton();
+    this.cartCounter = null;
+    this.cartPrice = null;
     this.configView(router, state);
   }
 
   private configView(router: Router, state: State): void {
     this.addNavigation(router);
+    this.addCart();
     this.addUserMenu(router);
     this.logoutButton.getElement().addEventListener('click', this.logoutButtonHandler.bind(this, state));
-    this.userIsLoggedIn(state);
+    this.setLoginStatus(state);
   }
 
   public setSelectedItem(namePage: string): void {
@@ -98,10 +106,28 @@ class HeaderView extends View {
   private async logoutButtonHandler(state: State): Promise<void> {
     await AuthAPI.fetchAnonymousToken();
     state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'false');
-    this.userIsLoggedIn(state);
+    this.setLoginStatus(state);
   }
 
-  public userIsLoggedIn(state: State): void {
+  private addCart(): void {
+    const cartCreator = new ElementCreator('div', CssClasses.HEADER_CART);
+    const cartImage = new ElementCreator('img', 'cart__image');
+    cartImage.getElement().setAttribute('src', './assets/images/cart.svg');
+    cartCreator.addInnerElement(cartImage);
+    this.cartCounter = new ElementCreator('div', 'cart__counter');
+    cartCreator.addInnerElement(this.cartCounter);
+    this.cartPrice = new ElementCreator('div', 'cart__price');
+    cartCreator.addInnerElement(this.cartPrice);
+
+    this.viewElementCreator.addInnerElement(cartCreator);
+  }
+
+  public setCartState(counter: string, price: string): void {
+    this.cartCounter!.getElement().textContent = counter;
+    this.cartPrice!.getElement().textContent = price;
+  }
+
+  public setLoginStatus(state: State): void {
     const headerLinks: HTMLElement[] = [
       this.headerLinkElements.get('REGISTRATION')!.getHTMLElement(),
       this.headerLinkElements.get('LOGIN')!.getHTMLElement(),

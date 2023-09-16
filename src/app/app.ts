@@ -37,6 +37,7 @@ class App {
     const wrapperView = new WrapperView();
     this.header = new HeaderView(this.router, state);
     this.observer.setHeader(this.header);
+    this.observer.setCartState();
     this.main = new MainView();
     const footer = new FooterView();
 
