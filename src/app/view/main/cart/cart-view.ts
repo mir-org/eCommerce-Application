@@ -3,7 +3,7 @@ import { CART_CLASSES } from './cart-view-types';
 
 class CartView extends View {
   constructor() {
-    super('main', CART_CLASSES.CART);
+    super('section', CART_CLASSES.CART);
     this.configureView();
   }
 

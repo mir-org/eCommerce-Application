@@ -24,7 +24,6 @@ const USER_MENU_PAGES: IPages = {
   REGISTRATION: 'Registration',
   LOGIN: 'Login',
   USER_PROFILE: 'Your profile',
-  CART: 'Cart',
 };
 
 const TEXT = {
@@ -55,7 +54,7 @@ class HeaderView extends View {
 
   private configView(router: Router, state: State): void {
     this.addNavigation(router);
-    this.addCart();
+    this.addCart(router);
     this.addUserMenu(router);
     this.logoutButton.getElement().addEventListener('click', this.logoutButtonHandler.bind(this, state));
     this.setLoginStatus(state);
@@ -109,7 +108,7 @@ class HeaderView extends View {
     this.setLoginStatus(state);
   }
 
-  private addCart(): void {
+  private addCart(router: Router): void {
     const cartCreator = new ElementCreator('div', CssClasses.HEADER_CART);
     const cartImage = new ElementCreator('img', 'cart__image');
     cartImage.getElement().setAttribute('src', './assets/images/cart.svg');
@@ -118,6 +117,7 @@ class HeaderView extends View {
     cartCreator.addInnerElement(this.cartCounter);
     this.cartPrice = new ElementCreator('div', 'cart__price');
     cartCreator.addInnerElement(this.cartPrice);
+    cartCreator.getElement().addEventListener('click', this.cartClickHandler.bind(this, router));
 
     this.viewElementCreator.addInnerElement(cartCreator);
   }
@@ -125,6 +125,10 @@ class HeaderView extends View {
   public setCartState(counter: string, price: string): void {
     this.cartCounter!.getElement().textContent = counter;
     this.cartPrice!.getElement().textContent = price;
+  }
+
+  private cartClickHandler(router: Router): void {
+    router.navigate('cart');
   }
 
   public setLoginStatus(state: State): void {

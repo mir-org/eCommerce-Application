@@ -3,6 +3,7 @@ import { View } from '../../view';
 import { ProductAPI } from '../../../../api/product-api/product-api';
 import { Image, Attributes } from '../../../../api/product-api/product-api-types';
 import { CartAPI } from '../../../../api/cart-api/cart-api';
+import Observer from '../../../observer/observer';
 
 const CssClasses = {
   SECTION: 'product',
@@ -39,6 +40,8 @@ type PageInfo = {
 };
 
 class ProductView extends View {
+  private observer: Observer;
+
   private sliderMainItem: ElementCreator;
 
   private currentProductName: string;
@@ -55,8 +58,9 @@ class ProductView extends View {
 
   private buyButton: ElementCreator | null;
 
-  constructor(id: string) {
+  constructor(id: string, observer: Observer) {
     super('section', CssClasses.SECTION);
+    this.observer = observer;
     this.id = id;
     this.sliderMainItem = new ElementCreator('div', CssClasses.SLIDER_MAIN_ITEM, '');
     this.currentProductName = '';
@@ -298,11 +302,12 @@ class ProductView extends View {
 
   private async buyButtonClickHandler(e: MouseEvent): Promise<void> {
     console.log(e.target);
-    console.log(this.id);
-    const test = await CartAPI.addProductToCart(this.id);
-    console.log(test);
-    const cart = await CartAPI.getCart();
-    console.log(cart);
+    // console.log(this.id);
+    await CartAPI.addProductToCart(this.id);
+    // const cart = await CartAPI.getCart();
+    // console.log(cart);
+
+    this.observer.setCartState();
   }
 }
 export default ProductView;

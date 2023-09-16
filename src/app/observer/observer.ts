@@ -22,6 +22,8 @@ class Observer {
     const cartCounterValue = `${cart.lineItems.length}`;
     const cartPriceValue = `${cart.totalPrice.centAmount}`;
     this.header?.setCartState(cartCounterValue, cartPriceValue);
+
+    // console.log(cart);
   }
 }
 
