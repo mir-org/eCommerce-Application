@@ -173,4 +173,53 @@ export class CartAPI {
     await this.deleteCart(cartId);
     await this.createCart();
   }
+
+  public static async applyDiscountCode(code: string): Promise<Response> {
+    const cartId = (await this.createCart()).id;
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
+    const version = await this.getCartVersion(cartId);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version,
+        actions: [
+          {
+            action: 'addDiscountCode',
+            code,
+          },
+        ],
+      }),
+    });
+    return response;
+  }
+
+  public static async removeDiscountCode(codeId: string): Promise<Response> {
+    const cartId = (await this.createCart()).id;
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
+    const version = await this.getCartVersion(cartId);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version,
+        actions: [
+          {
+            action: 'removeDiscountCode',
+            discountCode: {
+              typeId: 'discount-code',
+              id: codeId,
+            },
+          },
+        ],
+      }),
+    });
+    return response;
+  }
 }
