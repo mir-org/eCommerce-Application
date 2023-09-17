@@ -129,6 +129,7 @@ class HeaderView extends View {
 
   private cartClickHandler(router: Router): void {
     router.navigate('cart');
+    this.headerLinkElements.forEach((elem) => elem.getHTMLElement().classList.remove('nav__item_selected'));
   }
 
   public setLoginStatus(state: State): void {
