@@ -56,7 +56,6 @@ class CartView extends View {
   }
 
   private createCartItem(lineItem: LineItem): void {
-    console.log(lineItem);
     const cartItem = new ElementCreator('div', CssClasses.ITEM);
     const itemImage = new ElementCreator('img', CssClasses.ITEM_IMAGE);
     itemImage.getElement().setAttribute('src', lineItem.variant.images[0].url);
@@ -121,7 +120,6 @@ class CartView extends View {
       const id = item?.dataset.id;
       const productIds = item.dataset.productId;
       if (id !== undefined) {
-        // alert(`Навигация :${id}`);
         this.router.navigate(`catalog/${productIds}`);
       }
     }
