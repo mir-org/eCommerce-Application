@@ -7,15 +7,18 @@ import { ElementCreator } from '../../../utils/element-creator';
 class CartView extends View {
   private lineItems: LineItem[] | null;
 
+  private cartList: ElementCreator;
+
   constructor() {
     super('section', CssClasses.CART);
+    this.cartList = new ElementCreator('div', CssClasses.LIST);
     this.configureView();
     this.lineItems = null;
   }
 
   private async configureView(): Promise<void> {
     await this.setLineItems();
-    this.createTitle();
+    this.createHeader();
 
     this.createCartList();
   }
@@ -25,21 +28,26 @@ class CartView extends View {
     this.lineItems = cart.lineItems;
   }
 
-  private createTitle(): void {
+  private createHeader(): void {
+    const header = new ElementCreator('h2', CssClasses.HEADER);
     const title = new ElementCreator('h2', CssClasses.TITLE, TEXT.TITLE);
-    this.viewElementCreator.addInnerElement(title);
+    header.addInnerElement(title);
+    const cartClearButton = new ElementCreator('button', CssClasses.CLEAR_CART_BUTTON, TEXT.CLEAR_CART_BUTTON);
+    cartClearButton.getElement().addEventListener('click', this.clearCartButtonClickHandler.bind(this));
+    header.addInnerElement(cartClearButton);
+
+    this.viewElementCreator.addInnerElement(header);
   }
 
   private createCartList(): void {
-    const cartList = new ElementCreator('div', CssClasses.LIST);
+    const list = this.cartList;
     this.lineItems?.forEach((item) => {
-      this.createCartItem(item, cartList);
+      this.createCartItem(item);
     });
-    this.viewElementCreator.addInnerElement(cartList);
+    this.viewElementCreator.addInnerElement(list);
   }
 
-  private createCartItem(lineItem: LineItem, cartList: ElementCreator): void {
-    // console.log(lineItem);
+  private createCartItem(lineItem: LineItem): void {
     const cartItem = new ElementCreator('div', CssClasses.ITEM);
     const itemImage = new ElementCreator('img', CssClasses.ITEM_IMAGE);
     itemImage.getElement().setAttribute('src', lineItem.variant.images[0].url);
@@ -52,9 +60,8 @@ class CartView extends View {
     cartItem.addInnerElement(itemPriceWrapper);
     const itemRemoveButton = new ElementCreator('button', CssClasses.ITEM_REMOVE_BUTTON, TEXT.ITEM_REMOVE_BUTTON);
     cartItem.addInnerElement(itemRemoveButton);
-
     cartItem.getElement().dataset.id = lineItem.id;
-    cartList.addInnerElement(cartItem);
+    this.cartList.addInnerElement(cartItem);
   }
 
   private creatItemMiddleWrapper(name: string, quantity: number): ElementCreator {
@@ -82,8 +89,14 @@ class CartView extends View {
       priceCreator.getElement().classList.add(CssClasses.ITEM_PRICE_DISABLE);
       itemPriceWrapper.addInnerElement(discountPriceCreator);
     }
-
     return itemPriceWrapper;
+  }
+
+  private async clearCartButtonClickHandler(): Promise<void> {
+    const cart = await CartAPI.clearCart();
+    this.cartList.getElement().innerHTML = '';
+    this.lineItems = cart.lineItems;
+    this.createCartList();
   }
 }
 

@@ -176,9 +176,13 @@ export class CartAPI {
     return data;
   }
 
-  public static async clearCart(): Promise<void> {
+  public static async clearCart(): Promise<Cart> {
     const cartId = (await this.createCart()).id;
-    await this.deleteCart(cartId);
-    await this.createCart();
+    const deleteCurrentCart = await this.deleteCart(cartId);
+    console.log(deleteCurrentCart, 'удаленная');
+    const data = await this.createCart();
+    console.log(data, 'новая');
+
+    return data;
   }
 }

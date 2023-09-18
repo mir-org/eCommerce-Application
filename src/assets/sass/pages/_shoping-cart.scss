@@ -2,9 +2,23 @@
   display: flex;
   flex-direction: column;
 
-  &__title {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
     margin: 0 0 20px 0;
+  }
+
+  &__title {
     font-size: 28px;
+  }
+
+  &__clear-button {
+    height: 32px;
+    padding: 0px 20px;
+    color: white;
+    background-color: #32a1ce;
   }
 
   &__list {

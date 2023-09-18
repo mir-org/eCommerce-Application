@@ -1,6 +1,8 @@
 export const CssClasses = {
   CART: 'shopping-cart',
+  HEADER: 'shopping-cart__header',
   TITLE: 'shopping-cart__title',
+  CLEAR_CART_BUTTON: 'shopping-cart__clear-button',
   LIST: 'shopping-cart__list',
   ITEM: ['shopping-cart__item', 'shopping-cart-item'],
   ITEM_IMAGE: 'shopping-cart-item__img',
@@ -19,7 +21,8 @@ export const CssClasses = {
 
 export const TEXT = {
   TITLE: 'Shopping Cart',
+  CLEAR_CART_BUTTON: 'Clear Cart',
+  ITEM_REMOVE_BUTTON: '✖',
   COUNT_MINUS_BUTTON: ` - `,
   COUNT_PLUS_BUTTON: ` + `,
-  ITEM_REMOVE_BUTTON: '✖',
 };
