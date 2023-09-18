@@ -19,8 +19,9 @@ class Observer {
 
   public async setCartState(): Promise<void> {
     const cart = await CartAPI.getCart();
-    const cartCounterValue = `${cart.lineItems.length}`;
-    const cartPriceValue = `${cart.totalPrice.centAmount}`;
+    const quantity = cart.lineItems.reduce((acc, elem) => elem.quantity + acc, 0);
+    const cartCounterValue = `${quantity}`;
+    const cartPriceValue = `${cart.totalPrice.centAmount / 100} $`;
     this.header?.setCartState(cartCounterValue, cartPriceValue);
 
     // console.log(cart);
