@@ -45,6 +45,7 @@ export interface LineItem {
   quantity: number;
   variant: MasterVariant;
   price: LineItemPrice;
+  productId: string;
 }
 
 interface LineItemPrice {

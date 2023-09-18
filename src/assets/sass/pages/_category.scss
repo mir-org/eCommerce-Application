@@ -85,6 +85,12 @@
             background-color: darken($buy-button-color, 10%);
           }
         }
+        &__in-cart {
+          background-color: blue;
+          &:hover {
+            background-color: darken(blue, 10%);
+          }
+        }
         &__description {
           overflow: auto;
         }

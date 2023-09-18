@@ -65,7 +65,7 @@ class Router {
   public redirectToNotFoundPage(): void {
     const notFoundPage = this.routes.find((item) => item.path === Pages.NOT_FOUND);
     if (notFoundPage) {
-      this.navigate(notFoundPage.path);
+      // this.navigate(notFoundPage.path);
     }
   }
 }

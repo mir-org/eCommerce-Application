@@ -97,7 +97,7 @@ class App {
         path: `${Pages.PROCESSORS}`,
         callback: async () => {
           const { default: ProcessorsView } = await import('./view/main/catalog/categories/processors/processors-view');
-          this.setContent(Pages.CATALOG, new ProcessorsView(this.router));
+          this.setContent(Pages.CATALOG, new ProcessorsView(this.router, this.observer));
         },
       },
       {
@@ -106,7 +106,7 @@ class App {
           const { default: GraphicCardsView } = await import(
             './view/main/catalog/categories/graphic-cards/graphic-cards-view'
           );
-          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router));
+          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router, this.observer));
         },
       },
       {

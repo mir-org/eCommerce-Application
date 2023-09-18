@@ -182,7 +182,13 @@ export class CartAPI {
     console.log(deleteCurrentCart, 'удаленная');
     const data = await this.createCart();
     console.log(data, 'новая');
-
     return data;
+  }
+
+  public static async itemIsInCart(id: string): Promise<boolean> {
+    const data = await CartAPI.getCart();
+    const elementIds = data.lineItems.map((obj) => obj.productId);
+    if (elementIds.includes(id)) return true;
+    return false;
   }
 }
