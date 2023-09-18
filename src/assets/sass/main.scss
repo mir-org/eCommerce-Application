@@ -30,6 +30,7 @@
 @import "pages/category";
 @import "pages/product";
 @import "pages/shoping-cart";
+@import "pages/about-us";
 
 @import "themes/theme";
 @import "themes/admin";
@@ -37,11 +38,11 @@
 html,
 body {
   height: 100%;
+  font-family: sans-serif;
 }
 
 .container {
   max-width: 1200px;
-  margin: 0px auto;
 }
 
 .wrapper {
