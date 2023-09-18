@@ -56,6 +56,7 @@ class CartView extends View {
   }
 
   private createCartItem(lineItem: LineItem): void {
+    console.log(lineItem);
     const cartItem = new ElementCreator('div', CssClasses.ITEM);
     const itemImage = new ElementCreator('img', CssClasses.ITEM_IMAGE);
     itemImage.getElement().setAttribute('src', lineItem.variant.images[0].url);
@@ -69,6 +70,8 @@ class CartView extends View {
     const itemRemoveButton = new ElementCreator('button', CssClasses.ITEM_REMOVE_BUTTON, TEXT.ITEM_REMOVE_BUTTON);
     cartItem.addInnerElement(itemRemoveButton);
     cartItem.getElement().dataset.id = lineItem.id;
+    cartItem.getElement().dataset.productId = lineItem.productId;
+
     this.cartList.addInnerElement(cartItem);
   }
 
@@ -110,6 +113,19 @@ class CartView extends View {
 
   private async cartListClickHandler(e: MouseEvent): Promise<void> {
     const target = e.target as HTMLElement;
+    if (
+      target.classList.contains('shopping-cart-item__img') ||
+      target.classList.contains('shopping-cart-item__title')
+    ) {
+      const item = target.closest('.shopping-cart-item') as HTMLElement;
+      const id = item?.dataset.id;
+      const productIds = item.dataset.productId;
+      if (id !== undefined) {
+        // alert(`Навигация :${id}`);
+        this.router.navigate(`catalog/${productIds}`);
+      }
+    }
+
     if (target.classList.contains('shopping-cart-item__remove-button')) {
       const item = target.closest('.shopping-cart-item') as HTMLElement;
       const id = item?.dataset.id as string;
