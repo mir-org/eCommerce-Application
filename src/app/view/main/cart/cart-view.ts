@@ -3,14 +3,18 @@ import { CssClasses, TEXT } from './cart-view-types';
 import { CartAPI } from '../../../../api/cart-api/cart-api';
 import { LineItem } from '../../../../api/cart-api/cart-api-types';
 import { ElementCreator } from '../../../utils/element-creator';
+import Observer from '../../../observer/observer';
 
 class CartView extends View {
   private lineItems: LineItem[] | null;
 
   private cartList: ElementCreator;
 
-  constructor() {
+  private observer: Observer;
+
+  constructor(observer: Observer) {
     super('section', CssClasses.CART);
+    this.observer = observer;
     this.cartList = new ElementCreator('div', CssClasses.LIST);
     this.configureView();
     this.lineItems = null;
@@ -96,6 +100,7 @@ class CartView extends View {
     const cart = await CartAPI.clearCart();
     this.cartList.getElement().innerHTML = '';
     this.lineItems = cart.lineItems;
+    this.observer.setCartState(cart);
     this.createCartList();
   }
 }

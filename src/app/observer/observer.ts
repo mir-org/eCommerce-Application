@@ -22,6 +22,7 @@ class Observer {
     let cart: Cart;
     if (!data) {
       cart = await CartAPI.getCart();
+      console.log('Новый запрос');
     } else {
       cart = data;
     }

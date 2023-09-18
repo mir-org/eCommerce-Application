@@ -136,7 +136,7 @@ class App {
         path: `${Pages.CART}`,
         callback: async () => {
           const { default: CartView } = await import('./view/main/cart/cart-view');
-          this.setContent(Pages.CART, new CartView());
+          this.setContent(Pages.CART, new CartView(this.observer));
         },
       },
     ];
