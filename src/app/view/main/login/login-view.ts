@@ -8,7 +8,7 @@ import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { View } from '../../view';
 import { CssClasses, INITIAL_VALUE, KEY_FOR_SAVE, TEXT, TYPE } from './login-view-types';
 import { Validator } from '../../../utils/validator';
-import Observer from '../../../observer/observer';
+import { Observer } from '../../../observer/observer';
 
 class LoginView extends View {
   private form: ElementCreator | null;

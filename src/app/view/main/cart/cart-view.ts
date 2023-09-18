@@ -3,7 +3,7 @@ import { CssClasses, TEXT } from './cart-view-types';
 import { CartAPI } from '../../../../api/cart-api/cart-api';
 import { Cart, LineItem } from '../../../../api/cart-api/cart-api-types';
 import { ElementCreator } from '../../../utils/element-creator';
-import Observer from '../../../observer/observer';
+import { Observer } from '../../../observer/observer';
 import { Router } from '../../../router/router';
 
 class CartView extends View {

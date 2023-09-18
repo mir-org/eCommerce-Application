@@ -7,7 +7,7 @@ import { Pages, ID } from './router/pages';
 import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
-import Observer from './observer/observer';
+import { Observer } from './observer/observer';
 // import { FiltersView } from './view/main/catalog/filters/filters-view';
 
 class App {
@@ -29,7 +29,7 @@ class App {
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes, state);
-    this.observer = new Observer();
+    this.observer = new Observer(state);
     this.createView(state);
   }
 
