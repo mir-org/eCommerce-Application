@@ -8,7 +8,7 @@ import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { Validator } from '../../../utils/validator';
 import { View } from '../../view';
 import { INITIAL_VALUE, SIGN_UP_CLASSES, SIGN_UP_TEXT, TYPE, KEY_FOR_SAVE } from './registration-view-types';
-import Observer from '../../../observer/observer';
+import { Observer } from '../../../observer/observer';
 import { createPopupWithText } from '../../../utils/create-popup-with-text';
 
 class RegistrationView extends View {

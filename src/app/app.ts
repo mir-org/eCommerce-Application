@@ -7,7 +7,8 @@ import { Pages, ID } from './router/pages';
 import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
-import Observer from './observer/observer';
+import { Observer } from './observer/observer';
+
 
 class App {
   private router: Router;
@@ -25,7 +26,7 @@ class App {
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes, state);
-    this.observer = new Observer();
+    this.observer = new Observer(state);
     this.createView(state);
     window.addEventListener('not-found', async () => {
       const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
@@ -147,7 +148,7 @@ class App {
         path: `${Pages.CART}`,
         callback: async () => {
           const { default: CartView } = await import('./view/main/cart/cart-view');
-          this.setContent(Pages.CART, new CartView(this.observer));
+          this.setContent(Pages.CART, new CartView(this.observer, this.router));
           document.title = 'Cart';
         },
       },

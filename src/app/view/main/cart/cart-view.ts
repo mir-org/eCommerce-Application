@@ -1,9 +1,10 @@
 import { View } from '../../view';
 import { CssClasses, TEXT } from './cart-view-types';
 import { CartAPI } from '../../../../api/cart-api/cart-api';
-import { LineItem } from '../../../../api/cart-api/cart-api-types';
+import { Cart, LineItem } from '../../../../api/cart-api/cart-api-types';
 import { ElementCreator } from '../../../utils/element-creator';
-import Observer from '../../../observer/observer';
+import { Observer } from '../../../observer/observer';
+import { Router } from '../../../router/router';
 
 class CartView extends View {
   private lineItems: LineItem[] | null;
@@ -12,8 +13,11 @@ class CartView extends View {
 
   private observer: Observer;
 
-  constructor(observer: Observer) {
+  private router: Router;
+
+  constructor(observer: Observer, router: Router) {
     super('section', CssClasses.CART);
+    this.router = router;
     this.observer = observer;
     this.cartList = new ElementCreator('div', CssClasses.LIST);
     this.configureView();
@@ -23,8 +27,8 @@ class CartView extends View {
   private async configureView(): Promise<void> {
     await this.setLineItems();
     this.createHeader();
-
     this.createCartList();
+    this.cartList.getElement().addEventListener('click', this.cartListClickHandler.bind(this));
   }
 
   private async setLineItems(): Promise<void> {
@@ -65,6 +69,7 @@ class CartView extends View {
     const itemRemoveButton = new ElementCreator('button', CssClasses.ITEM_REMOVE_BUTTON, TEXT.ITEM_REMOVE_BUTTON);
     cartItem.addInnerElement(itemRemoveButton);
     cartItem.getElement().dataset.id = lineItem.id;
+    cartItem.getElement().dataset.productId = lineItem.productId;
     this.cartList.addInnerElement(cartItem);
   }
 
@@ -102,6 +107,70 @@ class CartView extends View {
     this.lineItems = cart.lineItems;
     this.observer.setCartState(cart);
     this.createCartList();
+  }
+
+  private async cartListClickHandler(e: MouseEvent): Promise<void> {
+    const target = e.target as HTMLElement;
+    if (
+      target.classList.contains('shopping-cart-item__img') ||
+      target.classList.contains('shopping-cart-item__title')
+    ) {
+      const item = target.closest('.shopping-cart-item') as HTMLElement;
+      const id = item?.dataset.id;
+      const productIds = item.dataset.productId;
+      if (id !== undefined) {
+        this.router.navigate(`catalog/${productIds}`);
+      }
+    }
+
+    if (target.classList.contains('shopping-cart-item__remove-button')) {
+      const item = target.closest('.shopping-cart-item') as HTMLElement;
+      const id = item?.dataset.id as string;
+      await this.removeItem(id, item);
+    }
+    if (target.classList.contains('count__button_minus')) {
+      const item = target.closest('.shopping-cart-item') as HTMLElement;
+      const id = item?.dataset.id as string;
+      const count = target.closest('.shopping-cart-item__count') as HTMLElement;
+      const countValueElement = count.children[1];
+      if (Number(countValueElement.innerHTML) <= 1) {
+        this.removeItem(id, item);
+        return;
+      }
+      await this.decrProductQuant(id, countValueElement);
+    }
+    if (target.classList.contains('count__button_plus')) {
+      const item = target.closest('.shopping-cart-item') as HTMLElement;
+      const id = item?.dataset.id as string;
+      const count = target.closest('.shopping-cart-item__count') as HTMLElement;
+      const countValueElement = count.children[1];
+      await this.incrProductQuant(id, countValueElement);
+    }
+  }
+
+  private async removeItem(id: string, item: Element): Promise<Cart> {
+    const cart = await CartAPI.removeProduct(id);
+    this.observer.setCartState(cart);
+    item.remove();
+    return cart;
+  }
+
+  private async decrProductQuant(id: string, countValueElement: Element): Promise<Cart> {
+    const test = countValueElement;
+    const curentValue = Number(countValueElement.innerHTML);
+    const cart = await CartAPI.decrProductQuant(id, curentValue);
+    test.innerHTML = `${curentValue - 1}`;
+    this.observer.setCartState(cart);
+    return cart;
+  }
+
+  private async incrProductQuant(id: string, countValueElement: Element): Promise<Cart> {
+    const test = countValueElement;
+    const curentValue = Number(countValueElement.innerHTML);
+    const cart = await CartAPI.incrProductQuant(id, curentValue);
+    test.innerHTML = `${curentValue + 1}`;
+    this.observer.setCartState(cart);
+    return cart;
   }
 }
 

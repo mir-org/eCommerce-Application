@@ -37,6 +37,7 @@ export interface Cart {
 
 export interface LineItem {
   id: string;
+  productId: string;
   name: {
     en: string;
   };
