@@ -174,12 +174,14 @@ class ProcessorsView extends View {
     const cardImg = new ElementCreator('img', 'product-card__image', '');
     const cardPrice = new ElementCreator('div', 'product-card__price', `$${price}`);
     const cardDiscount = new ElementCreator('div', 'product-card__discount', `$${discount}`);
+    const cardAddToCart = new ElementCreator('button', 'product-card__buy', `Add to cart`);
     const cardDescription = new ElementCreator('div', 'product-card__description', `${description}`);
     cardImg.getElement().setAttribute('src', `${image}`);
     card.addInnerElement(cardTitle);
     card.addInnerElement(cardImg);
     card.addInnerElement(cardPrice);
     card.addInnerElement(cardDiscount);
+    card.addInnerElement(cardAddToCart);
     card.addInnerElement(cardDescription);
     card.getElement().dataset.id = id;
     return card;
