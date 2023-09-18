@@ -70,7 +70,6 @@ class CartView extends View {
     cartItem.addInnerElement(itemRemoveButton);
     cartItem.getElement().dataset.id = lineItem.id;
     cartItem.getElement().dataset.productId = lineItem.productId;
-
     this.cartList.addInnerElement(cartItem);
   }
 

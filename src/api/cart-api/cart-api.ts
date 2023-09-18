@@ -182,7 +182,62 @@ export class CartAPI {
     console.log(deleteCurrentCart, 'удаленная');
     const data = await this.createCart();
     console.log(data, 'новая');
-
     return data;
+  }
+
+  public static async itemIsInCart(id: string): Promise<boolean> {
+    const data = await CartAPI.getCart();
+    const elementIds = data.lineItems.map((obj) => obj.productId);
+    if (elementIds.includes(id)) return true;
+    return false;
+  }
+
+  public static async applyDiscountCode(code: string): Promise<Response> {
+    const cartId = (await this.createCart()).id;
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
+    const version = await this.getCartVersion(cartId);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version,
+        actions: [
+          {
+            action: 'addDiscountCode',
+            code,
+          },
+        ],
+      }),
+    });
+    return response;
+  }
+
+  public static async removeDiscountCode(codeId: string): Promise<Response> {
+    const cartId = (await this.createCart()).id;
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
+    const version = await this.getCartVersion(cartId);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version,
+        actions: [
+          {
+            action: 'removeDiscountCode',
+            discountCode: {
+              typeId: 'discount-code',
+              id: codeId,
+            },
+          },
+        ],
+      }),
+    });
+    return response;
   }
 }

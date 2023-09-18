@@ -1,0 +1,132 @@
+.about-us {
+  max-width: 1200px;
+  padding: 20px;
+
+  &__text-block {
+    font-size: 1.4rem;
+    margin-bottom: 50px;
+  }
+  &__text-block-title {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  &__text-block-text {
+    text-align: justify;
+    text-indent: 40px;
+  }
+  &__title-link {
+    width: 80px;
+    margin-left: 5px;
+  }
+}
+
+.devs-block {
+  margin-bottom: 50px;
+  &__content {
+    display: flex;
+    gap: 20px;
+  }
+
+  @media (max-width: 970px) {
+    .devs-block {
+      &__content {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.dev-block {
+  flex: 0 1 33.333%;
+  font-size: 1rem;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  @media (max-width: 970px) {
+    max-width: 500px;
+    margin: 0 0 15px 0;
+  }
+
+  &__top-line {
+    position: relative;
+    flex: 0 1 400px;
+  }
+
+  &__photo-wrapper {
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  &__photo {
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__bottom-line {
+    flex: 0 1 30%;
+    padding: 15px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__name-pos-wrap {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 5px 10px;
+    background-color: rgba($color: #fff, $alpha: 0.8);
+  }
+
+  &__dev-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  &__dev-position {
+    font-size: 1.2rem;
+  }
+  &__bio-block {
+    margin-bottom: 15px;
+  }
+  &__bio-text {
+    text-indent: 15px;
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+  &__contrib-gh-link-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &__contrib-block {
+    margin: 0 20px 0 0;
+  }
+  &__contrib-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  &__contrib-text {
+    padding: 0 0 0 15px;
+  }
+  &__gh-link {
+    flex: 0 1 50px;
+  }
+  &__gh-logo {
+    width: 100%;
+  }
+}
