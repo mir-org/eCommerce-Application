@@ -128,7 +128,7 @@ class App {
         path: `${Pages.ABOUT_US}`,
         callback: async () => {
           const { default: AboutView } = await import('./view/main/about-us/about-us-view');
-          this.setContent(Pages.ABOUT_US, new AboutView(this.router));
+          this.setContent(Pages.ABOUT_US, new AboutView());
         },
       },
       {
