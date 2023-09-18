@@ -12,7 +12,7 @@ import {
 import { clearElement } from '../../../../../utils/clear-element';
 import { FiltersView } from './filters/filters-view';
 import { BreadCrumbsCreator } from '../../../../../utils/bread-crumbs-creator';
-import Observer from '../../../../../observer/observer';
+import { Observer } from '../../../../../observer/observer';
 import { CartAPI } from '../../../../../../api/cart-api/cart-api';
 
 class GraphicCardsView extends View {

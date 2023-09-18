@@ -9,7 +9,6 @@ import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
 import { Observer } from './observer/observer';
 
-
 class App {
   private router: Router;
 

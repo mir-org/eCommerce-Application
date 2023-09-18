@@ -61,7 +61,7 @@ export const DEVELOPERS_DATA = [
     GITHUB_LINK: 'https://github.com/GinezisNWD',
   },
   {
-    IMG_LINK: './assets/images/mira-photo.webp',
+    IMG_LINK: './assets/images/mira-photo.jpg',
     FIRST_NAME: 'Miroslav',
     POSITION: 'Frontend developer',
     SHORT_BIO:
