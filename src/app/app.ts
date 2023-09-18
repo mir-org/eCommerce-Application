@@ -8,14 +8,11 @@ import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
 import Observer from './observer/observer';
-// import { FiltersView } from './view/main/catalog/filters/filters-view';
 
 class App {
   private router: Router;
 
   private header: HeaderView | null;
-
-  // private filter: FiltersView | null;
 
   private main: MainView | null;
 
@@ -24,13 +21,16 @@ class App {
   constructor() {
     AuthAPI.setAccessToken();
     this.header = null;
-    // this.filter = null;
     this.main = null;
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes, state);
     this.observer = new Observer();
     this.createView(state);
+    window.addEventListener('not-found', async () => {
+      const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
+      this.main?.setContent(new NotFoundView(this.router));
+    });
   }
 
   private createView(state: State): void {

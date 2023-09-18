@@ -49,7 +49,10 @@ class Router {
     const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/${ID}`;
     const route = this.routes.find((item) => item.path === pathForFind);
     if (!route) {
-      this.redirectToNotFoundPage();
+      // this.redirectToNotFoundPage();
+      // return;
+      const notFoundEvent = new CustomEvent('not-found');
+      window.dispatchEvent(notFoundEvent);
       return;
     }
     route.callback(requestParams.resource);
@@ -62,12 +65,12 @@ class Router {
     }
   }
 
-  public redirectToNotFoundPage(): void {
-    const notFoundPage = this.routes.find((item) => item.path === Pages.NOT_FOUND);
-    if (notFoundPage) {
-      // this.navigate(notFoundPage.path);
-    }
-  }
+  // public redirectToNotFoundPage(): void {
+  //   const notFoundPage = this.routes.find((item) => item.path === Pages.NOT_FOUND);
+  //   if (notFoundPage) {
+  //     this.navigate(notFoundPage.path);
+  //   }
+  // }
 }
 
 export { Route, Router };
