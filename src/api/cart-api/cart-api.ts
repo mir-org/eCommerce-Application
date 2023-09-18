@@ -62,11 +62,11 @@ export class CartAPI {
     return data.version;
   }
 
-  public static async addProductToCart(productId: string): Promise<void> {
+  public static async addProductToCart(productId: string): Promise<Cart> {
     const cartId = (await this.createCart()).id;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
     const version = await this.getCartVersion(cartId);
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -84,13 +84,15 @@ export class CartAPI {
         ],
       }),
     });
+    const data: Cart = await response.json();
+    return data;
   }
 
-  public static async incrProductQuant(productId: string, productQuant: number): Promise<void> {
+  public static async incrProductQuant(productId: string, productQuant: number): Promise<Cart> {
     const cartId = (await this.createCart()).id;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
     const version = await this.getCartVersion(cartId);
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -107,13 +109,15 @@ export class CartAPI {
         ],
       }),
     });
+    const data: Cart = await response.json();
+    return data;
   }
 
-  public static async decrProductQuant(productId: string, productQuant: number): Promise<void> {
+  public static async decrProductQuant(productId: string, productQuant: number): Promise<Cart> {
     const cartId = (await this.createCart()).id;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
     const version = await this.getCartVersion(cartId);
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -130,13 +134,15 @@ export class CartAPI {
         ],
       }),
     });
+    const data: Cart = await response.json();
+    return data;
   }
 
-  public static async removeProduct(productId: string): Promise<void> {
+  public static async removeProduct(productId: string): Promise<Cart> {
     const cartId = (await this.createCart()).id;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
     const version = await this.getCartVersion(cartId);
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
@@ -153,6 +159,8 @@ export class CartAPI {
         ],
       }),
     });
+    const data: Cart = await response.json();
+    return data;
   }
 
   private static async deleteCart(cartId: string): Promise<Cart> {

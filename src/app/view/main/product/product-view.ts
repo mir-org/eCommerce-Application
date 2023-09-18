@@ -300,14 +300,9 @@ class ProductView extends View {
     document.body.lastElementChild?.remove();
   }
 
-  private async buyButtonClickHandler(e: MouseEvent): Promise<void> {
-    console.log(e.target);
-    // console.log(this.id);
-    await CartAPI.addProductToCart(this.id);
-    // const cart = await CartAPI.getCart();
-    // console.log(cart);
-
-    this.observer.setCartState();
+  private async buyButtonClickHandler(): Promise<void> {
+    const cart = await CartAPI.addProductToCart(this.id);
+    this.observer.setCartState(cart);
   }
 }
 export default ProductView;

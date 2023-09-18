@@ -1,6 +1,7 @@
 import State from '../state/state';
 import HeaderView from '../view/header/header-view';
 import { CartAPI } from '../../api/cart-api/cart-api';
+import { Cart } from '../../api/cart-api/cart-api-types';
 
 class Observer {
   public header: HeaderView | null;
@@ -17,14 +18,17 @@ class Observer {
     this.header?.setLoginStatus(state);
   }
 
-  public async setCartState(): Promise<void> {
-    const cart = await CartAPI.getCart();
+  public async setCartState(data?: Cart): Promise<void> {
+    let cart: Cart;
+    if (!data) {
+      cart = await CartAPI.getCart();
+    } else {
+      cart = data;
+    }
     const quantity = cart.lineItems.reduce((acc, elem) => elem.quantity + acc, 0);
     const cartCounterValue = `${quantity}`;
     const cartPriceValue = `${cart.totalPrice.centAmount / 100} $`;
     this.header?.setCartState(cartCounterValue, cartPriceValue);
-
-    // console.log(cart);
   }
 }
 
