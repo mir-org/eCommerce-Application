@@ -8,14 +8,11 @@ import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
 import Observer from './observer/observer';
-// import { FiltersView } from './view/main/catalog/filters/filters-view';
 
 class App {
   private router: Router;
 
   private header: HeaderView | null;
-
-  // private filter: FiltersView | null;
 
   private main: MainView | null;
 
@@ -24,19 +21,23 @@ class App {
   constructor() {
     AuthAPI.setAccessToken();
     this.header = null;
-    // this.filter = null;
     this.main = null;
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes, state);
     this.observer = new Observer();
     this.createView(state);
+    window.addEventListener('not-found', async () => {
+      const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
+      this.main?.setContent(new NotFoundView(this.router));
+    });
   }
 
   private createView(state: State): void {
     const wrapperView = new WrapperView();
     this.header = new HeaderView(this.router, state);
     this.observer.setHeader(this.header);
+    this.observer.setCartState();
     this.main = new MainView();
     const footer = new FooterView();
 
@@ -96,7 +97,7 @@ class App {
         path: `${Pages.PROCESSORS}`,
         callback: async () => {
           const { default: ProcessorsView } = await import('./view/main/catalog/categories/processors/processors-view');
-          this.setContent(Pages.CATALOG, new ProcessorsView(this.router));
+          this.setContent(Pages.CATALOG, new ProcessorsView(this.router, this.observer));
         },
       },
       {
@@ -105,7 +106,7 @@ class App {
           const { default: GraphicCardsView } = await import(
             './view/main/catalog/categories/graphic-cards/graphic-cards-view'
           );
-          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router));
+          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router, this.observer));
         },
       },
       {
@@ -113,7 +114,7 @@ class App {
         callback: async (id) => {
           const { default: ProductView } = await import('./view/main/product/product-view');
           if (id !== undefined) {
-            this.setContent(Pages.CATALOG, new ProductView(id));
+            this.setContent(Pages.CATALOG, new ProductView(id, this.observer));
           }
         },
       },
@@ -135,7 +136,7 @@ class App {
         path: `${Pages.CART}`,
         callback: async () => {
           const { default: CartView } = await import('./view/main/cart/cart-view');
-          this.setContent(Pages.CART, new CartView());
+          this.setContent(Pages.CART, new CartView(this.observer));
         },
       },
     ];

@@ -479,7 +479,7 @@ class RegistrationView extends View {
           const response = await CustomerAPI.registerCustomer(formData);
           if (response === 201) {
             this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
-            this.observer.userIsLoggedIn(this.state);
+            this.observer.setLoginStatus(this.state);
             this.router.navigate(Pages.INDEX);
             await CustomerAPI.getCustomerInfo();
             createPopupWithText('Registration successful, automatically logged in!');

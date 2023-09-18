@@ -2,6 +2,8 @@ import { ElementCreator } from '../../../utils/element-creator';
 import { View } from '../../view';
 import { ProductAPI } from '../../../../api/product-api/product-api';
 import { Image, Attributes } from '../../../../api/product-api/product-api-types';
+import { CartAPI } from '../../../../api/cart-api/cart-api';
+import Observer from '../../../observer/observer';
 
 const CssClasses = {
   SECTION: 'product',
@@ -38,6 +40,8 @@ type PageInfo = {
 };
 
 class ProductView extends View {
+  private observer: Observer;
+
   private sliderMainItem: ElementCreator;
 
   private currentProductName: string;
@@ -50,11 +54,18 @@ class ProductView extends View {
 
   private papaSliderNav: ElementCreator | null;
 
-  constructor(id: string) {
+  private id: string;
+
+  private buyButton: ElementCreator | null;
+
+  constructor(id: string, observer: Observer) {
     super('section', CssClasses.SECTION);
+    this.observer = observer;
+    this.id = id;
     this.sliderMainItem = new ElementCreator('div', CssClasses.SLIDER_MAIN_ITEM, '');
     this.currentProductName = '';
     this.picturesPaths = [];
+    this.buyButton = null;
     this.curentIndex = null;
     this.papaSliderMainItem = null;
     this.papaSliderNav = null;
@@ -130,8 +141,9 @@ class ProductView extends View {
       buy.addInnerElement(discountPriceCreator);
     }
 
-    const buyButton = new ElementCreator('button', CssClasses.BUY_BUTTON, 'Add to cart');
-    buy.addInnerElement(buyButton);
+    this.buyButton = new ElementCreator('button', CssClasses.BUY_BUTTON, 'Add to cart');
+    this.buyButton.getElement().addEventListener('click', this.buyButtonClickHandler.bind(this));
+    buy.addInnerElement(this.buyButton);
     return buy;
   }
 
@@ -286,6 +298,11 @@ class ProductView extends View {
   private papaSliderCloseBtnClickHandler(): void {
     document.body.classList.remove('scroll-lock');
     document.body.lastElementChild?.remove();
+  }
+
+  private async buyButtonClickHandler(): Promise<void> {
+    const cart = await CartAPI.addProductToCart(this.id);
+    this.observer.setCartState(cart);
   }
 }
 export default ProductView;
