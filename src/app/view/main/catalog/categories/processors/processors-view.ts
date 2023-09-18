@@ -13,7 +13,7 @@ import { clearElement } from '../../../../../utils/clear-element';
 import { FiltersView } from './filters/filters-view';
 import { BreadCrumbsCreator } from '../../../../../utils/bread-crumbs-creator';
 import { CartAPI } from '../../../../../../api/cart-api/cart-api';
-import Observer from '../../../../../observer/observer';
+import { Observer } from '../../../../../observer/observer';
 
 class ProcessorsView extends View {
   private content: ElementCreator | null;

@@ -177,11 +177,13 @@ export class CartAPI {
   }
 
   public static async clearCart(): Promise<Cart> {
-    const cartId = (await this.createCart()).id;
-    const deleteCurrentCart = await this.deleteCart(cartId);
-    console.log(deleteCurrentCart, 'удаленная');
+    const cart = await this.getCart();
+    for (let i = 0; i < cart.lineItems.length; i += 1) {
+      const lineItem = cart.lineItems[i];
+      // eslint-disable-next-line no-await-in-loop
+      await this.removeProduct(lineItem.id);
+    }
     const data = await this.createCart();
-    console.log(data, 'новая');
     return data;
   }
 
