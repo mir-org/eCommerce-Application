@@ -93,7 +93,6 @@ class CartView extends View {
       [CART_CLASSES.PROMO_CODE_BUTTON, 'primary-button'],
       CART_TEXT.PROMO_CODE_REMOVE_BUTTON
     );
-    const infoBlock = new ElementCreator('div', CART_CLASSES.PROMO_CODE_INFO_BLOCK, CART_TEXT.PROMO_CODE_INFO_BLOCK);
     addPromoCodeBtn.getElement().addEventListener('click', async () => {
       try {
         const response = await CartAPI.applyDiscountCode(input.getInputElement().value);
@@ -123,7 +122,6 @@ class CartView extends View {
       this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
       this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     });
-    promoCodesWrapper.addInnerElement(infoBlock.getElement());
     promoCodesWrapper.addInnerElement(input.getElement());
     promoCodesWrapper.addInnerElement(addPromoCodeBtn.getElement());
     promoCodesWrapper.addInnerElement(removePromoCodeBtn.getElement());
