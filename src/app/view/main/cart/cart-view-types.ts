@@ -1,9 +1,12 @@
-export const CssClasses = {
+export const CART_CLASSES = {
   CART: 'shopping-cart',
   HEADER: 'shopping-cart__header',
   TITLE: 'shopping-cart__title',
   CLEAR_CART_BUTTON: 'shopping-cart__clear-button',
   LIST: 'shopping-cart__list',
+  BLOCK: 'shopping-cart__block',
+  BLOCK_TEXT: 'shopping-cart__block-text',
+  BLOCK_BUTTON: 'shopping-cart__block-button',
   ITEM: ['shopping-cart__item', 'shopping-cart-item'],
   ITEM_IMAGE: 'shopping-cart-item__img',
   ITEM_MIDDLE_WRAPPER: 'shopping-cart-item__middle-wrapper',
@@ -17,12 +20,21 @@ export const CssClasses = {
   ITEM_DISCOUNT_PRICE: 'shopping-cart-item__discount-price',
   ITEM_PRICE_DISABLE: 'shopping-cart-item__price_disable',
   ITEM_REMOVE_BUTTON: 'shopping-cart-item__remove-button',
+  PROMO_CODE_WRAPPER: 'shopping-cart-item__promo-codes-wrapper',
+  PROMO_CODE: 'promo-code',
+  PROMO_CODE_BUTTON: 'promo-code-submit',
+  PROMO_CODE_INFO_BLOCK: 'promo-code-info',
+  TOTAL_PRICE: 'shopping-cart__total-price',
 };
 
-export const TEXT = {
+export const CART_TEXT = {
   TITLE: 'Shopping Cart',
   CLEAR_CART_BUTTON: 'Clear Cart',
   ITEM_REMOVE_BUTTON: '✖',
   COUNT_MINUS_BUTTON: ` - `,
   COUNT_PLUS_BUTTON: ` + `,
+  PROMO_CODE: 'Promo code',
+  PROMO_CODE_ADD_BUTTON: 'Add promo code',
+  PROMO_CODE_REMOVE_BUTTON: 'Remove promo code',
+  PROMO_CODE_INFO_BLOCK: 'Try a GRAYSEPTEMBER promo code for 17% discount!',
 };

@@ -584,7 +584,7 @@ class RegistrationView extends View {
       shippingAddresses: [0],
       billingAddresses: [1],
     };
-    console.log(formData);
+    // console.log(formData);
     if (this.defaultShippingAddressInput?.checked) {
       formData.defaultShippingAddress = 0;
     }

@@ -403,7 +403,7 @@ export class FiltersView extends View {
     const brandsString = [...this.brands].map((brand) => `"${brand.value}"`).join(',');
     const socketsString = [...this.sockets].map((socket) => `"${socket.value}"`).join(',');
     const coresAmountString = [...this.coresAmount].map((coresAmount) => `"${coresAmount.value}"`).join(',');
-    console.log(coresAmountString);
+    // console.log(coresAmountString);
     await ProductAPI.getFilteredProducts({
       categoryId: CATEGORY_ID,
       search: searchValue,

@@ -194,6 +194,17 @@ export class CartAPI {
     return false;
   }
 
+  public static async getDiscountCodes(): Promise<Response> {
+    const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/discount-codes`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN_STORAGE_KEY)}`,
+      },
+    });
+    return response;
+  }
+
   public static async applyDiscountCode(code: string): Promise<Response> {
     const cartId = (await this.createCart()).id;
     const url = `${CTP_API_URL}/${CTP_PROJECT_KEY}/me/carts/${cartId}`;
