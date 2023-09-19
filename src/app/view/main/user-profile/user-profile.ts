@@ -309,11 +309,11 @@ class UserProfileView extends View {
     addresses?.forEach((address) => {
       this.addressesWrapper?.addInnerElement(this.createAddress(address));
     });
-    console.log(addresses);
-    console.log(this.data?.shippingAddressIds);
-    console.log(this.data?.billingAddressIds);
-    console.log(this.data?.defaultBillingAddressId);
-    console.log(this.data?.defaultShippingAddressId);
+    // console.log(addresses);
+    // console.log(this.data?.shippingAddressIds);
+    // console.log(this.data?.billingAddressIds);
+    // console.log(this.data?.defaultBillingAddressId);
+    // console.log(this.data?.defaultShippingAddressId);
   }
 
   private createAddress(address: Address): ElementCreator {
@@ -487,7 +487,7 @@ class UserProfileView extends View {
       '.primary-input'
     ) as NodeListOf<HTMLInputElement>;
     const newInfo = inputs[0]?.value ?? '';
-    console.log(newInfo);
+    // console.log(newInfo);
     const current = inputs[1]?.value ?? '';
     let valid = true;
     inputs.forEach((input) => {

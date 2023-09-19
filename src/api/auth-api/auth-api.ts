@@ -54,7 +54,7 @@ export class AuthAPI {
       },
     });
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     const accessToken = data.access_token;
     localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
   }

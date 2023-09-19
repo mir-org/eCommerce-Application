@@ -93,7 +93,7 @@ class Validator {
   }
 
   public static postalCodeField(postalCode: string, selectedCountry: string): string {
-    console.log(selectedCountry);
+    // console.log(selectedCountry);
     const usaPostalCodeRegex = /^\d{5}(-\d{4})?$/;
     const russiaPostalCodeRegex = /^[0-9]{6}$/;
     let error = '';
