@@ -50,7 +50,7 @@ export const TEXT = {
   BRANDS_HEADER: 'Brands',
   CHIPSETS_HEADER: 'Chipsets',
   VRAM_AMOUNT_HEADER: 'Vram amount',
-  RESET_BUTTON: 'reset',
+  RESET_BUTTON: 'Reset',
   NAVIGATION_BUTTON: 'Navigation',
   PC_COMPONENTS_CATEGORY: 'PC-Components',
   PROCESSORS_SUBCATEGORY: 'Processors',

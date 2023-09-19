@@ -24,11 +24,11 @@ const CssClasses = {
   BUY_PRICE_DISABLE: 'buy__price_disable',
   BUY_BUTTON: 'buy__button',
   BOT: 'product__bot',
-  ATRIBUTES: ['product__atributes', 'atributes'],
-  ATRIBUTES_TITLE: ['product__subtitle', 'atributes__title'],
-  ATRIBUTES_ROW: 'atributes__row',
-  ATRIBUTES_KEY: 'atributes__key',
-  ATRIBUTES_VALUE: 'atributes__value',
+  attributes: ['product__attributes', 'attributes'],
+  attributes_TITLE: ['product__subtitle', 'attributes__title'],
+  attributes_ROW: 'attributes__row',
+  attributes_KEY: 'attributes__key',
+  attributes_VALUE: 'attributes__value',
   DESCTIPTION: ['product__description', 'description'],
   DESCTIPTION__TITLE: ['product__subtitle', 'description__title'],
   DESCTIPTION__TEXT: 'description__text',
@@ -40,7 +40,7 @@ type PageInfo = {
   price: number;
   discount: number | undefined;
   imageArr: Image[];
-  atributesArr: Attributes[];
+  attributesArr: Attributes[];
 };
 
 class ProductView extends View {
@@ -86,7 +86,7 @@ class ProductView extends View {
     const PageInfoData = await this.getData(id);
     this.createTitle(PageInfoData.name);
     this.createTop(PageInfoData.imageArr, PageInfoData.price, PageInfoData.discount);
-    this.createBot(PageInfoData.atributesArr, PageInfoData.descriptions);
+    this.createBot(PageInfoData.attributesArr, PageInfoData.descriptions);
   }
 
   private createTitle(name: string): void {
@@ -157,10 +157,10 @@ class ProductView extends View {
     return buy;
   }
 
-  private createBot(atributesArr: Attributes[], description: string): void {
+  private createBot(attributesArr: Attributes[], description: string): void {
     const botBlock = new ElementCreator('div', CssClasses.BOT, '');
-    const atributesBlock = this.createAtributes(atributesArr);
-    botBlock.addInnerElement(atributesBlock);
+    const attributesBlock = this.createattributes(attributesArr);
+    botBlock.addInnerElement(attributesBlock);
 
     const descriptionBlock = this.createDescription(description);
     botBlock.addInnerElement(descriptionBlock);
@@ -168,22 +168,22 @@ class ProductView extends View {
     this.viewElementCreator.addInnerElement(botBlock);
   }
 
-  private createAtributes(atributesArr: Attributes[]): ElementCreator {
-    const atributes = new ElementCreator('div', CssClasses.ATRIBUTES, '');
-    const atributesTitle = new ElementCreator('h2', CssClasses.ATRIBUTES_TITLE, 'Specifications:');
-    atributes.addInnerElement(atributesTitle);
-    atributesArr.forEach((elem) => {
+  private createattributes(attributesArr: Attributes[]): ElementCreator {
+    const attributes = new ElementCreator('div', CssClasses.attributes, '');
+    const attributesTitle = new ElementCreator('h2', CssClasses.attributes_TITLE, 'Specifications:');
+    attributes.addInnerElement(attributesTitle);
+    attributesArr.forEach((elem) => {
       const key = elem.name;
       const values = elem.value;
-      const atributesRow = new ElementCreator('div', CssClasses.ATRIBUTES_ROW, '');
-      const atributesKey = new ElementCreator('div', CssClasses.ATRIBUTES_KEY, `${key}:  `);
-      atributesRow.addInnerElement(atributesKey);
-      const atributesValue = new ElementCreator('div', CssClasses.ATRIBUTES_VALUE, values.toString());
-      atributesRow.addInnerElement(atributesValue);
-      atributes.addInnerElement(atributesRow);
+      const attributesRow = new ElementCreator('div', CssClasses.attributes_ROW, '');
+      const attributesKey = new ElementCreator('div', CssClasses.attributes_KEY, `${key}:  `);
+      attributesRow.addInnerElement(attributesKey);
+      const attributesValue = new ElementCreator('div', CssClasses.attributes_VALUE, values.toString());
+      attributesRow.addInnerElement(attributesValue);
+      attributes.addInnerElement(attributesRow);
     });
 
-    return atributes;
+    return attributes;
   }
 
   private createDescription(description: string): ElementCreator {
@@ -207,8 +207,8 @@ class ProductView extends View {
       discount = discountValue / 100;
     }
     const imageArr = data.masterData.current.masterVariant.images;
-    const atributesArr = data.masterData.current.masterVariant.attributes;
-    const info = { name, descriptions, price, discount, imageArr, atributesArr };
+    const attributesArr = data.masterData.current.masterVariant.attributes;
+    const info = { name, descriptions, price, discount, imageArr, attributesArr };
 
     return info;
   }

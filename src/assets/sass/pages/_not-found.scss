@@ -3,6 +3,8 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  margin: 1.5rem;
+
   &__image {
     flex: 0 1 auto;
     img {
@@ -10,6 +12,7 @@
       height: auto;
     }
   }
+
   &__text {
     flex: 1 1 auto;
     display: flex;
@@ -35,9 +38,9 @@
       display: block;
       margin-top: 35px;
       padding: 10px;
-      background-color: $login-registration-link-background-color;
+      background-color: $main-blue-color;
       border-radius: 8px;
-      color: $login-registration-link-color;
+      color: $white-color;
       text-align: center;
       cursor: pointer;
 

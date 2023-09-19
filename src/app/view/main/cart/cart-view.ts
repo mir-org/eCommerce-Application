@@ -15,6 +15,8 @@ class CartView extends View {
 
   private cartList: ElementCreator;
 
+  private pricesWrapper: ElementCreator;
+
   private observer: Observer;
 
   private router: Router;
@@ -32,6 +34,7 @@ class CartView extends View {
     this.router = router;
     this.observer = observer;
     this.cartList = new ElementCreator('div', CART_CLASSES.LIST);
+    this.pricesWrapper = new ElementCreator('div', CART_CLASSES.PRICES);
     this.cartPriceTotalElement = null;
     this.cartPriceDiscountedElement = null;
     this.totalPrice = null;
@@ -129,12 +132,11 @@ class CartView extends View {
   }
 
   private createCartPrices(): void {
-    const pricesWrapper = new ElementCreator('div', CART_CLASSES.PRICES);
     this.cartPriceTotalElement = new ElementCreator('div', CART_CLASSES.PRICES_TOTAL, '');
     this.cartPriceDiscountedElement = new ElementCreator('div', CART_CLASSES.PRICES_DISCOUNT, 'Final price:');
-    pricesWrapper.addInnerElement(this.cartPriceTotalElement);
-    pricesWrapper.addInnerElement(this.cartPriceDiscountedElement);
-    this.viewElementCreator.addInnerElement(pricesWrapper);
+    this.pricesWrapper.addInnerElement(this.cartPriceTotalElement);
+    this.pricesWrapper.addInnerElement(this.cartPriceDiscountedElement);
+    this.viewElementCreator.addInnerElement(this.pricesWrapper);
     this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
   }
 
@@ -203,6 +205,7 @@ class CartView extends View {
   private async clearCartButtonClickHandler(): Promise<void> {
     const cart = await CartAPI.clearCart();
     this.cartList.getElement().innerHTML = '';
+    this.pricesWrapper.getElement().innerHTML = '';
     this.lineItems = cart.lineItems;
     this.observer.setCartState(cart);
     this.totalPrice =
@@ -303,6 +306,8 @@ class CartView extends View {
     const cardBlockButton = new ElementCreator('button', CART_CLASSES.BLOCK_BUTTON, 'Start Shopping');
     cardBlockButton.getElement().addEventListener('click', () => {
       this.router.navigate(Pages.CATALOG);
+      const headerLinkElements = document.querySelectorAll('.nav__item_selected');
+      headerLinkElements.forEach((elem) => elem.classList.remove('nav__item_selected'));
     });
     cartBlock.addInnerElement(cardBlockButton);
     this.cartList.addInnerElement(cartBlock);
