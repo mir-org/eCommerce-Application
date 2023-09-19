@@ -19,11 +19,23 @@ class CartView extends View {
 
   private router: Router;
 
+  private cartPriceTotalElement: ElementCreator | null;
+
+  private cartPriceDiscountedElement: ElementCreator | null;
+
+  private totalPrice: number | null;
+
+  private discountedPrice: number | null;
+
   constructor(observer: Observer, router: Router) {
     super('section', CART_CLASSES.CART);
     this.router = router;
     this.observer = observer;
     this.cartList = new ElementCreator('div', CART_CLASSES.LIST);
+    this.cartPriceTotalElement = null;
+    this.cartPriceDiscountedElement = null;
+    this.totalPrice = null;
+    this.discountedPrice = null;
     this.configureView();
     this.lineItems = null;
   }
@@ -34,15 +46,19 @@ class CartView extends View {
     this.createPromoCodes();
     this.createCartList();
     this.cartList.getElement().addEventListener('click', this.cartListClickHandler.bind(this));
+    this.createCartPrices();
   }
 
   private async setLineItems(): Promise<void> {
     const cart = await CartAPI.getCart();
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
     this.lineItems = cart.lineItems;
   }
 
   private createHeader(): void {
-    const header = new ElementCreator('h2', CART_CLASSES.HEADER);
+    const header = new ElementCreator('div', CART_CLASSES.HEADER);
     const title = new ElementCreator('h2', CART_CLASSES.TITLE, CART_TEXT.TITLE);
     header.addInnerElement(title);
     const cartClearButton = new ElementCreator('button', CART_CLASSES.CLEAR_CART_BUTTON, CART_TEXT.CLEAR_CART_BUTTON);
@@ -63,8 +79,9 @@ class CartView extends View {
     this.viewElementCreator.addInnerElement(list);
   }
 
+  // eslint-disable-next-line max-lines-per-function
   private createPromoCodes(): void {
-    const wrapper = new ElementCreator('div', CART_CLASSES.PROMO_CODE_WRAPPER);
+    const promoCodesWrapper = new ElementCreator('div', CART_CLASSES.PROMO_CODE_WRAPPER);
     const input = new InputFieldsCreator(CART_CLASSES.CART, CART_CLASSES.PROMO_CODE, CART_TEXT.PROMO_CODE, '', 'text');
     const addPromoCodeBtn = new ElementCreator(
       'button',
@@ -76,12 +93,16 @@ class CartView extends View {
       [CART_CLASSES.PROMO_CODE_BUTTON, 'primary-button'],
       CART_TEXT.PROMO_CODE_REMOVE_BUTTON
     );
-    const infoBlock = new ElementCreator('div', CART_CLASSES.PROMO_CODE_INFO_BLOCK, CART_TEXT.PROMO_CODE_INFO_BLOCK);
     addPromoCodeBtn.getElement().addEventListener('click', async () => {
       try {
         const response = await CartAPI.applyDiscountCode(input.getInputElement().value);
         const cart = await response.json();
+        console.log(cart);
         this.observer.setCartState(cart);
+        this.totalPrice =
+          cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+        this.discountedPrice = cart.totalPrice.centAmount / 100;
+        this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
         if (response.status !== 200) {
           const errorLineElement = input.getErrorLine();
           errorLineElement.textContent = 'This promo code does not exists.';
@@ -93,13 +114,37 @@ class CartView extends View {
     removePromoCodeBtn.getElement().addEventListener('click', async () => {
       const response = await CartAPI.removeDiscountCode(PROMO_CODE_ID);
       const cart = await response.json();
+      console.log(cart);
       this.observer.setCartState(cart);
+      this.totalPrice =
+        cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+      this.discountedPrice = cart.totalPrice.centAmount / 100;
+      this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
+      this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     });
-    wrapper.addInnerElement(infoBlock.getElement());
-    wrapper.addInnerElement(input.getElement());
-    wrapper.addInnerElement(addPromoCodeBtn.getElement());
-    wrapper.addInnerElement(removePromoCodeBtn.getElement());
-    this.viewElementCreator.addInnerElement(wrapper);
+    promoCodesWrapper.addInnerElement(input.getElement());
+    promoCodesWrapper.addInnerElement(addPromoCodeBtn.getElement());
+    promoCodesWrapper.addInnerElement(removePromoCodeBtn.getElement());
+    this.viewElementCreator.addInnerElement(promoCodesWrapper);
+  }
+
+  private createCartPrices(): void {
+    const pricesWrapper = new ElementCreator('div', CART_CLASSES.PRICES);
+    this.cartPriceTotalElement = new ElementCreator('div', CART_CLASSES.PRICES_TOTAL, '');
+    this.cartPriceDiscountedElement = new ElementCreator('div', CART_CLASSES.PRICES_DISCOUNT, 'Final price:');
+    pricesWrapper.addInnerElement(this.cartPriceTotalElement);
+    pricesWrapper.addInnerElement(this.cartPriceDiscountedElement);
+    this.viewElementCreator.addInnerElement(pricesWrapper);
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
+  }
+
+  private updateCartPrice(total: string, discounted: string): void {
+    if (this.cartPriceTotalElement) {
+      this.cartPriceTotalElement.getElement().textContent = `Total price: ${total}`;
+    }
+    if (this.cartPriceDiscountedElement) {
+      this.cartPriceDiscountedElement.getElement().textContent = `Final price: ${discounted}`;
+    }
   }
 
   private createCartItem(lineItem: LineItem): void {
@@ -160,7 +205,12 @@ class CartView extends View {
     this.cartList.getElement().innerHTML = '';
     this.lineItems = cart.lineItems;
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     this.createCartList();
+    this.createCartPrices();
   }
 
   /* eslint-disable max-lines-per-function */
@@ -208,6 +258,10 @@ class CartView extends View {
   private async removeItem(id: string, item: Element): Promise<Cart> {
     const cart = await CartAPI.removeProduct(id);
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     item.remove();
     if (cart.lineItems.length < 1) {
       this.createCartBlock();
@@ -221,6 +275,10 @@ class CartView extends View {
     const cart = await CartAPI.decrProductQuant(id, currentValue);
     test.innerHTML = `${currentValue - 1}`;
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     return cart;
   }
 
@@ -230,6 +288,10 @@ class CartView extends View {
     const cart = await CartAPI.incrProductQuant(id, currentValue);
     test.innerHTML = `${currentValue + 1}`;
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     return cart;
   }
 

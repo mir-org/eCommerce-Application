@@ -1,6 +1,7 @@
 .shopping-cart {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 
   &__header {
     display: flex;
@@ -19,6 +20,23 @@
     padding: 0px 20px;
     color: white;
     background-color: #32a1ce;
+  }
+
+  &__prices {
+    display: flex;
+    gap: 5px;
+    &-total {
+      color: orange;
+      border: 1px solid orange;
+      width: fit-content;
+      padding: 2px;
+    }
+    &-discounted {
+      color: green;
+      border: 1px solid green;
+      width: fit-content;
+      padding: 2px;
+    }
   }
 
   &__list {

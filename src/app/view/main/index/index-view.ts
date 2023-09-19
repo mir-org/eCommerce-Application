@@ -10,8 +10,8 @@ const CssClasses = {
   WRAPPER: 'index__wrapper',
   BUTTON: 'index__btn',
   FIX_IT: 'primary-button',
+  PROMO_CODE: 'promo-code',
 };
-
 const BUTTONS: IPages = {
   LOGIN: 'Login',
   REGISTRATION: 'Registration',
@@ -29,7 +29,12 @@ class IndexView extends View {
   private configView(router: Router): void {
     const title = new ElementCreator('h1', CssClasses.TITLE);
     this.viewElementCreator.addInnerElement(title);
-
+    const infoBlock = new ElementCreator(
+      'div',
+      CssClasses.PROMO_CODE,
+      'Try a GRAYSEPTEMBER promo code for 10% discount!'
+    );
+    this.viewElementCreator.addInnerElement(infoBlock);
     const navWrapper = new ElementCreator('div', CssClasses.WRAPPER);
     this.viewElementCreator.addInnerElement(navWrapper);
     Object.keys(BUTTONS).forEach((key) => {
