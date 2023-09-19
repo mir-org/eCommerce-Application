@@ -5,9 +5,10 @@
   flex-wrap: wrap;
   margin: 1.5rem;
 
-  &__image {
+  &__image-block {
     flex: 0 1 auto;
-    img {
+
+    &-img {
       width: 100%;
       height: auto;
     }
@@ -43,6 +44,11 @@
       color: $white-color;
       text-align: center;
       cursor: pointer;
+      transition: ease-in-out 0.33s;
+      &:hover {
+        background-color: darken($main-blue-color, 10%);
+        transition: ease-in-out 0.33s;
+      }
 
       &::before {
         content: "";

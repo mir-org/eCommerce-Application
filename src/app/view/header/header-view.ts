@@ -126,7 +126,6 @@ class HeaderView extends View {
     this.cartPrice = new ElementCreator('div', 'cart__price');
     cartCreator.addInnerElement(this.cartPrice);
     cartCreator.getElement().addEventListener('click', this.cartClickHandler.bind(this, router));
-
     this.viewElementCreator.addInnerElement(cartCreator);
   }
 
@@ -135,7 +134,7 @@ class HeaderView extends View {
     this.cartPrice!.getElement().textContent = price;
   }
 
-  private cartClickHandler(router: Router): void {
+  public cartClickHandler(router: Router): void {
     router.navigate('cart');
     this.headerLinkElements.forEach((elem) => elem.getHTMLElement().classList.remove('nav__item_selected'));
   }

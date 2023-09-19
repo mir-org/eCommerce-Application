@@ -5,7 +5,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: #447bba;
-  padding: 1rem 0.5rem;
+  padding: 0.5rem;
   font-size: calc(1rem + ((1vw - 3.75px) * 1.4239));
   min-height: 0vw;
   @media (min-width: 1920px) {
@@ -36,6 +36,11 @@
 
     &__item {
       cursor: pointer;
+      transition: ease-in-out 0.33s;
+      &:hover {
+        transform: scale(1.02);
+        transition: ease-in-out 0.33s;
+      }
 
       &.hide {
         display: none;
@@ -70,6 +75,11 @@
     align-items: center;
     cursor: pointer;
     margin-left: auto;
+    transition: ease-in-out 0.33s;
+    &:hover {
+      transform: scale(1.02);
+      transition: ease-in-out 0.33s;
+    }
 
     &__image {
       width: 30px;
