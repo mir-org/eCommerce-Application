@@ -45,7 +45,12 @@ class Router {
         return;
       }
     }
-
+    if (requestParams.path === Pages.USER_PROFILE) {
+      if (isLoggedIn === 'false') {
+        this.redirectToMain();
+        return;
+      }
+    }
     const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/${ID}`;
     const route = this.routes.find((item) => item.path === pathForFind);
     if (!route) {
