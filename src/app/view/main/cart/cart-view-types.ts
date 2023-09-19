@@ -24,7 +24,9 @@ export const CART_CLASSES = {
   PROMO_CODE: 'promo-code',
   PROMO_CODE_BUTTON: 'promo-code-submit',
   PROMO_CODE_INFO_BLOCK: 'promo-code-info',
-  TOTAL_PRICE: 'shopping-cart__total-price',
+  PRICES: 'shopping-cart__prices',
+  PRICES_TOTAL: 'shopping-cart__prices-total',
+  PRICES_DISCOUNT: 'shopping-cart__prices-discounted',
 };
 
 export const CART_TEXT = {
@@ -36,5 +38,5 @@ export const CART_TEXT = {
   PROMO_CODE: 'Promo code',
   PROMO_CODE_ADD_BUTTON: 'Add promo code',
   PROMO_CODE_REMOVE_BUTTON: 'Remove promo code',
-  PROMO_CODE_INFO_BLOCK: 'Try a GRAYSEPTEMBER promo code for 17% discount!',
+  PROMO_CODE_INFO_BLOCK: 'Try a GRAYSEPTEMBER promo code for 10% discount!',
 };
