@@ -8,6 +8,7 @@ import State from '../../state/state';
 
 const CssClasses = {
   HEADER: 'header',
+  SHOP_NAME: ['header__shop-name', 'shop-name'],
   NAV: ['header__nav', 'nav'],
   USER_MENU: ['header__user-menu', 'user-menu'],
   LOGOUT_BUTTON: ['user-menu__logout-button'],
@@ -28,6 +29,7 @@ const USER_MENU_PAGES: IPages = {
 
 const TEXT = {
   LOGOUT_BUTTON: 'Logout',
+  SHOP_NAME: 'GigaGoods',
 };
 
 const KEY_FOR_SAVE = {
@@ -53,6 +55,7 @@ class HeaderView extends View {
   }
 
   private configView(router: Router, state: State): void {
+    this.addShopName();
     this.addNavigation(router);
     this.addCart(router);
     this.addUserMenu(router);
@@ -67,6 +70,12 @@ class HeaderView extends View {
     }
   }
 
+  private addShopName(): void {
+    const nameWrapper = new ElementCreator('div', CssClasses.SHOP_NAME);
+    nameWrapper.getElement().textContent = TEXT.SHOP_NAME;
+    this.viewElementCreator.addInnerElement(nameWrapper);
+  }
+
   private addNavigation(router: Router): void {
     const creatorNav = new ElementCreator('nav', CssClasses.NAV);
     Object.keys(NamePages).forEach((key) => {
@@ -78,7 +87,6 @@ class HeaderView extends View {
       creatorNav.addInnerElement(linkElement.getHTMLElement());
       this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
     });
-
     this.viewElementCreator.addInnerElement(creatorNav);
   }
 
@@ -118,7 +126,6 @@ class HeaderView extends View {
     this.cartPrice = new ElementCreator('div', 'cart__price');
     cartCreator.addInnerElement(this.cartPrice);
     cartCreator.getElement().addEventListener('click', this.cartClickHandler.bind(this, router));
-
     this.viewElementCreator.addInnerElement(cartCreator);
   }
 
@@ -127,7 +134,7 @@ class HeaderView extends View {
     this.cartPrice!.getElement().textContent = price;
   }
 
-  private cartClickHandler(router: Router): void {
+  public cartClickHandler(router: Router): void {
     router.navigate('cart');
     this.headerLinkElements.forEach((elem) => elem.getHTMLElement().classList.remove('nav__item_selected'));
   }

@@ -20,7 +20,7 @@ export const CART_CLASSES = {
   ITEM_DISCOUNT_PRICE: 'shopping-cart-item__discount-price',
   ITEM_PRICE_DISABLE: 'shopping-cart-item__price_disable',
   ITEM_REMOVE_BUTTON: 'shopping-cart-item__remove-button',
-  PROMO_CODE_WRAPPER: 'shopping-cart-item__promo-codes-wrapper',
+  PROMO_CODE_WRAPPER: 'shopping-cart__promo-codes',
   PROMO_CODE: 'promo-code',
   PROMO_CODE_BUTTON: 'promo-code-submit',
   PRICES: 'shopping-cart__prices',

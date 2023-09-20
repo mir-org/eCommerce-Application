@@ -48,7 +48,8 @@ export const DEVELOPERS_DATA = [
     POSITION: 'Frontend developer',
     SHORT_BIO:
       "Worked in logistics for almost 2 years. Then I decided to change my life. That's how I came to RSSchool, and this is my second attempt to take this course.",
-    DISTINCTIVE_CONTRIBUTION: 'CommerceTools administration',
+    DISTINCTIVE_CONTRIBUTION:
+      'CommerceTools administration\nCatalog filters\nLogin page\n Work with API\nAbout us page',
     GITHUB_LINK: 'https://github.com/toronto-tokyo',
   },
   {
@@ -57,7 +58,8 @@ export const DEVELOPERS_DATA = [
     POSITION: 'Team lead',
     SHORT_BIO:
       'I live by the principle: "If they give you, take it, if they don\'t give you, take it." And I\'m a genius at it!',
-    DISTINCTIVE_CONTRIBUTION: 'Application architecture',
+    DISTINCTIVE_CONTRIBUTION:
+      'Application architecture\nRouting\nCart page\nProduct page\nDevelopment environment configurement',
     GITHUB_LINK: 'https://github.com/GinezisNWD',
   },
   {
@@ -66,7 +68,8 @@ export const DEVELOPERS_DATA = [
     POSITION: 'Frontend developer',
     SHORT_BIO:
       "I have been working as an IT Support Technician for a few years. Right now I'm studying frontend development to challenge myself and potentially open a new career path.",
-    DISTINCTIVE_CONTRIBUTION: 'Jest testing',
+    DISTINCTIVE_CONTRIBUTION:
+      'Jest testing\nGitHub repository administration\nProject design & responsive layout\nCatalog page\nRegistration and profile page\n',
     GITHUB_LINK: 'https://github.com/miroslav-zarenkov',
   },
 ];

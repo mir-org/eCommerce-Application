@@ -15,6 +15,10 @@ class CartView extends View {
 
   private cartList: ElementCreator;
 
+  private pricesWrapper: ElementCreator;
+
+  private promoCodesWrapper: ElementCreator | null;
+
   private observer: Observer;
 
   private router: Router;
@@ -32,9 +36,11 @@ class CartView extends View {
     this.router = router;
     this.observer = observer;
     this.cartList = new ElementCreator('div', CART_CLASSES.LIST);
+    this.pricesWrapper = new ElementCreator('div', CART_CLASSES.PRICES);
     this.cartPriceTotalElement = null;
     this.cartPriceDiscountedElement = null;
     this.totalPrice = null;
+    this.promoCodesWrapper = null;
     this.discountedPrice = null;
     this.configureView();
     this.lineItems = null;
@@ -70,6 +76,7 @@ class CartView extends View {
   private createCartList(): void {
     const list = this.cartList;
     if (this.lineItems!.length < 1) {
+      if (this.promoCodesWrapper) this.promoCodesWrapper.getElement().innerHTML = '';
       this.createCartBlock();
     } else {
       this.lineItems?.forEach((item) => {
@@ -81,7 +88,7 @@ class CartView extends View {
 
   // eslint-disable-next-line max-lines-per-function
   private createPromoCodes(): void {
-    const promoCodesWrapper = new ElementCreator('div', CART_CLASSES.PROMO_CODE_WRAPPER);
+    this.promoCodesWrapper = new ElementCreator('div', CART_CLASSES.PROMO_CODE_WRAPPER);
     const input = new InputFieldsCreator(CART_CLASSES.CART, CART_CLASSES.PROMO_CODE, CART_TEXT.PROMO_CODE, '', 'text');
     const addPromoCodeBtn = new ElementCreator(
       'button',
@@ -122,19 +129,18 @@ class CartView extends View {
       this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
       this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     });
-    promoCodesWrapper.addInnerElement(input.getElement());
-    promoCodesWrapper.addInnerElement(addPromoCodeBtn.getElement());
-    promoCodesWrapper.addInnerElement(removePromoCodeBtn.getElement());
-    this.viewElementCreator.addInnerElement(promoCodesWrapper);
+    this.promoCodesWrapper.addInnerElement(input.getElement());
+    this.promoCodesWrapper.addInnerElement(addPromoCodeBtn.getElement());
+    this.promoCodesWrapper.addInnerElement(removePromoCodeBtn.getElement());
+    this.viewElementCreator.addInnerElement(this.promoCodesWrapper);
   }
 
   private createCartPrices(): void {
-    const pricesWrapper = new ElementCreator('div', CART_CLASSES.PRICES);
     this.cartPriceTotalElement = new ElementCreator('div', CART_CLASSES.PRICES_TOTAL, '');
     this.cartPriceDiscountedElement = new ElementCreator('div', CART_CLASSES.PRICES_DISCOUNT, 'Final price:');
-    pricesWrapper.addInnerElement(this.cartPriceTotalElement);
-    pricesWrapper.addInnerElement(this.cartPriceDiscountedElement);
-    this.viewElementCreator.addInnerElement(pricesWrapper);
+    this.pricesWrapper.addInnerElement(this.cartPriceTotalElement);
+    this.pricesWrapper.addInnerElement(this.cartPriceDiscountedElement);
+    this.viewElementCreator.addInnerElement(this.pricesWrapper);
     this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
   }
 
@@ -203,13 +209,15 @@ class CartView extends View {
   private async clearCartButtonClickHandler(): Promise<void> {
     const cart = await CartAPI.clearCart();
     this.cartList.getElement().innerHTML = '';
+    this.pricesWrapper.getElement().innerHTML = '';
+    this.pricesWrapper.getElement().innerHTML = '';
     this.lineItems = cart.lineItems;
     this.observer.setCartState(cart);
     this.totalPrice =
       cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
     this.discountedPrice = cart.totalPrice.centAmount / 100;
-    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     this.createCartList();
+    this.pricesWrapper.getElement().innerHTML = '';
     this.createCartPrices();
   }
 
@@ -240,6 +248,7 @@ class CartView extends View {
       if (Number(countValueElement.innerHTML) <= 1) {
         const cart = await this.removeItem(id, item);
         if (cart.lineItems.length === 0) {
+          if (this.promoCodesWrapper) this.promoCodesWrapper.getElement().innerHTML = '';
           this.createCartBlock();
         }
         return;
@@ -264,6 +273,7 @@ class CartView extends View {
     this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     item.remove();
     if (cart.lineItems.length < 1) {
+      if (this.promoCodesWrapper) this.promoCodesWrapper.getElement().innerHTML = '';
       this.createCartBlock();
     }
     return cart;
