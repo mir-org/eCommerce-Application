@@ -6,7 +6,6 @@ const createMockElement = (): HTMLDivElement => {
   element.appendChild(document.createElement('p'));
   return element;
 };
-
 describe('clearElement', () => {
   it('should clear child elements of an HTML element', () => {
     const myElement = createMockElement();

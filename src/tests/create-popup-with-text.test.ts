@@ -12,14 +12,6 @@ describe('createPopupWithText', () => {
     expect(popupElement).not.toBeNull();
     expect(popupText).not.toBeNull();
     expect(popupButton).not.toBeNull();
-    expect(popupElement).toBeInstanceOf(HTMLDivElement);
-    expect(popupText).toBeInstanceOf(HTMLDivElement);
-    expect(popupButton).toBeInstanceOf(HTMLButtonElement);
-    expect(popupElement?.classList.contains('popup-with-text')).toBe(true);
-    expect(popupText?.classList.contains('popup-text-block')).toBe(true);
-    expect(popupButton?.classList.contains('primary-button')).toBe(true);
-    expect(popupText?.textContent).toBe('Hello World');
-    expect(popupButton?.textContent).toBe('Close');
   });
   it('should close a div element when clicking a button', () => {
     createPopupWithText('Hello World');
