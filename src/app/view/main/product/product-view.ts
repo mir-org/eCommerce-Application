@@ -2,6 +2,12 @@ import { ElementCreator } from '../../../utils/element-creator';
 import { View } from '../../view';
 import { ProductAPI } from '../../../../api/product-api/product-api';
 import { Image, Attributes } from '../../../../api/product-api/product-api-types';
+import { CartAPI } from '../../../../api/cart-api/cart-api';
+import { Observer, CartItemForState } from '../../../observer/observer';
+
+const KEY_FOR_SAVE = {
+  CART_ITEMS_STATE_ARRAY: 'cartItemsStateArray',
+};
 
 const CssClasses = {
   SECTION: 'product',
@@ -38,6 +44,8 @@ type PageInfo = {
 };
 
 class ProductView extends View {
+  private observer: Observer;
+
   private sliderMainItem: ElementCreator;
 
   private currentProductName: string;
@@ -50,11 +58,24 @@ class ProductView extends View {
 
   private papaSliderNav: ElementCreator | null;
 
-  constructor(id: string) {
+  private id: string;
+
+  private buyButton: ElementCreator | null;
+
+  private add: () => void;
+
+  private remove: () => void;
+
+  constructor(id: string, observer: Observer) {
     super('section', CssClasses.SECTION);
+    this.add = this.buyButtonClickHandler.bind(this);
+    this.remove = this.removeButtonClickHandler.bind(this);
+    this.observer = observer;
+    this.id = id;
     this.sliderMainItem = new ElementCreator('div', CssClasses.SLIDER_MAIN_ITEM, '');
     this.currentProductName = '';
     this.picturesPaths = [];
+    this.buyButton = null;
     this.curentIndex = null;
     this.papaSliderMainItem = null;
     this.papaSliderNav = null;
@@ -130,8 +151,9 @@ class ProductView extends View {
       buy.addInnerElement(discountPriceCreator);
     }
 
-    const buyButton = new ElementCreator('button', CssClasses.BUY_BUTTON, 'Add to cart');
-    buy.addInnerElement(buyButton);
+    this.buyButton = new ElementCreator('button', CssClasses.BUY_BUTTON);
+    this.setBuyButton();
+    buy.addInnerElement(this.buyButton);
     return buy;
   }
 
@@ -286,6 +308,44 @@ class ProductView extends View {
   private papaSliderCloseBtnClickHandler(): void {
     document.body.classList.remove('scroll-lock');
     document.body.lastElementChild?.remove();
+  }
+
+  private setBuyButton(): void {
+    const cartItemsStateArray: CartItemForState[] = JSON.parse(
+      this.observer.state.getValue(KEY_FOR_SAVE.CART_ITEMS_STATE_ARRAY)
+    );
+    const flag = cartItemsStateArray.find((elem) => {
+      return elem.productId === this.id;
+    });
+    if (flag === undefined) {
+      this.buyButton!.getElement().innerHTML = 'Add to cart';
+      this.buyButton!.getElement().removeEventListener('click', this.remove);
+      this.buyButton!.getElement().addEventListener('click', this.add);
+    } else {
+      this.buyButton!.getElement().innerHTML = 'Remove from cart';
+      this.buyButton!.getElement().removeEventListener('click', this.add);
+      this.buyButton!.getElement().addEventListener('click', this.remove);
+    }
+  }
+
+  private async buyButtonClickHandler(): Promise<void> {
+    const cart = await CartAPI.addProductToCart(this.id);
+    this.observer.setCartState(cart);
+    this.setBuyButton();
+  }
+
+  private async removeButtonClickHandler(): Promise<void> {
+    const cartItemsStateArray: CartItemForState[] = JSON.parse(
+      this.observer.state.getValue(KEY_FOR_SAVE.CART_ITEMS_STATE_ARRAY)
+    );
+    const flag = cartItemsStateArray.find((elem) => {
+      return elem.productId === this.id;
+    });
+    const itemID = flag!.id;
+
+    const cart = await CartAPI.removeProduct(itemID);
+    this.observer.setCartState(cart);
+    this.setBuyButton();
   }
 }
 export default ProductView;

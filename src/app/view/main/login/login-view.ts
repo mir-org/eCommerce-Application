@@ -8,7 +8,7 @@ import InputFieldsCreator from '../../../utils/input-fields-creator';
 import { View } from '../../view';
 import { CssClasses, INITIAL_VALUE, KEY_FOR_SAVE, TEXT, TYPE } from './login-view-types';
 import { Validator } from '../../../utils/validator';
-import Observer from '../../../observer/observer';
+import { Observer } from '../../../observer/observer';
 
 class LoginView extends View {
   private form: ElementCreator | null;
@@ -152,7 +152,7 @@ class LoginView extends View {
     const loginStatusCode = await CustomerAPI.loginCustomer(email, password);
     if (loginStatusCode === AuthStatusCodes.successfulPasswordTokenFetch) {
       this.state.setValue(KEY_FOR_SAVE.LOGIN_STATUS, 'true');
-      this.observer.userIsLoggedIn(this.state);
+      this.observer.setLoginStatus(this.state);
       this.router.navigate(Pages.INDEX);
     } else {
       this.errorLine?.classList.add(CssClasses.ERROR_LINE_SHOW);

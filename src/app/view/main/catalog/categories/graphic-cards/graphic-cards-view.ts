@@ -12,6 +12,8 @@ import {
 import { clearElement } from '../../../../../utils/clear-element';
 import { FiltersView } from './filters/filters-view';
 import { BreadCrumbsCreator } from '../../../../../utils/bread-crumbs-creator';
+import { Observer } from '../../../../../observer/observer';
+import { CartAPI } from '../../../../../../api/cart-api/cart-api';
 
 class GraphicCardsView extends View {
   private content: ElementCreator | null;
@@ -25,15 +27,18 @@ class GraphicCardsView extends View {
   private totalPages: number = 0;
 
   private query: FilterProductsQuery;
-  // private router: Router,
-  // private filter: FiltersView | null
 
-  constructor(private router: Router) {
+  private observer: Observer;
+
+  private router: Router;
+
+  constructor(router: Router, observer: Observer) {
     super('section', CATEGORY_CLASSES.CATALOG);
+    this.observer = observer;
     this.content = null;
     this.contentProducts = null;
     this.cardsWrapper = null;
-    // this.filter = filter;
+    this.router = router;
     this.query = {
       categoryId: '0b0e9d3c-edea-4285-a921-4346b70db822',
       search: '',
@@ -157,31 +162,44 @@ class GraphicCardsView extends View {
   }
 
   private async createAllProductCards(products: ProductCards): Promise<void> {
-    products.forEach((product: ProductCard) => {
-      this.cardsWrapper?.addInnerElement(this.createProductCard(product));
+    products.forEach(async (product: ProductCard) => {
+      this.cardsWrapper?.addInnerElement(await this.createProductCard(product));
     });
   }
 
-  private createProductCard(product: ProductCard): ElementCreator {
-    const { name } = product;
-    const { description } = product;
-    const { price } = product;
-    const { image } = product;
-    const { discount } = product;
-    const { id } = product;
+  private async createProductCard(product: ProductCard): Promise<ElementCreator> {
+    const { name, description, price, image, discount, id } = product;
+    const isItemInCart = await CartAPI.itemIsInCart(id);
     const card = new ElementCreator('div', 'product-card', '');
     const cardTitle = new ElementCreator('h2', 'product-card__name', `${name}`);
     const cardImg = new ElementCreator('img', 'product-card__image', '');
     const cardPrice = new ElementCreator('div', 'product-card__price', `$${price}`);
     const cardDiscount = new ElementCreator('div', 'product-card__discount', `$${discount}`);
+    const cardAddToCart = new ElementCreator('button', 'product-card__buy', 'Add to cart');
+    if (isItemInCart) {
+      cardAddToCart.getElement().classList.add('product-card__in-cart');
+      cardAddToCart.getElement().textContent = 'Go to cart';
+    } else {
+      cardAddToCart.getElement().classList.remove('product-card__in-cart');
+      cardAddToCart.getElement().textContent = 'Add to cart';
+    }
     const cardDescription = new ElementCreator('div', 'product-card__description', `${description}`);
     cardImg.getElement().setAttribute('src', `${image}`);
     card.addInnerElement(cardTitle);
     card.addInnerElement(cardImg);
     card.addInnerElement(cardPrice);
     card.addInnerElement(cardDiscount);
+    card.addInnerElement(cardAddToCart);
     card.addInnerElement(cardDescription);
     card.getElement().dataset.id = id;
+    cardAddToCart.getElement().addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (isItemInCart) {
+        this.router.navigate(`cart`);
+      } else {
+        this.buyButtonClickHandler(id, event);
+      }
+    });
     return card;
   }
 
@@ -193,6 +211,20 @@ class GraphicCardsView extends View {
         const ID = card.getAttribute('data-id');
         this.router.navigate(`catalog/${ID}`);
       }
+    }
+  }
+
+  private async buyButtonClickHandler(id: string, event: Event): Promise<void> {
+    event.stopPropagation();
+    const isItemInCart = await CartAPI.itemIsInCart(id);
+    const button = event.target as HTMLButtonElement;
+    if (isItemInCart) {
+      this.router.navigate('cart');
+    } else {
+      const cart = await CartAPI.addProductToCart(id);
+      this.observer.setCartState(cart);
+      button.classList.add('product-card__in-cart');
+      button.textContent = 'Go to cart';
     }
   }
 }

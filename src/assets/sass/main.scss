@@ -22,25 +22,26 @@
 @import "components/bread-crumbs";
 
 @import "pages/home";
-@import "pages/_registration";
+@import "pages/registration";
 @import "pages/login";
 @import "pages/not-found";
 @import "pages/catalog";
 @import "pages/user-profile";
 @import "pages/category";
 @import "pages/product";
-
+@import "pages/shoping-cart";
+@import "pages/about-us";
 @import "themes/theme";
 @import "themes/admin";
 
 html,
 body {
   height: 100%;
+  font-family: sans-serif;
 }
 
 .container {
   max-width: 1200px;
-  margin: 0px auto;
 }
 
 .wrapper {
