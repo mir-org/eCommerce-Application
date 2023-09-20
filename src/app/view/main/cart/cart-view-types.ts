@@ -20,11 +20,12 @@ export const CART_CLASSES = {
   ITEM_DISCOUNT_PRICE: 'shopping-cart-item__discount-price',
   ITEM_PRICE_DISABLE: 'shopping-cart-item__price_disable',
   ITEM_REMOVE_BUTTON: 'shopping-cart-item__remove-button',
-  PROMO_CODE_WRAPPER: 'shopping-cart-item__promo-codes-wrapper',
+  PROMO_CODE_WRAPPER: 'shopping-cart__promo-codes',
   PROMO_CODE: 'promo-code',
   PROMO_CODE_BUTTON: 'promo-code-submit',
-  PROMO_CODE_INFO_BLOCK: 'promo-code-info',
-  TOTAL_PRICE: 'shopping-cart__total-price',
+  PRICES: 'shopping-cart__prices',
+  PRICES_TOTAL: 'shopping-cart__prices-total',
+  PRICES_DISCOUNT: 'shopping-cart__prices-discounted',
 };
 
 export const CART_TEXT = {
@@ -36,5 +37,4 @@ export const CART_TEXT = {
   PROMO_CODE: 'Promo code',
   PROMO_CODE_ADD_BUTTON: 'Add promo code',
   PROMO_CODE_REMOVE_BUTTON: 'Remove promo code',
-  PROMO_CODE_INFO_BLOCK: 'Try a GRAYSEPTEMBER promo code for 17% discount!',
 };

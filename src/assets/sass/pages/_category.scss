@@ -4,11 +4,13 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
   &__title {
     width: 100%;
     text-align: center;
     font-size: 24px;
-    margin: 15px 0 5px;
+    background-color: #fcfcfcfc;
+    padding: 1rem;
   }
   &__content {
     display: flex;
@@ -17,11 +19,18 @@
     flex: 1;
     align-items: center;
     justify-content: space-around;
+    @media screen and (max-width: 430px) {
+      flex-direction: column-reverse;
+    }
     &-aside {
       flex: 0 1 250px;
       min-width: 189px;
       border-right: 1px solid $black-color;
       height: 100%;
+      background-color: #fcfcfcfc;
+      @media screen and (max-width: 430px) {
+        width: 100%;
+      }
     }
     &-products {
       display: flex;
@@ -36,7 +45,7 @@
         height: 500px;
         border: 1px solid $catalog-card-border-color;
         word-wrap: break-word;
-        transition: ease-in-out 0.5s;
+        transition: ease-in-out 0.33s;
         padding: 7px;
         display: flex;
         gap: 5px;
@@ -44,13 +53,15 @@
         text-align: center;
         align-items: center;
         justify-content: center;
+        background-color: $white-color;
         &:hover {
-          transition: ease-in-out 0.5s;
+          transition: ease-in-out 0.33s;
           box-shadow: $catalog-card-shadow 0px 3px 8px;
-          transform: scale(1.01);
+          transform: scale(1.02);
           cursor: pointer;
         }
         &__name {
+          border-bottom: 1px solid $black-color;
           font-size: 1.2rem;
         }
         &__image {
@@ -73,14 +84,14 @@
           width: 100px;
           min-height: 40px;
           font-size: 16px;
-          color: white;
+          color: $white-color;
           background-color: $buy-button-color;
           border-radius: 5px;
-          transition: ease-in-out 0.5s;
+          transition: ease-in-out 0.33s;
           &:hover {
-            transition: ease-in-out 0.5s;
+            transition: ease-in-out 0.33s;
             box-shadow: $catalog-card-shadow 0px 3px 8px;
-            transform: scale(1.01);
+            transform: scale(1.02);
             cursor: pointer;
             background-color: darken($buy-button-color, 10%);
           }
@@ -114,19 +125,19 @@
           user-select: none;
           position: relative;
           display: block;
-          background-color: $catalog-pagination-button-background-color;
+          background-color: $main-blue-color;
           border-radius: 8px;
-          color: $catalog-pagination-button-text-color;
+          color: $white-color;
           cursor: pointer;
           width: 40px;
           height: 40px;
-          transition: ease-in-out 0.3s;
+          transition: ease-in-out 0.33s;
           &:hover {
-            transition: ease-in-out 0.3s;
-            background-color: darken($catalog-pagination-button-background-color, 10%);
+            transition: ease-in-out 0.33s;
+            background-color: darken($main-blue-color, 10%);
           }
           &.active {
-            background-color: darken($catalog-pagination-button-background-color, 25%);
+            background-color: darken($main-blue-color, 25%);
             cursor: auto;
           }
           &:disabled {

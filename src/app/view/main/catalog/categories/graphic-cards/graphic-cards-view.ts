@@ -219,7 +219,7 @@ class GraphicCardsView extends View {
     const isItemInCart = await CartAPI.itemIsInCart(id);
     const button = event.target as HTMLButtonElement;
     if (isItemInCart) {
-      this.router.navigate('cart');
+      this.observer.header?.cartClickHandler(this.router);
     } else {
       const cart = await CartAPI.addProductToCart(id);
       this.observer.setCartState(cart);

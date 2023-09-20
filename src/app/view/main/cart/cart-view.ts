@@ -15,15 +15,33 @@ class CartView extends View {
 
   private cartList: ElementCreator;
 
+  private pricesWrapper: ElementCreator;
+
+  private promoCodesWrapper: ElementCreator | null;
+
   private observer: Observer;
 
   private router: Router;
+
+  private cartPriceTotalElement: ElementCreator | null;
+
+  private cartPriceDiscountedElement: ElementCreator | null;
+
+  private totalPrice: number | null;
+
+  private discountedPrice: number | null;
 
   constructor(observer: Observer, router: Router) {
     super('section', CART_CLASSES.CART);
     this.router = router;
     this.observer = observer;
     this.cartList = new ElementCreator('div', CART_CLASSES.LIST);
+    this.pricesWrapper = new ElementCreator('div', CART_CLASSES.PRICES);
+    this.cartPriceTotalElement = null;
+    this.cartPriceDiscountedElement = null;
+    this.totalPrice = null;
+    this.promoCodesWrapper = null;
+    this.discountedPrice = null;
     this.configureView();
     this.lineItems = null;
   }
@@ -34,15 +52,19 @@ class CartView extends View {
     this.createPromoCodes();
     this.createCartList();
     this.cartList.getElement().addEventListener('click', this.cartListClickHandler.bind(this));
+    this.createCartPrices();
   }
 
   private async setLineItems(): Promise<void> {
     const cart = await CartAPI.getCart();
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
     this.lineItems = cart.lineItems;
   }
 
   private createHeader(): void {
-    const header = new ElementCreator('h2', CART_CLASSES.HEADER);
+    const header = new ElementCreator('div', CART_CLASSES.HEADER);
     const title = new ElementCreator('h2', CART_CLASSES.TITLE, CART_TEXT.TITLE);
     header.addInnerElement(title);
     const cartClearButton = new ElementCreator('button', CART_CLASSES.CLEAR_CART_BUTTON, CART_TEXT.CLEAR_CART_BUTTON);
@@ -54,6 +76,7 @@ class CartView extends View {
   private createCartList(): void {
     const list = this.cartList;
     if (this.lineItems!.length < 1) {
+      if (this.promoCodesWrapper) this.promoCodesWrapper.getElement().innerHTML = '';
       this.createCartBlock();
     } else {
       this.lineItems?.forEach((item) => {
@@ -63,8 +86,9 @@ class CartView extends View {
     this.viewElementCreator.addInnerElement(list);
   }
 
+  // eslint-disable-next-line max-lines-per-function
   private createPromoCodes(): void {
-    const wrapper = new ElementCreator('div', CART_CLASSES.PROMO_CODE_WRAPPER);
+    this.promoCodesWrapper = new ElementCreator('div', CART_CLASSES.PROMO_CODE_WRAPPER);
     const input = new InputFieldsCreator(CART_CLASSES.CART, CART_CLASSES.PROMO_CODE, CART_TEXT.PROMO_CODE, '', 'text');
     const addPromoCodeBtn = new ElementCreator(
       'button',
@@ -76,12 +100,16 @@ class CartView extends View {
       [CART_CLASSES.PROMO_CODE_BUTTON, 'primary-button'],
       CART_TEXT.PROMO_CODE_REMOVE_BUTTON
     );
-    const infoBlock = new ElementCreator('div', CART_CLASSES.PROMO_CODE_INFO_BLOCK, CART_TEXT.PROMO_CODE_INFO_BLOCK);
     addPromoCodeBtn.getElement().addEventListener('click', async () => {
       try {
         const response = await CartAPI.applyDiscountCode(input.getInputElement().value);
         const cart = await response.json();
+        console.log(cart);
         this.observer.setCartState(cart);
+        this.totalPrice =
+          cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+        this.discountedPrice = cart.totalPrice.centAmount / 100;
+        this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
         if (response.status !== 200) {
           const errorLineElement = input.getErrorLine();
           errorLineElement.textContent = 'This promo code does not exists.';
@@ -93,13 +121,36 @@ class CartView extends View {
     removePromoCodeBtn.getElement().addEventListener('click', async () => {
       const response = await CartAPI.removeDiscountCode(PROMO_CODE_ID);
       const cart = await response.json();
+      console.log(cart);
       this.observer.setCartState(cart);
+      this.totalPrice =
+        cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+      this.discountedPrice = cart.totalPrice.centAmount / 100;
+      this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
+      this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     });
-    wrapper.addInnerElement(infoBlock.getElement());
-    wrapper.addInnerElement(input.getElement());
-    wrapper.addInnerElement(addPromoCodeBtn.getElement());
-    wrapper.addInnerElement(removePromoCodeBtn.getElement());
-    this.viewElementCreator.addInnerElement(wrapper);
+    this.promoCodesWrapper.addInnerElement(input.getElement());
+    this.promoCodesWrapper.addInnerElement(addPromoCodeBtn.getElement());
+    this.promoCodesWrapper.addInnerElement(removePromoCodeBtn.getElement());
+    this.viewElementCreator.addInnerElement(this.promoCodesWrapper);
+  }
+
+  private createCartPrices(): void {
+    this.cartPriceTotalElement = new ElementCreator('div', CART_CLASSES.PRICES_TOTAL, '');
+    this.cartPriceDiscountedElement = new ElementCreator('div', CART_CLASSES.PRICES_DISCOUNT, 'Final price:');
+    this.pricesWrapper.addInnerElement(this.cartPriceTotalElement);
+    this.pricesWrapper.addInnerElement(this.cartPriceDiscountedElement);
+    this.viewElementCreator.addInnerElement(this.pricesWrapper);
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
+  }
+
+  private updateCartPrice(total: string, discounted: string): void {
+    if (this.cartPriceTotalElement) {
+      this.cartPriceTotalElement.getElement().textContent = `Total price: ${total}`;
+    }
+    if (this.cartPriceDiscountedElement) {
+      this.cartPriceDiscountedElement.getElement().textContent = `Final price: ${discounted}`;
+    }
   }
 
   private createCartItem(lineItem: LineItem): void {
@@ -158,9 +209,16 @@ class CartView extends View {
   private async clearCartButtonClickHandler(): Promise<void> {
     const cart = await CartAPI.clearCart();
     this.cartList.getElement().innerHTML = '';
+    this.pricesWrapper.getElement().innerHTML = '';
+    this.pricesWrapper.getElement().innerHTML = '';
     this.lineItems = cart.lineItems;
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
     this.createCartList();
+    this.pricesWrapper.getElement().innerHTML = '';
+    this.createCartPrices();
   }
 
   /* eslint-disable max-lines-per-function */
@@ -190,6 +248,7 @@ class CartView extends View {
       if (Number(countValueElement.innerHTML) <= 1) {
         const cart = await this.removeItem(id, item);
         if (cart.lineItems.length === 0) {
+          if (this.promoCodesWrapper) this.promoCodesWrapper.getElement().innerHTML = '';
           this.createCartBlock();
         }
         return;
@@ -208,8 +267,13 @@ class CartView extends View {
   private async removeItem(id: string, item: Element): Promise<Cart> {
     const cart = await CartAPI.removeProduct(id);
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     item.remove();
     if (cart.lineItems.length < 1) {
+      if (this.promoCodesWrapper) this.promoCodesWrapper.getElement().innerHTML = '';
       this.createCartBlock();
     }
     return cart;
@@ -221,6 +285,10 @@ class CartView extends View {
     const cart = await CartAPI.decrProductQuant(id, currentValue);
     test.innerHTML = `${currentValue - 1}`;
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     return cart;
   }
 
@@ -230,6 +298,10 @@ class CartView extends View {
     const cart = await CartAPI.incrProductQuant(id, currentValue);
     test.innerHTML = `${currentValue + 1}`;
     this.observer.setCartState(cart);
+    this.totalPrice =
+      cart.discountCodes.length > 0 ? cart.totalPrice.centAmount / 90 : cart.totalPrice.centAmount / 100;
+    this.discountedPrice = cart.totalPrice.centAmount / 100;
+    this.updateCartPrice(`${this.totalPrice} $`, `${this.discountedPrice} $`);
     return cart;
   }
 

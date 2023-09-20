@@ -10,12 +10,12 @@
   display: block;
   position: relative;
   z-index: 10;
-  transition: 0.3s;
+  transition: ease-in-out 0.33s;
   color: $primary-label-text-color;
 }
 
 .primary-input:focus {
-  border: 1px solid $primary-input-focus-border-color;
+  border: 1px solid $black-color;
 }
 
 .primary-input {
@@ -30,7 +30,7 @@
   top: 0;
   left: 0;
   z-index: -5;
-  transition: 0.3s;
+  transition: ease-in-out 0.33s;
 
   &.invalid {
     border-color: $primary-input-invalid-border-color;
@@ -38,7 +38,7 @@
 }
 
 .primary-input:focus {
-  border: 1px solid $primary-input-focus-border-color;
+  border: 1px solid $black-color;
 }
 
 .primary-input.invalid:focus {

@@ -1,5 +1,5 @@
 .filters {
-  padding: 15px;
+  padding: 10px;
   height: 100vh;
   overflow: auto;
 
@@ -107,14 +107,23 @@
   }
 
   &__reset-button {
+    user-select: none;
+    position: relative;
+    border-radius: 8px;
     display: block;
-    background-color: $filters-reset-button-background-color;
-    color: $filters-reset-button-color;
+    background-color: $main-blue-color;
+    color: $white-color;
     letter-spacing: 1px;
     font-size: 1.2rem;
     padding: 5px 30px;
     margin: 20px auto 0;
     border-radius: 5px;
+    cursor: pointer;
+    transition: ease-in-out 0.33s;
+    &:hover {
+      transition: ease-in-out 0.33s;
+      background-color: darken($main-blue-color, 10%);
+    }
   }
 
   &__accordion {
@@ -202,16 +211,16 @@
       }
 
       &--active {
-        color: $filters-reset-button-background-color;
+        color: $main-blue-color;
 
         &::after {
-          border-color: $filters-reset-button-background-color;
+          border-color: $main-blue-color;
         }
       }
     }
   }
 
   &__current-filter {
-    margin-bottom: 2px;
+    margin: 2px;
   }
 }
