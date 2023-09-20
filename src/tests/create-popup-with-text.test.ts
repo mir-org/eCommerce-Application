@@ -4,7 +4,7 @@ describe('createPopupWithText', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
   });
-  test('should create a div element, with a div element and a button inside', () => {
+  it('should create a div element, with a div element and a button inside', () => {
     createPopupWithText('Hello World');
     const popupElement = document.body.querySelector('.popup-with-text');
     const popupText = popupElement?.querySelector('.popup-text-block');
@@ -21,7 +21,7 @@ describe('createPopupWithText', () => {
     expect(popupText?.textContent).toBe('Hello World');
     expect(popupButton?.textContent).toBe('Close');
   });
-  test('should close a div element when clicking a button', () => {
+  it('should close a div element when clicking a button', () => {
     createPopupWithText('Hello World');
     const popupElement = document.body.querySelector('.popup-with-text');
     const closeButton = popupElement?.querySelector('.primary-button');
@@ -30,7 +30,7 @@ describe('createPopupWithText', () => {
     const popupElementAfterClosing = document.body.querySelector('.popup-with-text');
     expect(popupElementAfterClosing).toBeNull();
   });
-  test('should close a div element after 2 seconds', () => {
+  it('should close a div element after 2 seconds', () => {
     jest.useFakeTimers();
     createPopupWithText('Hello World');
     const popupElement = document.body.querySelector('.popup-with-text');
