@@ -106,3 +106,12 @@ dist
 # OS Thumbnails
 .DS_Store
 Thumbs.db
+
+# Dependencies versions
+package-lock.json
+
+# Folder for temporary files
+TEMP
+
+# Garbage folder that vscode generates
+.vscode

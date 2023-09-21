@@ -1,0 +1,68 @@
+.registration {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  padding: 20px;
+  gap: 5px;
+  flex: 500px;
+  min-width: 310px;
+  max-width: 500px;
+  margin: 1.5rem;
+  border: 1px solid #ababab;
+  border-radius: 2px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5019607843);
+  background-color: rgba(252, 252, 252, 0.9882352941);
+
+  &__title {
+    text-align: center;
+    font-size: 24px;
+    margin: 15px 0 5px;
+  }
+
+  &_error-line {
+    height: 30px;
+    line-height: 28px;
+    text-align: center;
+    border: 1px solid $login-registration-section-border-color;
+    border-radius: 5px;
+    color: $login-registration-error-line-text-color;
+    background-color: $login-registration-error-line-background-color;
+    opacity: 0;
+    visibility: hidden;
+    margin-bottom: 5px;
+    transition: 0.1s;
+  }
+
+  &_error-line.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &__form,
+  .fieldset {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    gap: 5px;
+  }
+
+  &__show-hide-icon {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    z-index: 20;
+    user-select: none;
+  }
+
+  &__set-default-input {
+    margin: 5px;
+  }
+}
+
+.error {
+  color: red;
+}
