@@ -7,15 +7,12 @@ import { Pages, ID } from './router/pages';
 import { View } from './view/view';
 import State from './state/state';
 import { AuthAPI } from '../api/auth-api/auth-api';
-import Observer from './observer/observer';
-// import { FiltersView } from './view/main/catalog/filters/filters-view';
+import { Observer } from './observer/observer';
 
 class App {
   private router: Router;
 
   private header: HeaderView | null;
-
-  // private filter: FiltersView | null;
 
   private main: MainView | null;
 
@@ -24,19 +21,24 @@ class App {
   constructor() {
     AuthAPI.setAccessToken();
     this.header = null;
-    // this.filter = null;
     this.main = null;
     const state = new State();
     const routes = this.createRoutes(state);
     this.router = new Router(routes, state);
-    this.observer = new Observer();
+    this.observer = new Observer(state);
     this.createView(state);
+    window.addEventListener('not-found', async () => {
+      const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
+      this.main?.setContent(new NotFoundView(this.router));
+      document.title = 'Not Found';
+    });
   }
 
   private createView(state: State): void {
     const wrapperView = new WrapperView();
     this.header = new HeaderView(this.router, state);
     this.observer.setHeader(this.header);
+    this.observer.setCartState();
     this.main = new MainView();
     const footer = new FooterView();
 
@@ -62,6 +64,7 @@ class App {
         callback: async () => {
           const { default: IndexView } = await import('./view/main/index/index-view');
           this.setContent(Pages.INDEX, new IndexView(this.router));
+          document.title = 'Main';
         },
       },
       {
@@ -69,6 +72,7 @@ class App {
         callback: async () => {
           const { default: LoginView } = await import('./view/main/login/login-view');
           this.setContent(Pages.LOGIN, new LoginView(this.router, this.observer, state));
+          document.title = 'Login';
         },
       },
       {
@@ -76,6 +80,7 @@ class App {
         callback: async () => {
           const { default: UserProfileView } = await import('./view/main/user-profile/user-profile');
           this.setContent(Pages.USER_PROFILE, new UserProfileView());
+          document.title = 'Profile';
         },
       },
       {
@@ -83,6 +88,7 @@ class App {
         callback: async () => {
           const { default: RegistrationView } = await import('./view/main/registration/registration-view');
           this.setContent(Pages.REGISTRATION, new RegistrationView(this.router, this.observer, state));
+          document.title = 'Registration';
         },
       },
       {
@@ -90,13 +96,15 @@ class App {
         callback: async () => {
           const { default: CatalogView } = await import('./view/main/catalog/catalog-view');
           this.setContent(Pages.CATALOG, new CatalogView(this.router));
+          document.title = 'Catalog';
         },
       },
       {
         path: `${Pages.PROCESSORS}`,
         callback: async () => {
           const { default: ProcessorsView } = await import('./view/main/catalog/categories/processors/processors-view');
-          this.setContent(Pages.CATALOG, new ProcessorsView(this.router));
+          this.setContent(Pages.CATALOG, new ProcessorsView(this.router, this.observer));
+          document.title = 'Processors';
         },
       },
       {
@@ -105,7 +113,8 @@ class App {
           const { default: GraphicCardsView } = await import(
             './view/main/catalog/categories/graphic-cards/graphic-cards-view'
           );
-          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router));
+          this.setContent(Pages.GRAPHIC_CARDS, new GraphicCardsView(this.router, this.observer));
+          document.title = 'Graphic cards';
         },
       },
       {
@@ -113,7 +122,8 @@ class App {
         callback: async (id) => {
           const { default: ProductView } = await import('./view/main/product/product-view');
           if (id !== undefined) {
-            this.setContent(Pages.CATALOG, new ProductView(id));
+            this.setContent(Pages.CATALOG, new ProductView(id, this.observer));
+            document.title = 'Catalog';
           }
         },
       },
@@ -122,6 +132,23 @@ class App {
         callback: async () => {
           const { default: NotFoundView } = await import('./view/main/not-found/not-found-view');
           this.setContent(Pages.NOT_FOUND, new NotFoundView(this.router));
+          document.title = 'Not Found';
+        },
+      },
+      {
+        path: `${Pages.ABOUT_US}`,
+        callback: async () => {
+          const { default: AboutView } = await import('./view/main/about-us/about-us-view');
+          this.setContent(Pages.ABOUT_US, new AboutView());
+          document.title = 'About Us';
+        },
+      },
+      {
+        path: `${Pages.CART}`,
+        callback: async () => {
+          const { default: CartView } = await import('./view/main/cart/cart-view');
+          this.setContent(Pages.CART, new CartView(this.observer, this.router));
+          document.title = 'Cart';
         },
       },
     ];

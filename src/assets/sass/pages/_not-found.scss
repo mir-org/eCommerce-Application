@@ -3,13 +3,17 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  &__image {
+  margin: 1.5rem;
+
+  &__image-block {
     flex: 0 1 auto;
-    img {
+
+    &-img {
       width: 100%;
       height: auto;
     }
   }
+
   &__text {
     flex: 1 1 auto;
     display: flex;
@@ -35,11 +39,16 @@
       display: block;
       margin-top: 35px;
       padding: 10px;
-      background-color: $login-registration-link-background-color;
+      background-color: $main-blue-color;
       border-radius: 8px;
-      color: $login-registration-link-color;
+      color: $white-color;
       text-align: center;
       cursor: pointer;
+      transition: ease-in-out 0.33s;
+      &:hover {
+        background-color: darken($main-blue-color, 10%);
+        transition: ease-in-out 0.33s;
+      }
 
       &::before {
         content: "";

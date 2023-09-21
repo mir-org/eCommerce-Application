@@ -115,7 +115,7 @@ type Language = {
   [language: string]: string;
 };
 
-type MasterVariant = {
+export type MasterVariant = {
   assets: [];
   attributes: Attributes[];
   id: number;

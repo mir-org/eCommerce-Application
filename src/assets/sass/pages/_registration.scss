@@ -5,11 +5,14 @@
   align-content: center;
   padding: 20px;
   gap: 5px;
-  width: 40%;
-  min-width: 300px;
-  margin: 20px 0;
-  border: 1px solid $login-registration-section-border-color;
+  flex: 500px;
+  min-width: 310px;
+  max-width: 500px;
+  margin: 1.5rem;
+  border: 1px solid #ababab;
   border-radius: 2px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5019607843);
+  background-color: rgba(252, 252, 252, 0.9882352941);
 
   &__title {
     text-align: center;
@@ -17,7 +20,7 @@
     margin: 15px 0 5px;
   }
 
-  .registration_error-line {
+  &_error-line {
     height: 30px;
     line-height: 28px;
     text-align: center;
@@ -31,7 +34,7 @@
     transition: 0.1s;
   }
 
-  .registration_error-line.show {
+  &_error-line.show {
     opacity: 1;
     visibility: visible;
   }
@@ -45,7 +48,7 @@
     gap: 5px;
   }
 
-  .registration__show-hide-icon {
+  &__show-hide-icon {
     width: 10px;
     height: 10px;
     position: absolute;
@@ -53,6 +56,10 @@
     right: 20px;
     z-index: 20;
     user-select: none;
+  }
+
+  &__set-default-input {
+    margin: 5px;
   }
 }
 

@@ -2,6 +2,7 @@
   max-width: 1200px;
   width: 100%;
   padding: 10px 20px 20px 20px;
+  margin: 1.5rem;
 
   &__title {
     margin: 0 0 20px 70px;
@@ -38,11 +39,19 @@
   &__description {
     flex: 0 1 40%;
     min-width: 340px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.241);
+    padding: 10px;
   }
 
-  &__atributes {
+  &__attributes {
     flex: 0 1 40%;
     min-width: 340px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.241);
+    padding: 10px;
   }
 
   @media (max-width: 940px) {
@@ -72,7 +81,7 @@
       max-width: 500px;
     }
 
-    &__atributes {
+    &__attributes {
       flex: 0 0 100%;
       max-width: 500px;
       margin: 0 0 20px 0;
@@ -130,16 +139,18 @@
     height: 40px;
     margin: 0 0 0 60px;
     font-size: 16px;
-    color: white;
-    background-color: rgb(55, 188, 106);
+    color: $white-color;
+    background-color: $buy-button-color;
     border-radius: 5px;
+    transition: ease-in-out 0.33s;
+    &:hover {
+      background-color: darken($buy-button-color, 10%);
+      transition: ease-in-out 0.33s;
+    }
   }
 }
 
-.atributes {
-  &__title {
-  }
-
+.attributes {
   &__row {
     display: flex;
     justify-content: space-between;
@@ -151,15 +162,9 @@
   &__key {
     margin: 0 10px 0 0;
   }
-
-  &__value {
-  }
 }
 
 .description {
-  &__title {
-  }
-
   &__text {
     font-size: 16px;
     line-height: 120%;

@@ -66,6 +66,10 @@ npm start
 npm run test
 ```
 
+```bash
+npm run test -- --coverage
+```
+
 ### ESLint
 
 ```bash

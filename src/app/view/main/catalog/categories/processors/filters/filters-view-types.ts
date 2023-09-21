@@ -50,7 +50,7 @@ export const TEXT = {
   BRANDS_HEADER: 'Brands',
   SOCKETS_HEADER: 'Socket',
   CORES_AMOUNT_HEADER: 'Cores amount',
-  RESET_BUTTON: 'reset',
+  RESET_BUTTON: 'Reset',
   NAVIGATION_BUTTON: 'Navigation',
   PC_COMPONENTS_CATEGORY: 'PC-Components',
   PROCESSORS_SUBCATEGORY: 'Processors',

@@ -2,6 +2,12 @@ import { ElementCreator } from '../../../utils/element-creator';
 import { View } from '../../view';
 import { ProductAPI } from '../../../../api/product-api/product-api';
 import { Image, Attributes } from '../../../../api/product-api/product-api-types';
+import { CartAPI } from '../../../../api/cart-api/cart-api';
+import { Observer, CartItemForState } from '../../../observer/observer';
+
+const KEY_FOR_SAVE = {
+  CART_ITEMS_STATE_ARRAY: 'cartItemsStateArray',
+};
 
 const CssClasses = {
   SECTION: 'product',
@@ -18,11 +24,11 @@ const CssClasses = {
   BUY_PRICE_DISABLE: 'buy__price_disable',
   BUY_BUTTON: 'buy__button',
   BOT: 'product__bot',
-  ATRIBUTES: ['product__atributes', 'atributes'],
-  ATRIBUTES_TITLE: ['product__subtitle', 'atributes__title'],
-  ATRIBUTES_ROW: 'atributes__row',
-  ATRIBUTES_KEY: 'atributes__key',
-  ATRIBUTES_VALUE: 'atributes__value',
+  attributes: ['product__attributes', 'attributes'],
+  attributes_TITLE: ['product__subtitle', 'attributes__title'],
+  attributes_ROW: 'attributes__row',
+  attributes_KEY: 'attributes__key',
+  attributes_VALUE: 'attributes__value',
   DESCTIPTION: ['product__description', 'description'],
   DESCTIPTION__TITLE: ['product__subtitle', 'description__title'],
   DESCTIPTION__TEXT: 'description__text',
@@ -34,10 +40,12 @@ type PageInfo = {
   price: number;
   discount: number | undefined;
   imageArr: Image[];
-  atributesArr: Attributes[];
+  attributesArr: Attributes[];
 };
 
 class ProductView extends View {
+  private observer: Observer;
+
   private sliderMainItem: ElementCreator;
 
   private currentProductName: string;
@@ -50,11 +58,24 @@ class ProductView extends View {
 
   private papaSliderNav: ElementCreator | null;
 
-  constructor(id: string) {
+  private id: string;
+
+  private buyButton: ElementCreator | null;
+
+  private add: () => void;
+
+  private remove: () => void;
+
+  constructor(id: string, observer: Observer) {
     super('section', CssClasses.SECTION);
+    this.add = this.buyButtonClickHandler.bind(this);
+    this.remove = this.removeButtonClickHandler.bind(this);
+    this.observer = observer;
+    this.id = id;
     this.sliderMainItem = new ElementCreator('div', CssClasses.SLIDER_MAIN_ITEM, '');
     this.currentProductName = '';
     this.picturesPaths = [];
+    this.buyButton = null;
     this.curentIndex = null;
     this.papaSliderMainItem = null;
     this.papaSliderNav = null;
@@ -65,7 +86,7 @@ class ProductView extends View {
     const PageInfoData = await this.getData(id);
     this.createTitle(PageInfoData.name);
     this.createTop(PageInfoData.imageArr, PageInfoData.price, PageInfoData.discount);
-    this.createBot(PageInfoData.atributesArr, PageInfoData.descriptions);
+    this.createBot(PageInfoData.attributesArr, PageInfoData.descriptions);
   }
 
   private createTitle(name: string): void {
@@ -130,15 +151,16 @@ class ProductView extends View {
       buy.addInnerElement(discountPriceCreator);
     }
 
-    const buyButton = new ElementCreator('button', CssClasses.BUY_BUTTON, 'Add to cart');
-    buy.addInnerElement(buyButton);
+    this.buyButton = new ElementCreator('button', CssClasses.BUY_BUTTON);
+    this.setBuyButton();
+    buy.addInnerElement(this.buyButton);
     return buy;
   }
 
-  private createBot(atributesArr: Attributes[], description: string): void {
+  private createBot(attributesArr: Attributes[], description: string): void {
     const botBlock = new ElementCreator('div', CssClasses.BOT, '');
-    const atributesBlock = this.createAtributes(atributesArr);
-    botBlock.addInnerElement(atributesBlock);
+    const attributesBlock = this.createattributes(attributesArr);
+    botBlock.addInnerElement(attributesBlock);
 
     const descriptionBlock = this.createDescription(description);
     botBlock.addInnerElement(descriptionBlock);
@@ -146,22 +168,22 @@ class ProductView extends View {
     this.viewElementCreator.addInnerElement(botBlock);
   }
 
-  private createAtributes(atributesArr: Attributes[]): ElementCreator {
-    const atributes = new ElementCreator('div', CssClasses.ATRIBUTES, '');
-    const atributesTitle = new ElementCreator('h2', CssClasses.ATRIBUTES_TITLE, 'Specifications:');
-    atributes.addInnerElement(atributesTitle);
-    atributesArr.forEach((elem) => {
+  private createattributes(attributesArr: Attributes[]): ElementCreator {
+    const attributes = new ElementCreator('div', CssClasses.attributes, '');
+    const attributesTitle = new ElementCreator('h2', CssClasses.attributes_TITLE, 'Specifications:');
+    attributes.addInnerElement(attributesTitle);
+    attributesArr.forEach((elem) => {
       const key = elem.name;
       const values = elem.value;
-      const atributesRow = new ElementCreator('div', CssClasses.ATRIBUTES_ROW, '');
-      const atributesKey = new ElementCreator('div', CssClasses.ATRIBUTES_KEY, `${key}:  `);
-      atributesRow.addInnerElement(atributesKey);
-      const atributesValue = new ElementCreator('div', CssClasses.ATRIBUTES_VALUE, values.toString());
-      atributesRow.addInnerElement(atributesValue);
-      atributes.addInnerElement(atributesRow);
+      const attributesRow = new ElementCreator('div', CssClasses.attributes_ROW, '');
+      const attributesKey = new ElementCreator('div', CssClasses.attributes_KEY, `${key}:  `);
+      attributesRow.addInnerElement(attributesKey);
+      const attributesValue = new ElementCreator('div', CssClasses.attributes_VALUE, values.toString());
+      attributesRow.addInnerElement(attributesValue);
+      attributes.addInnerElement(attributesRow);
     });
 
-    return atributes;
+    return attributes;
   }
 
   private createDescription(description: string): ElementCreator {
@@ -185,8 +207,8 @@ class ProductView extends View {
       discount = discountValue / 100;
     }
     const imageArr = data.masterData.current.masterVariant.images;
-    const atributesArr = data.masterData.current.masterVariant.attributes;
-    const info = { name, descriptions, price, discount, imageArr, atributesArr };
+    const attributesArr = data.masterData.current.masterVariant.attributes;
+    const info = { name, descriptions, price, discount, imageArr, attributesArr };
 
     return info;
   }
@@ -286,6 +308,44 @@ class ProductView extends View {
   private papaSliderCloseBtnClickHandler(): void {
     document.body.classList.remove('scroll-lock');
     document.body.lastElementChild?.remove();
+  }
+
+  private setBuyButton(): void {
+    const cartItemsStateArray: CartItemForState[] = JSON.parse(
+      this.observer.state.getValue(KEY_FOR_SAVE.CART_ITEMS_STATE_ARRAY)
+    );
+    const flag = cartItemsStateArray.find((elem) => {
+      return elem.productId === this.id;
+    });
+    if (flag === undefined) {
+      this.buyButton!.getElement().innerHTML = 'Add to cart';
+      this.buyButton!.getElement().removeEventListener('click', this.remove);
+      this.buyButton!.getElement().addEventListener('click', this.add);
+    } else {
+      this.buyButton!.getElement().innerHTML = 'Remove from cart';
+      this.buyButton!.getElement().removeEventListener('click', this.add);
+      this.buyButton!.getElement().addEventListener('click', this.remove);
+    }
+  }
+
+  private async buyButtonClickHandler(): Promise<void> {
+    const cart = await CartAPI.addProductToCart(this.id);
+    this.observer.setCartState(cart);
+    this.setBuyButton();
+  }
+
+  private async removeButtonClickHandler(): Promise<void> {
+    const cartItemsStateArray: CartItemForState[] = JSON.parse(
+      this.observer.state.getValue(KEY_FOR_SAVE.CART_ITEMS_STATE_ARRAY)
+    );
+    const flag = cartItemsStateArray.find((elem) => {
+      return elem.productId === this.id;
+    });
+    const itemID = flag!.id;
+
+    const cart = await CartAPI.removeProduct(itemID);
+    this.observer.setCartState(cart);
+    this.setBuyButton();
   }
 }
 export default ProductView;
